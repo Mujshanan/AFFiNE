@@ -33,6 +33,8 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=14384
       DEBUG: affine:*,napi:*
       APP_NAME: affine
+      DEV_DRIVE: ${{ runner.temp }}
+      DEV_DRIVE_WORKSPACE: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v7
 
