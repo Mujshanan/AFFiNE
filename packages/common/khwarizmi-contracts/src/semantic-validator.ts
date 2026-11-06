@@ -188,7 +188,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
     diagnostics.push({ code: 'INVALID_CALCULATION_ORDER', message: 'calculationOrder must contain every top-level statement ID exactly once and no nested statement IDs' });
   }
 
-  const rootScope: Scope = { symbols: new Map(symbols.filter(isRecord).map(symbol => [symbol.symbolId, symbol.displayName])) };
+  const rootScope: Scope = { symbols: new Map<string, string>(symbols.filter(isRecord).map(symbol => [String(symbol.symbolId), String(symbol.displayName)] as [string, string])) };
   const visitExpression = (expr: unknown, scope: Scope, future: Set<string>, statementId?: string) => {
     if (isRecord(expr)) validateExpressionRecord(expr, new Set(scope.symbols.keys()), localIds, future, diagnostics, statementId);
   };
@@ -205,7 +205,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
       const statementId = typeof statement.statementId === 'string' ? statement.statementId : undefined;
       if (statement.kind === 'assign') {
         if (typeof statement.targetSymbolId !== 'string' || !scope.symbols.has(statement.targetSymbolId)) {
-          diagnostics.push({ code: localIds.has(statement.targetSymbolId) ? 'LOCAL_OUT_OF_SCOPE' : 'UNKNOWN_ASSIGNMENT_TARGET', message: 'Assignment target must be a declared document symbol or visible local', statementId, symbolId: statement.targetSymbolId });
+          diagnostics.push({ code: localIds.has(statement.targetSymbolId) ? (futureDirectLocals.has(statement.targetSymbolId) ? 'LOCAL_USE_BEFORE_DECLARATION' : 'LOCAL_OUT_OF_SCOPE') : 'UNKNOWN_ASSIGNMENT_TARGET', message: 'Assignment target must be a declared document symbol or visible local', statementId, symbolId: statement.targetSymbolId });
         }
         visitExpression(statement.expression, scope, futureDirectLocals, statementId);
       } else if (statement.kind === 'expression') {
