@@ -99,7 +99,7 @@ try {
 
   # Squirrel: validate the installer and update package, install, launch and uninstall.
   $squirrelDirectory = Join-Path $MakeDirectory 'squirrel.windows/x64'
-  $squirrelSetup = Get-RequiredFile -Directory $squirrelDirectory -Filter "$ProductName*Setup.exe" -Description 'Squirrel installer'
+  $squirrelSetup = Get-RequiredFile -Directory $squirrelDirectory -Filter "$ProductName*Setup*.exe" -Description 'Squirrel installer'
   $squirrelPackage = Get-RequiredFile -Directory $squirrelDirectory -Filter '*.nupkg' -Description 'Squirrel NuGet package'
   $releases = Join-Path $squirrelDirectory 'RELEASES'
   if (-not (Test-Path -LiteralPath $releases -PathType Leaf)) {
