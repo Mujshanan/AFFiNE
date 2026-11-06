@@ -91,10 +91,6 @@ For document payload integrity, use SHA-256 over RFC 8785 JSON Canonicalization 
 
 Python worker protocol, runtime dependency, and numerical operation catalog are deferred from v1. TypeScript remains authoritative and no Python worker is required for v1. A future worker, if approved under a separate ADR, must remain internal to the TypeScript host, use typed bounded requests, and cannot mutate the document, symbol table, or dependency graph.
 
-## 12. Platform implementation details
-
-These platform details remain implementation deliverables, not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are normative.
-
 ## 10. Method schema references and response payloads
 
 The v1 schemas are:
@@ -108,6 +104,10 @@ The v1 schemas are:
 The document-validation result is a versioned object containing document ID/revision, schema and semantic versions, a boolean validity flag, and ordered diagnostics. A validation request MUST NOT execute any expression. Evaluation results contain per-statement original expression records, substituted MathJSON, typed scalar values, units, assignment-version dependencies, per-occurrence substitution provenance, control-flow path, node status, and diagnostics. Engine-specific object instances MUST be normalized before serialization.
 
 A request ID is a non-empty string or non-negative safe integer. The error response may use a null ID only when the request could not be parsed or correlated; successful responses always echo the original request ID. Responses contain exactly one of `result` or `error`. Cancellation is a notification and has no response of its own.
+
+## 12. Platform implementation details
+
+These platform details remain implementation deliverables, not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are normative.
 
 ## 11. Contract completion boundary
 
