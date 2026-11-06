@@ -1,6 +1,6 @@
 # Calculation host RPC v1
 
-**Status:** transport and responsibility direction accepted; wire schemas require conformance lock  
+**Status:** v1 wire contract — normative; executable transport conformance pending  
 **Protocol:** JSON-RPC 2.0 over a local Windows named pipe
 
 ## 1. Process topology
