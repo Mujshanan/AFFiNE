@@ -1,5 +1,7 @@
 # Khwarizmi Studio
 
+<p align="center"><img src="assets/khwarizmi-logo.svg" alt="Khwarizmi Studio logo" width="112" /></p>
+
 **An open-source workspace for structural engineering calculations and technical documentation.**
 
 Khwarizmi Studio aims to bring engineering mathematics, calculation workflows, and design documentation into one visual, editable environment. It is being developed for structural engineers who need more than a calculator or a conventional word processor: they need to show the assumptions, inputs, equations, substitutions, intermediate steps, checks, and final results that support an engineering decision.
@@ -81,6 +83,9 @@ These are intended use cases, not a statement that the application currently imp
 - **Build on open source:** Reuse mature open-source foundations where practical while keeping Khwarizmi's engineering document model and calculation behavior under project control.
 
 ## Development direction
+
+See the [Development Plan](./DEVELOPMENT_PLAN.md) for the phased roadmap, exit criteria, and near-term priorities.
+
 
 Khwarizmi is currently in its foundation and architecture stage. Work is being approached incrementally:
 
