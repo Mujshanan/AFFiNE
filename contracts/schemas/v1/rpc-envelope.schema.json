@@ -142,6 +142,11 @@
             "required": [
               "error"
             ]
+          },
+          "properties": {
+            "id": {
+              "$ref": "#/$defs/id"
+            }
           }
         },
         {
@@ -152,6 +157,18 @@
             "required": [
               "result"
             ]
+          },
+          "properties": {
+            "id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/id"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
           }
         }
       ],
