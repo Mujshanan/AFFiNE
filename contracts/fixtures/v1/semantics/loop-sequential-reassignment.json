@@ -46,11 +46,36 @@
           {
             "kind": "while",
             "statementId": "loop",
-            "condition": [
-              "Less",
-              "kz_i",
-              3
-            ],
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Less",
+                "kz_i",
+                3
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_i",
+                  "symbolId": "symbol-i"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "3",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-loop",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
             "body": [
               {
                 "kind": "assign",
