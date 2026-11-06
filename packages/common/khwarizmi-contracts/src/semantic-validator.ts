@@ -208,7 +208,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
     ]);
     const scope: Scope = { symbols: new Map(inherited.symbols) };
 
-    statements.forEach((statement: unknown, index: number) => {
+    statements.forEach((statement: unknown) => {
       if (!isRecord(statement)) return;
       const statementId = typeof statement.statementId === 'string' ? statement.statementId : undefined;
       if (statement.kind === 'assign') {
@@ -235,7 +235,6 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
         visitStatements(statement.body, scope, true, futureDirectLocals);
       }
       if (statement.kind === 'declareLocal' && typeof statement.localSymbolId === 'string') futureDirectLocals.delete(statement.localSymbolId);
-      if (index >= statements.length) return;
     });
   };
 
