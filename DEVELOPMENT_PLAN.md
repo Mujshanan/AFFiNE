@@ -85,12 +85,18 @@ Architecture documents: [Contract index](./docs/architecture/README.md).
 
 **Exit criteria:** stable authoring-to-review-to-PDF workflow, repeatable installation, and documented limitations.
 
-## Near-term priorities
+## Next development milestone — PR #3: contract freeze and executable conformance
 
-1. Finish the AFFiNE-derived baseline and Windows packaging validation.
-2. Complete architecture decisions for document schema, calculation semantics, and RPC.
-3. Align contract-conformance tests with the approved RPC specification.
-4. Begin worksheet editor and calculation-host implementation only after those contracts are reviewed.
+PR #3 is the next product-development milestone, not a UI feature. It converts the architecture proposals into versioned, machine-checkable contracts and an executable conformance suite. Scope and acceptance criteria: [PR #3 milestone](./docs/architecture/PR-3-CONTRACT-CONFORMANCE.md).
+
+1. Complete review and approval of the v1 normative decisions; record them in ADRs.
+2. Publish versioned document, expression, evaluation, diagnostic, and RPC JSON Schemas.
+3. Add language-neutral fixtures with stable IDs and reviewed expected outcomes.
+4. Implement TypeScript validators and deterministic schema/semantic/unit tests.
+5. Test RPC framing independently and add fake-host integration coverage.
+6. Run the contract suite in CI without Electron or the production calculation host.
+
+PR #1's Windows packaging and launch/install/uninstall verification remains a separate release-readiness track. PR #2 remains the architecture-proposal base for PR #3; PR #3 must not be merged before its base. Do not start broad worksheet UI or production calculation-host implementation until PR #3's acceptance criteria pass.
 
 ## Foundation-stage non-goals
 
