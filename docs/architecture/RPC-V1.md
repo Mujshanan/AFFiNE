@@ -97,6 +97,7 @@ The v1 schemas are:
 - `contracts/schemas/v1/rpc-envelope.schema.json`: closed JSON-RPC method/envelope union;
 - `contracts/schemas/v1/rpc/host-get-info.schema.json`: `host.getInfo` result;
 - `contracts/schemas/v1/rpc/document-validate.schema.json`: `document.validate` params;
+- `contracts/schemas/v1/document-validation-result.schema.json`: `document.validate` result;
 - `contracts/schemas/v1/rpc/document-evaluate.schema.json`: `document.evaluate` params;
 - `contracts/schemas/v1/rpc/cancel-request.schema.json`: cancellation params;
 - `contracts/schemas/v1/evaluation-result.schema.json`: `document.evaluate` result.
@@ -105,10 +106,10 @@ The document-validation result is a versioned object containing document ID/revi
 
 A request ID is a non-empty string or non-negative safe integer. The error response may use a null ID only when the request could not be parsed or correlated; successful responses always echo the original request ID. Responses contain exactly one of `result` or `error`. Cancellation is a notification and has no response of its own.
 
-## 12. Platform implementation details
-
-These platform details remain implementation deliverables, not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are normative.
-
 ## 11. Contract completion boundary
 
 The method schemas and language-neutral fixtures are part of the contract definition. They do not constitute a tested named-pipe implementation. Framing, Windows ACL/process verification, cancellation races, concurrency enforcement, and digest implementation remain executable conformance work.
+
+## 12. Platform implementation details
+
+These platform details remain implementation deliverables, not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are normative.
