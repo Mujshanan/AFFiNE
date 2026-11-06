@@ -13,7 +13,21 @@
           {
             "kind": "while",
             "statementId": "loop",
-            "condition": "True",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-loop",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
             "body": [
               {
                 "kind": "expression",
