@@ -330,3 +330,14 @@ export function validateUnitRegistrySemantics(registry: unknown): SemanticValida
   }
   return { valid: diagnostics.length === 0, diagnostics };
 }
+
+export function validateUnitReference(unitId: string, registry: unknown): SemanticValidationResult {
+  if (unitId === 'unit.celsius' || unitId === 'unit.fahrenheit') {
+    return { valid: false, diagnostics: [{ code: 'UNSUPPORTED_UNIT_KIND', message: 'Affine temperature units are not supported in v1' }] };
+  }
+  const units = isRecord(registry) && Array.isArray(registry.units) ? registry.units : [];
+  const found = units.some(unit => isRecord(unit) && unit.unitId === unitId);
+  return found
+    ? { valid: true, diagnostics: [] }
+    : { valid: false, diagnostics: [{ code: 'UNKNOWN_UNIT', message: 'Unit ID is not present in the selected registry' }] };
+}
