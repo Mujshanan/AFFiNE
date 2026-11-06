@@ -235,3 +235,42 @@ export function validateJsonSchema(
   const valid = visit(value, root, schemaPath, '', 0);
   return { valid: valid && errors.length === 0, errors };
 }
+
+export function validateSchemaBundle(bundle: SchemaBundle): SchemaValidationResult {
+  const errors: SchemaIssue[] = [];
+  const supported = new Set([
+    '$schema', '$id', '$defs', '$comment', 'title', 'description',
+    '$ref', 'type', 'const', 'enum', 'properties', 'required',
+    'additionalProperties', 'items', 'prefixItems', 'oneOf', 'allOf',
+    'if', 'then', 'else', 'minimum', 'maximum', 'minLength',
+    'maxLength', 'pattern', 'minItems', 'maxItems', 'uniqueItems'
+  ]);
+  const schemaChildren = (schema: Record<string, unknown>): unknown[] => {
+    const children: unknown[] = [];
+    for (const key of ['$defs', 'properties']) {
+      const map = schema[key];
+      if (isObject(map)) children.push(...Object.values(map));
+    }
+    for (const key of ['items', 'additionalProperties', 'if', 'then', 'else']) {
+      if (schema[key] !== undefined && typeof schema[key] !== 'boolean') children.push(schema[key]);
+    }
+    for (const key of ['prefixItems', 'oneOf', 'allOf']) {
+      if (Array.isArray(schema[key])) children.push(...schema[key] as unknown[]);
+    }
+    return children;
+  };
+  const visit = (node: unknown, path: string, seen: Set<object>) => {
+    if (typeof node === 'boolean') return;
+    if (!isObject(node) || seen.has(node)) return;
+    seen.add(node);
+    for (const keyword of Object.keys(node)) {
+      if (!supported.has(keyword)) errors.push({ instancePath: '', schemaPath: path + '/' + keyword, keyword, message: 'Unsupported schema keyword in Khwarizmi validator bundle' });
+    }
+    if (typeof node.$ref === 'string' && !resolveReference(node.$ref, path.split('/').slice(0, -1).join('/'), bundle)) {
+      errors.push({ instancePath: '', schemaPath: path + '/$ref', keyword: '$ref', message: 'Unresolved schema reference: ' + node.$ref });
+    }
+    for (const [index, child] of schemaChildren(node).entries()) visit(child, path + '/child-' + index, seen);
+  };
+  for (const [path, schema] of Object.entries(bundle)) visit(schema, path, new Set<object>());
+  return { valid: errors.length === 0, errors };
+}
