@@ -19,10 +19,10 @@ The package does not yet evaluate mathematical expressions, run the Compute Engi
 
 ## Test coverage
 
-`src/contract-validators.spec.ts` loads the checked-in schema bundle and fixture manifest, validates manifest uniqueness and paths, the diagnostic and unit registries, schema-bearing fixture payloads, and expected diagnostics for semantic-validation fixtures. Authoring-parse and evaluation expectations are not executed by this package; mathematical evaluation remains a separate phase.
+`src/fixture-runner.ts` executes every manifest entry in order. It runs schema/profile, semantic-validation, and RPC-envelope fixtures now; unimplemented authoring, evaluation, and RPC-integrity stages are reported as **blocked**, never silently skipped. Stage adapters can be injected as the Compute Engine and host implementations become available. The runner compares actual outcomes and expected diagnostic codes against the manifest.
 
 Run from the repository root:
 
 ```sh
-yarn vitest run packages/common/khwarizmi-contracts/src/contract-validators.spec.ts
+yarn workspace @khwarizmi/contracts test:fixtures
 ```
