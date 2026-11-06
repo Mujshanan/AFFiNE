@@ -217,7 +217,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown): Sem
         visitExpression(statement.condition, scope, futureDirectLocals, statementId);
         visitStatements(statement.body, scope, true);
       }
-      if (typeof statement.statementId === 'string') futureDirectLocals.delete(statement.statementId);
+      if (statement.kind === 'declareLocal' && typeof statement.localSymbolId === 'string') futureDirectLocals.delete(statement.localSymbolId);
       if (index >= statements.length) return;
     });
   };
