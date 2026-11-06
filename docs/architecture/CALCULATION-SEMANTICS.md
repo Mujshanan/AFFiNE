@@ -16,6 +16,9 @@ Initial AST node families:
 - `Call`: allowlisted function identifier and argument list;
 - `UnitAttach`: quantity unit expression;
 - `Group`: explicit grouping where required;
+- `Assignment`: assignment to a stable variable identity, creating a new immutable assignment event/version;
+- `Comparison` and `BooleanOp`: typed condition expressions;
+- `IfBlock` and `WhileBlock`: ordered control-flow statements with lexical bodies and local declarations;
 - Vector/matrix/tensor nodes: unsupported in v1; reject with `UNSUPPORTED_VALUE_KIND`.
 
 Every node has a stable node ID or deterministic path for diagnostics. AST schema version is independent from document schema version.
@@ -74,10 +77,10 @@ TypeScript owns the quantity and unit model. A quantity is a magnitude plus a no
 - Addition/subtraction require compatible dimensions and normalize to a declared/common unit.
 - Multiplication/division combine dimensions.
 - Powers require supported exponent semantics; dimensional exponents must be valid.
-- Trigonometric functions require angle-compatible inputs or an explicit dimensionless convention.
+- Trigonometric functions require angle-dimension inputs; radians are canonical and degrees are converted through the versioned registry.
 - Comparisons require compatible dimensions.
 - Unitless values are not silently treated as arbitrary engineering quantities.
-- Absolute temperatures and temperature differences require distinct semantics if supported.
+- Temperature arithmetic is unsupported in v1 and must be rejected with a stable diagnostic.
 - Unknown units, invalid prefixes, and incompatible dimensions are validation/evaluation errors.
 
 Python/Pint may be used as an optional numerical service, but its results must be checked/normalized through the TypeScript-owned contract. Python must not own symbol resolution or redefine the canonical unit registry semantics.
