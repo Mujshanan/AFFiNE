@@ -8,7 +8,9 @@
     "format",
     "version",
     "scaleEncoding",
-    "units"
+    "units",
+    "prefixes",
+    "prefixableUnitIds"
   ],
   "properties": {
     "format": {
@@ -101,6 +103,45 @@
             }
           }
         }
+      }
+    },
+    "prefixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "prefixId",
+          "symbol",
+          "scaleNumerator",
+          "scaleDenominator"
+        ],
+        "properties": {
+          "prefixId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "symbol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scaleNumerator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "scaleDenominator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          }
+        }
+      }
+    },
+    "prefixableUnitIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
       }
     }
   }
