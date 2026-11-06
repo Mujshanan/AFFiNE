@@ -1153,6 +1153,11 @@ export const PackageList = [
     ],
   },
   {
+    location: 'packages/common/khwarizmi-contracts',
+    name: '@khwarizmi/contracts',
+    workspaceDependencies: [],
+  },
+  {
     location: 'packages/common/nbstore',
     name: '@affine/nbstore',
     workspaceDependencies: [
@@ -1541,6 +1546,7 @@ export type PackageName =
   | '@affine/error'
   | '@affine/graphql'
   | '@toeverything/infra'
+  | '@khwarizmi/contracts'
   | '@affine/nbstore'
   | '@affine/reader'
   | '@affine/realtime'
