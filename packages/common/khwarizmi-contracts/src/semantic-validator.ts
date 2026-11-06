@@ -122,7 +122,8 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
   const pages = Array.isArray(document.pages) ? document.pages : [];
   const registry = isRecord(options.unitRegistry) ? options.unitRegistry : undefined;
   const registryVersion = typeof registry?.version === 'string' ? registry.version : undefined;
-  const hasUnitRegistry = registry !== undefined;\n  const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
+  const hasUnitRegistry = registry !== undefined;
+  const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
   const documentSymbolIds = new Set<string>();
   const documentNames = new Map<string, string>();
 
