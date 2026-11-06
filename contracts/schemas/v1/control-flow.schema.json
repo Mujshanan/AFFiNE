@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/control-flow.schema.json",
+  "title": "Khwarizmi Control Flow Statement v1",
+  "$defs": {
+    "statement": {
+      "oneOf": [
+        {
+          "$ref": "assignment.schema.json"
+        },
+        {
+          "$ref": "#/$defs/localDeclaration"
+        },
+        {
+          "$ref": "#/$defs/ifStatement"
+        },
+        {
+          "$ref": "#/$defs/whileStatement"
+        },
+        {
+          "$ref": "#/$defs/expressionStatement"
+        }
+      ]
+    },
+    "localDeclaration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "statementId",
+        "localSymbolId",
+        "displayName",
+        "initializer"
+      ],
+      "properties": {
+        "kind": {
+          "const": "declareLocal"
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "localSymbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "initializer": {
+          "$ref": "expression.schema.json"
+        }
+      }
+    },
+    "ifStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "statementId",
+        "condition",
+        "then",
+        "else"
+      ],
+      "properties": {
+        "kind": {
+          "const": "if"
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "condition": {
+          "$ref": "mathjson-profile.schema.json#/$defs/condition"
+        },
+        "then": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statement"
+          }
+        },
+        "else": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statement"
+          }
+        }
+      }
+    },
+    "whileStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "statementId",
+        "condition",
+        "body"
+      ],
+      "properties": {
+        "kind": {
+          "const": "while"
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "condition": {
+          "$ref": "mathjson-profile.schema.json#/$defs/condition"
+        },
+        "body": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/statement"
+          }
+        }
+      }
+    },
+    "expressionStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "statementId",
+        "expression"
+      ],
+      "properties": {
+        "kind": {
+          "const": "expression"
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "expression": {
+          "$ref": "expression.schema.json"
+        }
+      }
+    }
+  },
+  "$ref": "#/$defs/statement"
+}

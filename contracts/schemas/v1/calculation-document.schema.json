@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/calculation-document.schema.json",
+  "title": "Khwarizmi Calculation Document v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "documentId",
+    "semanticVersion",
+    "unitRegistryVersion",
+    "symbols",
+    "pages",
+    "calculationOrder"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.calculation-document"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "documentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "semanticVersion": {
+      "const": "1.0.0"
+    },
+    "unitRegistryVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "symbolId",
+          "displayName"
+        ],
+        "properties": {
+          "symbolId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "normalizedName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unit": {
+            "$ref": "unit.schema.json"
+          }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pageId",
+          "statements"
+        ],
+        "properties": {
+          "pageId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statements": {
+            "type": "array",
+            "items": {
+              "$ref": "control-flow.schema.json#/$defs/statement"
+            }
+          }
+        }
+      }
+    },
+    "calculationOrder": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}
