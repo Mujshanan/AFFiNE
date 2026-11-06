@@ -1,7 +1,7 @@
 # PR #3 — Contract freeze and executable conformance
 
 **Milestone:** the next development milestone after the architecture-contract proposal in PR #2.  
-**Status:** planned; this document is a scope and acceptance contract, not evidence that implementation is complete.
+**Status:** owner decisions A1–A9 resolved and T1–T6 selected; executable contract implementation remains outstanding. This document is a scope and acceptance contract, not evidence that implementation is complete.
 
 ## Objective
 
@@ -30,21 +30,11 @@ PR #3 is complete only when a contributor can validate representative Khwarizmi 
 - No claim of Windows named-pipe security verification from platform-independent framing tests alone.
 - No claim that structural-engineering calculations are validated by schema or protocol tests.
 
-## Decision gate
+## Decision gate — resolved
 
-The following items must be approved or explicitly deferred before the affected schema is called frozen:
+Owner decisions A1–A9 and implementation choices T1–T6 are recorded in [PR-3 decision resolution](./PR-3-DECISION-RESOLUTION.md) and aligned with ADR-010 through ADR-018 in DECISIONS.md. The v1 boundaries are now selected: micrometre page geometry; scalar-only values; exact decimal/rational authored numbers with tagged approximations; tracked sequential reassignment and lexical block locals; unambiguous implicit multiplication; versioned built-in units with angle semantics; fixed 16 MiB RPC frames; process verification plus per-launch capability; and Python worker deferred.
 
-- Canonical persisted page geometry unit and page preset/custom-size representation.
-- Scalar-only v1 value model versus vector/matrix support.
-- Numeric literal representation, precision, and tolerance policy.
-- v1 variable redefinition/assignment semantics.
-- Supported expression grammar and initial function catalog.
-- Unit registry/versioning and angle/temperature semantics.
-- RPC frame byte order, maximum payload, timeout/concurrency policy, and digest coverage.
-- Named-pipe naming, ACL, client/process identity verification, and reconnect policy.
-- Optional Python worker's internal protocol and allowlisted operation surface.
-
-A decision marked deferred must have a safe, explicit v1 behavior (normally rejection with a stable diagnostic), not an undocumented implementation choice.
+The remaining gate is evidence, not owner approval: publish schemas, fixtures, validators, semantic and RPC tests, and CI coverage. Deferred constructs must have stable rejection codes.
 
 ## Deliverables
 
