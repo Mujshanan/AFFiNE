@@ -107,6 +107,9 @@
         },
         {
           "$ref": "#/$defs/nary"
+        },
+        {
+          "$ref": "#/$defs/log"
         }
       ]
     },
@@ -121,13 +124,13 @@
             "Abs",
             "Exp",
             "Ln",
-            "Log10",
+            "Lg",
             "Sin",
             "Cos",
             "Tan",
-            "Asin",
-            "Acos",
-            "Atan"
+            "Arcsin",
+            "Arccos",
+            "Arctan"
           ]
         },
         {
@@ -201,7 +204,11 @@
     "condition": {
       "oneOf": [
         {
-          "type": "boolean"
+          "type": "string",
+          "enum": [
+            "True",
+            "False"
+          ]
         },
         {
           "$ref": "#/$defs/comparison"
@@ -234,6 +241,36 @@
             },
             {
               "$ref": "#/$defs/condition"
+            }
+          ],
+          "items": false
+        }
+      ]
+    },
+    "log": {
+      "type": "array",
+      "oneOf": [
+        {
+          "prefixItems": [
+            {
+              "const": "Log"
+            },
+            {
+              "$ref": "#/$defs/scalar"
+            }
+          ],
+          "items": false
+        },
+        {
+          "prefixItems": [
+            {
+              "const": "Log"
+            },
+            {
+              "$ref": "#/$defs/scalar"
+            },
+            {
+              "$ref": "#/$defs/scalar"
             }
           ],
           "items": false
