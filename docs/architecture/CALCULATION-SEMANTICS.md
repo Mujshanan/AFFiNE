@@ -152,7 +152,7 @@ The semantic rules, JSON Schemas, diagnostic inventory, unit registry, and langu
 
 ## 15. Additional normative execution details
 
-A document symbol's `normalizedName` is Unicode NFC followed by locale-independent Unicode case folding; trimming is not performed implicitly. Empty names are invalid. Two active symbols with the same normalized name produce `DUPLICATE_SYMBOL_NAME`. Renaming changes display metadata only and preserves `symbolId`.
+A document symbol's `normalizedName` is Unicode NFC followed by locale-independent Unicode default lowercase mapping; trimming is not performed implicitly. Empty names are invalid. Two active symbols with the same normalized name produce `DUPLICATE_SYMBOL_NAME`. Renaming changes display metadata only and preserves `symbolId`.
 
 The initializer of a `declareLocal` statement is evaluated in the environment immediately before the declaration. The new local becomes visible only after its initializer succeeds. A failed initializer does not create a binding. A local assignment may update only an already-visible local or document symbol; it never creates a new binding. The declaration's lexical block is the visibility boundary. An `if` branch has its own child scope; an inner block can capture a visible outer local. A local declared in one branch is invisible in the other branch and after the `if`. A `while` body receives a fresh child scope per iteration.
 
