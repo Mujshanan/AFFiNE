@@ -54,30 +54,48 @@ If scalar-only is approved, reserved vector/matrix constructs must be rejected w
 
 No universal engineering tolerance is proposed. Tolerances must be explicit per operation or domain-specific validation rule.
 
-### A4 — Variable identity and reassignment (F3)
+### A4 — Variable identity, reassignment, and block-local scope (F3)
 
-**Recommendation:** Definitions are immutable within a document revision. Each symbol has a stable symbolId; display name is not identity. Inputs and calculated definitions are distinct definition kinds in one document-level namespace. Editing a value or definition creates a new document revision. Defer sequential assignment/reassignment semantics from v1.
+<badge color="success">Owner decision resolved</badge>
 
-**Approval needed:** prohibit sequential reassignment in v1; use one shared document-level symbol namespace; treat duplicate active display names as errors; exclude page/section-local scopes from v1.
+**Accepted decision:** Khwarizmi v1 supports sequential reassignment of document-level variables. A variable has a stable identity; each assignment to it is a separately tracked event/version owned by the calculation engine. Evaluation is ordered: each expression reads the latest preceding assignment that is visible in its scope.
 
-Proposed invariants:
-- Each active symbolId has exactly one active definition.
-- References resolve by symbolId, never by display name.
-- Duplicate active names produce DUPLICATE_SYMBOL_NAME.
-- Changes to authored definitions invalidate affected evaluation snapshots.
-- Cycles are semantic errors, not resolved through incidental execution order.
+**Document-level namespace**
+- One shared document-level namespace applies across all pages and sections.
+- A document-level variable keeps the same identity when reassigned.
+- Each assignment records its source location/order, authored expression, evaluated value, dependencies, and evaluation status.
+- A later assignment changes the value visible to subsequent expressions; it does not rewrite the historical result of earlier evaluations.
+- Duplicate document-level variable declarations are naming conflicts, not separate variables with the same name.
 
-**Team may decide:** symbol ID format, name normalization, diagnostic ordering, and dependency graph implementation.
+**Local variables and control-flow blocks**
+- Local variables are supported inside `if` and `while` blocks.
+- Use lexical block scope, including access to permitted enclosing local scopes from nested blocks.
+- Local variables may be reassigned within their scope.
+- A local variable must not shadow a document-level variable or another visible local variable; reject such conflicts in v1.
+- A local variable declared in a block is not visible outside that block.
+- The engine records conditional branch selection, loop iteration order, and every assignment/evaluation performed within executed blocks.
+
+**Required semantic invariants**
+- Variable identity is distinct from assignment identity/version.
+- References resolve to a statically determined variable identity and then to the latest preceding visible assignment at evaluation time.
+- Reassignment invalidates/recomputes affected subsequent evaluations while retaining prior evaluation history.
+- Each evaluation snapshot identifies the assignment versions and control-flow path used to produce it.
+- Loop execution must have defined iteration and termination semantics; execution/resource limits must prevent unbounded evaluation.
+- Cycles in the dependency graph outside explicit control-flow semantics are errors; ordinary sequential reassignment is not treated as a dependency cycle.
+
+**Team may decide:** symbol and assignment ID formats, name normalization, precise source-order rules, nested-scope representation, dependency/invalidation algorithms, loop execution limits, history storage, and diagnostic ordering, provided these decisions preserve the accepted behavior above.
 
 ### A5 — Expression grammar and initial function surface (F4)
 
-**Recommendation:** Keep v1 grammar deliberately small: numeric literals, symbol references, unary plus/minus, addition, subtraction, multiplication, division, power, explicit grouping, allowlisted function calls, and explicit unit attachment.
+**Accepted direction with amendment:** Keep the arithmetic expression grammar deliberately small: numeric literals, symbol references, unary plus/minus, addition, subtraction, multiplication, division, power, explicit grouping, allowlisted function calls, and explicit unit attachment. Permit implicit multiplication only where parsing is unambiguous, then normalize it to explicit multiplication in the canonical AST. Reject ambiguous expressions with a stable diagnostic; never guess.
+
+The language must also represent the already-required `if` and `while` control-flow blocks, including their conditions and block bodies, because A4 accepts local variables and tracked assignments inside those blocks. Their condition grammar, execution order, nesting, and termination/resource rules must be specified and tested as part of the v1 language contract. This is a deliberate amendment to the earlier proposal to exclude conditionals.
 
 Do not derive executable meaning from LaTeX, editor strings, or display formatting. Unsupported syntax must not be silently rewritten.
 
-**Approval needed:** exclude implicit multiplication from canonical AST input (normalization may occur at import only when unambiguous); exclude comparisons, booleans, conditionals, vectors/matrices, and user-defined functions; limit built-ins to a reviewed mathematical core.
+**Owner-approved boundary:** proposed arithmetic grammar, with unambiguous implicit multiplication normalized to explicit multiplication; `if` and `while` are included as required control-flow constructs. Vectors/matrices and user-defined functions remain outside the accepted v1 scope unless separately approved.
 
-**Team may decide:** precedence and associativity table, grammar notation, parser implementation, function identifiers, arity rules, and stable unsupported-syntax codes.
+**Team may decide:** precedence and associativity table, grammar notation, parser implementation, exact comparison/boolean operators needed by conditions, function identifiers, arity rules, block syntax, and stable unsupported-syntax codes.
 
 ### A6 — Unit semantics and registry (F5)
 
@@ -194,7 +212,7 @@ PR #3 must deliver levels 1 and 2. Level 3 may be deferred with an explicit road
 |---|---|---|---|
 | F1 Revision identity | T1 | Team | Revision and snapshot invalidation fixtures |
 | F2 Numeric representation | A3 | Owner + team | Decimal, rational, and approximation fixtures |
-| F3 Variable semantics | A4 | Owner + team | Duplicate, redefinition, resolution, and cycle fixtures |
+| F3 Variable semantics | A4 | Owner + team | Sequential reassignment, stable identity, lexical local scope, shadowing rejection, control-flow and history fixtures |
 | F4 Expression grammar | A5 | Owner + team | Precedence and unsupported syntax fixtures |
 | F5 Unit semantics | A6 | Owner + team | Dimension, conversion, angle, and unsupported-unit fixtures |
 | F6 Geometry/layout | A1 + T4 | Owner + team | Geometry/layout schemas and fixtures |
@@ -238,8 +256,8 @@ Do not implement the production calculation host, Python worker, or new workshee
 - [ ] A1 Page geometry and page-size model.
 - [ ] A2 Scalar-only versus structured values.
 - [ ] A3 Numeric representation and approximation policy.
-- [ ] A4 Symbol namespace and reassignment policy.
-- [ ] A5 v1 grammar and function-surface boundaries.
+- [x] A4 Document namespace, sequential reassignment, tracked assignment history, lexical block-local variables, and no-shadowing rule.
+- [x] A5 Arithmetic grammar and unambiguous implicit multiplication approved with amendment; if/while control-flow constructs included. Team must specify and test condition grammar and execution limits.
 - [ ] A6 Unit registry, angle, temperature, and custom-unit scope.
 - [ ] A7 Fixed/configurable RPC payload limit and behavior policy.
 - [ ] A8 Named-pipe trust model.
