@@ -4,16 +4,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
-import { utils } from '@electron-forge/core';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 
-import {
-  iconUrl,
-  icoPath,
-  productName,
-} from './scripts/make-env.js';
-
-const fromBuildIdentifier = utils.fromBuildIdentifier;
+import { buildType, iconUrl, icoPath, productName } from './scripts/make-env.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -124,6 +117,7 @@ const makers = [
     name: '@electron-forge/maker-squirrel',
     config: {
       name: productName,
+      platforms: ['win32'],
       setupIcon: icoPath,
       iconUrl,
       loadingGif: './resources/icons/affine_installing.gif',
