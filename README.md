@@ -14,7 +14,7 @@ Khwarizmi is an open-source project exploring a Mathcad-style worksheet for engi
 
 ## Project status
 
-<badge>Early development</badge>
+**Status: Early development**
 
 Khwarizmi is being developed from the AFFiNE codebase, with BlockSuite retained as the editor foundation. The repository is currently in the foundation and desktop-isolation stage. The Windows x64 desktop packaging work is being separated from the upstream cross-platform release system.
 
