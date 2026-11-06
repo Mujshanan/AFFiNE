@@ -71,7 +71,7 @@ TypeScript owns the quantity and unit model. A quantity is a magnitude plus a no
 - Temperature arithmetic is unsupported in v1 and must be rejected with a stable diagnostic.
 - Unknown units, invalid prefixes, and incompatible dimensions are validation/evaluation errors.
 
-Python numerical services are deferred from v1. TypeScript owns numeric evaluation, unit conversion, symbol resolution, and result normalization. Any future worker requires a separate ADR and remains subordinate to the TypeScript contract.
+Python numerical services are deferred from v1. TypeScript owns worksheet semantics, symbol resolution, unit conversion policy, evaluation orchestration, and result normalization. Compute Engine performs the mathematical symbolic/numeric operations through the adapter. Any future worker requires a separate ADR and remains subordinate to the TypeScript contract.
 
 ## 7. Numerical policy
 
@@ -110,15 +110,16 @@ Owner decisions ADR-010 through ADR-018 remain normative: scalar-only values; ex
 
 The following sections close the semantic definitions for v1. Executable validators and conformance tests remain a separate implementation phase.
 
-## 13. Final v1 grammar and execution rules
+## 11. Final v1 grammar and execution rules
 
 The machine-readable MathJSON profile is `contracts/schemas/v1/mathjson-profile.schema.json`. It is a closed allowlist, not an extensible function registry. V1 built-ins are:
 
 | Function | Arity | Domain / result |
 |---|---:|---|
-| `sqrt`, `abs`, `exp`, `ln`, `log10` | 1 | Real scalar; domain errors are diagnosed |
-| `sin`, `cos`, `tan` | 1 | Angle input only |
-| `asin`, `acos`, `atan` | 1 | Dimensionless input; angle output |
+| `Sqrt`, `Abs`, `Exp`, `Ln`, `Lg` | 1 | Real scalar; domain errors are diagnosed |
+| `Log` | 1 or 2 | Base-10 logarithm by default; optional explicit base |
+| `Sin`, `Cos`, `Tan` | 1 | Angle input only |
+| `Arcsin`, `Arccos`, `Arctan` | 1 | Dimensionless input; angle output |
 | `+`, `-`, `*`, `/`, `^` | 2 (unary sign 1) | Scalar arithmetic |
 | comparisons | 2 | Compatible scalar dimensions |
 | `and`, `or`, `not` | 2+, 1 | Boolean conditions |
@@ -133,18 +134,18 @@ The statement schema is a discriminated union: `assign`, `declareLocal`, `if`, `
 
 Resource limits are fixed for semantic v1: control-flow nesting 32; 10,000 iterations per loop; 100,000 aggregate loop iterations per document evaluation; expression depth 256; expression nodes 100,000; diagnostics 10,000. A limit violation emits `RESOURCE_LIMIT_EXCEEDED` and stops the affected control-flow path safely.
 
-## 14. Numeric and unit wire policy
+## 12. Numeric and unit wire policy
 
-The wire scalar schema is `contracts/schemas/v1/numeric-value.schema.json`; the initial immutable unit registry is `contracts/schemas/v1/unit-registry.v1.json`. Exact decimals are canonical base-10 strings; exact rationals are reduced numerator/positive-denominator strings; approximate values include a decimal/scientific string, significant-digit precision, and method tag. Default approximate precision is 34 significant decimal digits; supported precision ceiling is 1,000 digits. The display rounding mode is round-half-even and never mutates stored values.
+The wire scalar schema is `contracts/schemas/v1/numeric-value.schema.json`; the initial immutable unit registry is `contracts/schemas/v1/unit-registry.v1.json`. MathJSON exact decimal literals use the standard `{\"num\":\"...\"}` number object, and exact rationals use the `Rational` head with integer MathJSON number operands. The original lexeme and A3 representation tag remain in `authoredNumbers`. Wire result scalars use canonical base-10 strings for exact decimals, reduced numerator/positive-denominator strings for exact rationals, and decimal/scientific strings plus precision/method for approximate values. Default approximate precision is 34 significant decimal digits; supported precision ceiling is 1,000 digits. The display rounding mode is round-half-even and never mutates stored values.
 
-The registry stores exact rational scale factors to canonical base units. Angle degrees use a `piRational` scale (π/180), not a binary floating-point approximation. The selected Compute Engine adapter must preserve this representation or perform a tagged approximation with precision metadata. It may not silently coerce a unit scale to JavaScript `number`.
+The registry stores exact rational scale factors to canonical base units. Angle degrees use a `piRational` scale (π/180), not a binary floating-point approximation. The selected Compute Engine adapter must preserve this representation or perform a tagged approximation with precision metadata. It may not silently coerce a unit scale to JavaScript `number`. Configure the engine for arbitrary-precision numeric mode and the requested precision. Do not use `BoxedExpression.json` as a persistence path for high-precision values because its shorthand serialization may convert numbers to JavaScript numbers; use the precision-preserving MathJSON serialization API and test round trips.
 
 The v1 registry includes length, mass, time, force, pressure, energy, power, and angle units used in engineering worksheets. Derived-unit dimensions use rational exponents. Absolute temperature, temperature differences, affine conversions, and custom units remain rejected with `UNSUPPORTED_UNIT_KIND`.
 
-## 15. Stable diagnostic registry
+## 13. Stable diagnostic registry
 
 The normative code inventory is `contracts/schemas/v1/diagnostic-codes.json`. Diagnostic ordering is deterministic: execution ordinal, source-map path, then code. Consumers branch on code only. Validation failures prevent evaluation; evaluation failures may allow independent later statements to continue. A failed assignment is not visible to later reads, which instead receive `DEPENDENCY_FAILED`.
 
-## 16. Contract completion boundary
+## 14. Contract completion boundary
 
 The semantic rules, JSON Schemas, diagnostic inventory, unit registry, and language-neutral seed fixtures are now published under `contracts/schemas/v1` and `contracts/fixtures/v1`. JSON Schema validation is necessary but not sufficient: semantic validation must check binding uniqueness, complete calculation order, declaration visibility, no-shadowing, exact assignment-version resolution, MathJSON path provenance, dimensional compatibility, unit-registry membership, and resource limits. Executable TypeScript validators and CI conformance tests are a separate implementation phase; they are not part of this contract-definition deliverable.
