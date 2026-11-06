@@ -7,9 +7,11 @@
 
 `Renderer → allowlisted preload API → Electron main → named-pipe client → TypeScript calculation host`
 
-An optional Python worker may be invoked by the TypeScript host for specialized numerical routines:
+A Python worker is deferred from v1. The v1 process topology is:
 
-`TypeScript host → controlled worker adapter → Python worker`
+`Renderer → allowlisted preload API → Electron main → named-pipe client → TypeScript calculation host`
+
+A future Python worker, if separately approved, remains internal to the TypeScript host.
 
 - Renderer never opens a named pipe, launches a process, or chooses an executable path.
 - Preload exposes a small allowlist of typed operations only.
