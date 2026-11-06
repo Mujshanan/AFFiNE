@@ -124,6 +124,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
   const registryVersion = typeof registry?.version === 'string' ? registry.version : undefined;
   const hasUnitRegistry = registry !== undefined;
   const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
+  if (registryVersion && document.unitRegistryVersion !== registryVersion) diagnostics.push({ code: 'UNIT_REGISTRY_VERSION_MISMATCH', message: 'Document unitRegistryVersion does not match the selected registry' });
   const documentSymbolIds = new Set<string>();
   const documentNames = new Map<string, string>();
 
