@@ -106,7 +106,7 @@ interface Scope {
   symbols: Map<string, string>;
 }
 
-export function validateCalculationSemantics(document: JsonValue | unknown): SemanticValidationResult {
+export function validateCalculationSemantics(document: JsonValue | unknown, options: { unitRegistry?: unknown } = {}): SemanticValidationResult {
   const diagnostics: SemanticIssue[] = [];
   if (!isRecord(document)) {
     return { valid: false, diagnostics: [{ code: 'INVALID_DOCUMENT', message: 'Calculation document must be an object' }] };
@@ -114,6 +114,9 @@ export function validateCalculationSemantics(document: JsonValue | unknown): Sem
 
   const symbols = Array.isArray(document.symbols) ? document.symbols : [];
   const pages = Array.isArray(document.pages) ? document.pages : [];
+  const registry = isRecord(options.unitRegistry) ? options.unitRegistry : undefined;
+  const registryVersion = typeof registry?.version === 'string' ? registry.version : undefined;
+  const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
   const documentSymbolIds = new Set<string>();
   const documentNames = new Map<string, string>();
 
@@ -122,6 +125,12 @@ export function validateCalculationSemantics(document: JsonValue | unknown): Sem
     if (typeof symbol.symbolId === 'string') {
       if (documentSymbolIds.has(symbol.symbolId)) diagnostics.push({ code: 'DUPLICATE_SYMBOL_ID', message: 'Document symbol IDs must be unique', symbolId: symbol.symbolId });
       documentSymbolIds.add(symbol.symbolId);
+    }
+    if (isRecord(symbol.unit)) {
+      const unitId = symbol.unit.unitId;
+      if (unitId === 'unit.celsius' || unitId === 'unit.fahrenheit') diagnostics.push({ code: 'UNSUPPORTED_UNIT_KIND', message: 'Affine temperature units are not supported in v1', symbolId: symbol.symbolId });
+      else if (typeof unitId === 'string' && unitIds.size > 0 && !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Symbol refers to a unit absent from the selected registry', symbolId: symbol.symbolId });
+      if (registryVersion && symbol.unit.registryVersion !== registryVersion) diagnostics.push({ code: 'UNIT_REGISTRY_VERSION_MISMATCH', message: 'Symbol unit metadata uses a different registry version', symbolId: symbol.symbolId });
     }
     if (typeof symbol.displayName === 'string' && typeof symbol.normalizedName === 'string') {
       const normalized = normalizeName(symbol.displayName);
@@ -230,5 +239,94 @@ export function validateCalculationSemantics(document: JsonValue | unknown): Sem
     if (statement) visitStatements([statement], rootScope, false);
   }
 
+  const inspectUnits = (value: unknown) => {
+    if (Array.isArray(value)) { value.forEach(inspectUnits); return; }
+    if (!isRecord(value)) return;
+    if (Array.isArray(value.unitAttachments)) {
+      for (const attachment of value.unitAttachments) {
+        if (!isRecord(attachment) || typeof attachment.unitId !== 'string') continue;
+        if (attachment.unitId === 'unit.celsius' || attachment.unitId === 'unit.fahrenheit') diagnostics.push({ code: 'UNSUPPORTED_UNIT_KIND', message: 'Affine temperature units are not supported in v1', path: attachment.path });
+        else if (unitIds.size > 0 && !unitIds.has(attachment.unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Expression refers to a unit absent from the selected registry', path: attachment.path });
+      }
+    }
+    Object.values(value).forEach(inspectUnits);
+  };
+  inspectUnits(document);
+
+  return { valid: diagnostics.length === 0, diagnostics };
+}
+
+export function validateDependencyGraph(graph: unknown): SemanticValidationResult {
+  const diagnostics: SemanticIssue[] = [];
+  if (!Array.isArray(graph)) return { valid: false, diagnostics: [{ code: 'INVALID_DEPENDENCY_GRAPH', message: 'Dependency graph must be an array' }] };
+  const edges = new Map<string, string[]>();
+  for (const edge of graph) {
+    if (!isRecord(edge) || typeof edge.from !== 'string' || typeof edge.to !== 'string') {
+      diagnostics.push({ code: 'INVALID_DEPENDENCY_GRAPH', message: 'Every dependency edge requires string from and to IDs' });
+      continue;
+    }
+    const targets = edges.get(edge.from) ?? [];
+    targets.push(edge.to);
+    edges.set(edge.from, targets);
+  }
+  const visiting = new Set<string>();
+  const visited = new Set<string>();
+  const visit = (node: string): boolean => {
+    if (visiting.has(node)) return true;
+    if (visited.has(node)) return false;
+    visiting.add(node);
+    for (const target of edges.get(node) ?? []) if (visit(target)) return true;
+    visiting.delete(node);
+    visited.add(node);
+    return false;
+  };
+  for (const node of edges.keys()) {
+    if (visit(node)) {
+      diagnostics.push({ code: 'DEPENDENCY_CYCLE', message: 'Persisted dependency graph contains a cycle' });
+      break;
+    }
+  }
+  return { valid: diagnostics.length === 0, diagnostics };
+}
+
+export function validateUnitRegistrySemantics(registry: unknown): SemanticValidationResult {
+  const diagnostics: SemanticIssue[] = [];
+  if (!isRecord(registry) || !Array.isArray(registry.units) || !Array.isArray(registry.prefixes) || !Array.isArray(registry.prefixableUnitIds)) {
+    return { valid: false, diagnostics: [{ code: 'INVALID_UNIT_REGISTRY', message: 'Unit registry is missing required collections' }] };
+  }
+  const unitIds = new Set<string>();
+  const unitSymbols = new Set<string>();
+  for (const unit of registry.units) {
+    if (!isRecord(unit) || typeof unit.unitId !== 'string' || typeof unit.symbol !== 'string') continue;
+    if (unitIds.has(unit.unitId)) diagnostics.push({ code: 'DUPLICATE_UNIT_ID', message: 'Unit IDs must be unique' });
+    if (unitSymbols.has(unit.symbol)) diagnostics.push({ code: 'DUPLICATE_UNIT_SYMBOL', message: 'Unit symbols must be unique' });
+    unitIds.add(unit.unitId);
+    unitSymbols.add(unit.symbol);
+    if (isRecord(unit.scale)) {
+      const numerator = BigInt(String(unit.scale.numerator ?? '0'));
+      const denominator = BigInt(String(unit.scale.denominator ?? '0'));
+      if (numerator <= 0n || denominator <= 0n) diagnostics.push({ code: 'INVALID_UNIT_SCALE', message: 'Unit scale numerator and denominator must be positive' });
+    }
+    if (Array.isArray(unit.dimension)) {
+      const bases = unit.dimension.filter(isRecord).map(item => item.base);
+      if (new Set(bases).size !== bases.length) diagnostics.push({ code: 'INVALID_UNIT_DIMENSION', message: 'Dimension bases must not repeat' });
+      if (bases.some((base, index) => typeof base !== 'string' || (index > 0 && String(bases[index - 1]) >= base))) diagnostics.push({ code: 'INVALID_UNIT_DIMENSION', message: 'Dimension bases must be sorted by identifier' });
+      for (const item of unit.dimension.filter(isRecord)) {
+        const numerator = BigInt(String(item.numerator ?? '0'));
+        const denominator = BigInt(String(item.denominator ?? '0'));
+        if (denominator <= 0n || numerator === 0n) diagnostics.push({ code: 'INVALID_UNIT_DIMENSION', message: 'Dimension exponents must be non-zero reduced rationals with positive denominators' });
+      }
+    }
+  }
+  const prefixIds = new Set<string>();
+  for (const prefix of registry.prefixes) {
+    if (!isRecord(prefix) || typeof prefix.prefixId !== 'string') continue;
+    if (prefixIds.has(prefix.prefixId)) diagnostics.push({ code: 'DUPLICATE_PREFIX_ID', message: 'Prefix IDs must be unique' });
+    prefixIds.add(prefix.prefixId);
+    if (BigInt(String(prefix.scaleNumerator ?? '0')) <= 0n || BigInt(String(prefix.scaleDenominator ?? '0')) <= 0n) diagnostics.push({ code: 'INVALID_PREFIX_SCALE', message: 'Prefix scale must be a positive rational' });
+  }
+  for (const unitId of registry.prefixableUnitIds) {
+    if (typeof unitId !== 'string' || !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_PREFIXABLE_UNIT', message: 'Prefixable unit ID must exist in the registry' });
+  }
   return { valid: diagnostics.length === 0, diagnostics };
 }
