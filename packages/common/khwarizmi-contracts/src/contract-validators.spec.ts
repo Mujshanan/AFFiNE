@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   validateCalculationSemantics,
-  validateDependencyGraph,
+  validateDependencyGraph,\n  validateDiagnosticCodeMembership,\n  validateDiagnosticRegistrySemantics,
   validateJsonSchema,
   validateSchemaBundle,
   validateUnitReference,
@@ -37,7 +37,7 @@ const schemaFiles = [
 ];
 const schemaBundle = Object.fromEntries(schemaFiles.map(path => [repositoryPath(path), readJson(path)]));
 const manifest = readJson(resolve(fixtureRoot, 'manifest.json'));
-const unitRegistry = readJson(resolve(schemaRoot, 'unit-registry.v1.json'));
+const unitRegistry = readJson(resolve(schemaRoot, 'unit-registry.v1.json'));\nconst diagnosticRegistry = readJson(resolve(schemaRoot, 'diagnostic-codes.json'));
 
 describe('Khwarizmi v1 contract schemas', () => {
   it('resolves every schema reference and rejects unsupported schema keywords', () => {
@@ -58,7 +58,15 @@ describe('Khwarizmi v1 contract schemas', () => {
     expect(validateUnitRegistrySemantics(unitRegistry).diagnostics).toEqual([]);
   });
 
-  it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
+
+  it('validates the diagnostic registry and every fixture diagnostic code', () => {
+    const schema = validateJsonSchema(diagnosticRegistry, 'contracts/schemas/v1/diagnostic-registry.schema.json', schemaBundle);
+    expect(schema.errors).toEqual([]);
+    expect(validateDiagnosticRegistrySemantics(diagnosticRegistry).diagnostics).toEqual([]);
+    const fixtureCodes = manifest.fixtures.map((fixture: any) => fixture.diagnostic).filter((code: unknown): code is string => typeof code === 'string');
+    expect(validateDiagnosticCodeMembership(fixtureCodes, diagnosticRegistry).diagnostics).toEqual([]);
+  });
+\n  it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
     const profile = 'contracts/schemas/v1/mathjson-profile.schema.json';
     for (const expression of [['Rational', 1], ['Sin', 1, 2], ['Log']]) {
       expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(false);
