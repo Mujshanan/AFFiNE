@@ -77,7 +77,9 @@ async function make() {
     );
 
     if (output.length === 0) {
-      throw new Error('NSIS packaging completed without producing an installer.');
+      throw new Error(
+        'NSIS packaging completed without producing an installer.'
+      );
     }
 
     log('making nsis.windows done:', output);
