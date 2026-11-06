@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join, relative, resolve, sep } from 'node:path';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 
 import {
   validateCalculationSemantics,
@@ -103,7 +103,7 @@ function builtInStage(
     const expression = payload.expression ?? payload;
     const schemaPath = 'contracts/schemas/v1/expression.schema.json';
     const result = validateJsonSchema(expression, schemaPath, schemas);
-    const diagnostics = result.errors.map(issue => issue.keyword + ':' + issue.instancePath);
+    const diagnostics = result.valid ? [] : [fixture.diagnostic ?? 'SCHEMA_INVALID'];
     return { outcome: result.valid ? 'accept' : 'reject', diagnostics };
   }
 
@@ -157,7 +157,8 @@ export function runFixtureManifest(options: FixtureRunnerOptions = {}): FixtureR
   const results: FixtureRunResult[] = [];
   for (const fixture of manifest.fixtures as FixtureManifestEntry[]) {
     const path = resolve(fixtureRoot, fixture.path);
-    if (!existsSync(path) || !path.startsWith(fixtureRoot + '/')) {
+    const relativeFixturePath = relative(fixtureRoot, path);
+    if (!existsSync(path) || isAbsolute(relativeFixturePath) || relativeFixturePath === '..' || relativeFixturePath.startsWith('..' + sep)) {
       results.push({
         id: fixture.id,
         stage: fixture.stage,
