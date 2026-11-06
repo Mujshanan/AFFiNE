@@ -259,18 +259,18 @@ export function validateSchemaBundle(bundle: SchemaBundle): SchemaValidationResu
     }
     return children;
   };
-  const visit = (node: unknown, path: string, seen: Set<object>) => {
+  const visit = (node: unknown, schemaPath: string, filePath: string, seen: Set<object>) => {
     if (typeof node === 'boolean') return;
     if (!isObject(node) || seen.has(node)) return;
     seen.add(node);
     for (const keyword of Object.keys(node)) {
-      if (!supported.has(keyword)) errors.push({ instancePath: '', schemaPath: path + '/' + keyword, keyword, message: 'Unsupported schema keyword in Khwarizmi validator bundle' });
+      if (!supported.has(keyword)) errors.push({ instancePath: '', schemaPath: schemaPath + '/' + keyword, keyword, message: 'Unsupported schema keyword in Khwarizmi validator bundle' });
     }
-    if (typeof node.$ref === 'string' && !resolveReference(node.$ref, path.split('/').slice(0, -1).join('/'), bundle)) {
-      errors.push({ instancePath: '', schemaPath: path + '/$ref', keyword: '$ref', message: 'Unresolved schema reference: ' + node.$ref });
+    if (typeof node.$ref === 'string' && !resolveReference(node.$ref, filePath, bundle)) {
+      errors.push({ instancePath: '', schemaPath: schemaPath + '/$ref', keyword: '$ref', message: 'Unresolved schema reference: ' + node.$ref });
     }
-    for (const [index, child] of schemaChildren(node).entries()) visit(child, path + '/child-' + index, seen);
+    for (const [index, child] of schemaChildren(node).entries()) visit(child, schemaPath + '/child-' + index, filePath, seen);
   };
-  for (const [path, schema] of Object.entries(bundle)) visit(schema, path, new Set<object>());
+  for (const [path, schema] of Object.entries(bundle)) visit(schema, path, path, new Set<object>());
   return { valid: errors.length === 0, errors };
 }
