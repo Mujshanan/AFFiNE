@@ -133,3 +133,13 @@ The phase is complete only when:
 - CI runs the contract suite on every relevant change.
 
 No editor-wide implementation or production calculation-host implementation should begin before these exit criteria are met.
+
+## 10. Published v1 semantic fixture inventory
+
+The authoritative fixture manifest is `contracts/fixtures/v1/manifest.json`. It covers scalar expression acceptance and vector rejection; sequential reassignment snapshots; no-shadowing and local-scope leakage; failed assignment propagation; branch selection; loop resource limits; substitution provenance; exact decimal/rational and tagged approximate values; compatible-unit conversion and dimensional mismatch; temperature rejection; valid and invalid document-evaluation digests; and cancellation notification shape.
+
+The schemas and fixtures are language-neutral. A validator must load fixture files by manifest path, reject duplicate fixture IDs, validate each file against its schema, and then run semantic assertions. Expected outcomes are not embedded in the implementation under test.
+
+## 11. Remaining implementation conformance
+
+This contract-definition pass does not claim that TypeScript validators, Compute Engine adapter tests, transport tests, or CI jobs already exist. The next phase must implement schema resolution (including relative references), the MathJSON profile validator, worksheet semantic validator, numeric/unit codecs, deterministic diagnostic sorting, fixture runner, and RPC framing tests. Only after those tests pass may the semantic contract be marked implementation-conformant.
