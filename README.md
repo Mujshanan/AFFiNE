@@ -4,7 +4,9 @@
 
 Khwarizmi Studio aims to bring engineering mathematics, calculation workflows, and design documentation into one visual, editable environment. It is being developed for structural engineers who need more than a calculator or a conventional word processor: they need to show the assumptions, inputs, equations, substitutions, intermediate steps, checks, and final results that support an engineering decision.
 
-> **Project status:** Early development. Khwarizmi Studio is being shaped from an existing open-source workspace foundation. The product description below sets out the intended direction; it is not a claim that every capability is already implemented.
+> **Project status:** Early development. Khwarizmi Studio is an engineering-focused adaptation **based on AFFiNE**. AFFiNE provides the inherited application foundation, while BlockSuite provides the editor foundation. The product description below sets out the intended direction; it is not a claim that every capability is already implemented.
+
+<p align="center"><img src="assets/khwarizmi-social-preview.svg" alt="Khwarizmi Studio — visual engineering calculation workspace based on AFFiNE" width="100%" /></p>
 
 ## Why Khwarizmi?
 
@@ -99,7 +101,7 @@ Any future implementation of design standards must identify the applicable stand
 
 ## Repository foundation and acknowledgements
 
-Khwarizmi Studio builds on the open-source [AFFiNE](https://github.com/toeverything/AFFiNE) project and its editor ecosystem, including [BlockSuite](https://github.com/toeverything/BlockSuite).
+Khwarizmi Studio is **based on the open-source [AFFiNE](https://github.com/toeverything/AFFiNE) repository**. It reuses AFFiNE as its application foundation and [BlockSuite](https://github.com/toeverything/BlockSuite) as its editor foundation; Khwarizmi's engineering worksheet model and calculation behavior are intended to be developed as project-owned layers.
 
 We are grateful to the AFFiNE and BlockSuite maintainers and contributors for the work that makes this foundation possible. Khwarizmi will adapt that foundation for engineering calculation worksheets and technical documentation.
 
