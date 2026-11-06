@@ -1,5 +1,3 @@
-import type { JsonValue } from './json-schema.js';
-
 export interface SemanticIssue {
   code: string;
   message: string;
@@ -112,7 +110,7 @@ interface Scope {
   symbols: Map<string, string>;
 }
 
-export function validateCalculationSemantics(document: JsonValue | unknown, options: { unitRegistry?: unknown } = {}): SemanticValidationResult {
+export function validateCalculationSemantics(document: unknown, options: { unitRegistry?: unknown } = {}): SemanticValidationResult {
   const diagnostics: SemanticIssue[] = [];
   if (!isRecord(document)) {
     return { valid: false, diagnostics: [{ code: 'INVALID_DOCUMENT', message: 'Calculation document must be an object' }] };
