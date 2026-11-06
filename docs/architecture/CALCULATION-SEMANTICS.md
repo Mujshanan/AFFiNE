@@ -1,6 +1,6 @@
 # Expression and calculation semantics
 
-**Status:** v1 semantic proposal  
+**Status:** v1 semantic contract — normative  
 **Authority:** TypeScript Khwarizmi Core
 
 ## 1. Canonical expression model
