@@ -42,7 +42,7 @@ The evaluator MUST:
 8. enforce deterministic loop, recursion/nesting, time, and resource limits;
 9. emit an evaluation record and human-readable substitution trace for each executed statement.
 
-A sequential reassignment such as `a = a + 1` is valid because the right-hand side reads the preceding assignment version and the left-hand side creates the next version. This is not a dependency cycle. A true cyclic dependency that cannot be resolved by source order/control-flow semantics is an error.
+A sequential reassignment such as `a = a + 1` is valid because the right-hand side reads the preceding assignment version and the left-hand side creates the next version. This is not a dependency cycle. Because every read resolves only to a preceding successful assignment event, a valid v1 execution graph is acyclic by construction. A read before the first assignment is `UNRESOLVED_SYMBOL`, not a cycle. `DEPENDENCY_CYCLE` is reserved for a corrupt persisted dependency snapshot or an internal graph invariant violation; every dependency edge must point to a lower execution ordinal.
 
 Independent calculations may be scheduled in parallel only when doing so preserves explicit execution order and deterministic results. Page/region visual reordering MUST NOT silently reorder the calculation sequence.
 
@@ -124,13 +124,13 @@ The machine-readable MathJSON profile is `contracts/schemas/v1/mathjson-profile.
 | comparisons | 2 | Compatible scalar dimensions |
 | `and`, `or`, `not` | 2+, 1 | Boolean conditions |
 
-No function aliases, user-defined functions, lambdas, symbolic integration/differentiation, complex arithmetic, or implicit vectorization are in v1. The parser MUST canonicalize aliases before producing MathJSON. A function name that is not in this table is `UNSUPPORTED_FUNCTION`; wrong arity is `INVALID_FUNCTION_ARITY`.
+MathJSON boolean conditions use the standard symbols `True` and `False`; JSON booleans are not evaluator condition atoms. Unary plus is normalized away. No function aliases, user-defined functions, lambdas, symbolic integration/differentiation, complex arithmetic, or implicit vectorization are in v1. The parser MUST canonicalize aliases before producing MathJSON. A function name that is not in this table is `UNSUPPORTED_FUNCTION`; wrong arity is `INVALID_FUNCTION_ARITY`.
 
 The precedence table in section 3 is normative. Comparisons are non-associative. `-x^2` means `-(x^2)`; exponentiation is right-associative. Implicit multiplication is accepted only where tokenization has one parse; `2x`, `2(x+1)`, and `(a)(b)` may normalize to Multiply when no identifier/function ambiguity exists. `ab` is one identifier, not automatically `a*b`. A symbol followed by parentheses is a function call only if the name is in the function allowlist; otherwise it is ambiguous and rejected.
 
 A calculation document declares document-level symbols in `symbols`, places statements in page blocks, and supplies `calculationOrder` as an ordered list of every top-level statement ID exactly once. Nested branch/loop statements are ordered by their array position and MUST NOT appear in the top-level order list. IDs are unique across the complete document, including nested statements. Reordering pages or visual blocks does not change calculation order.
 
-The statement schema is a discriminated union: `assign`, `declareLocal`, `if`, `while`, and `expression`. `declareLocal` creates a local binding at that point; assignment never implicitly declares a local. An assignment target must identify an existing document symbol or a visible local. A document symbol's first successful assignment creates version 1; each later successful execution creates the next version. A failed assignment does not increment the version.
+The statement schema is a discriminated union: `assign`, `declareLocal`, `if`, `while`, and `expression`. `if` and `while` conditions are separate condition-expression records with their own MathJSON, stable symbol bindings, authored-number metadata, and source maps; they are not bare strings or raw arrays. `declareLocal` creates a local binding at that point; assignment never implicitly declares a local. An assignment target must identify an existing document symbol or a visible local. A document symbol's first successful assignment creates version 1; each later successful execution creates the next version. A failed assignment does not increment the version.
 
 Resource limits are fixed for semantic v1: control-flow nesting 32; 10,000 iterations per loop; 100,000 aggregate loop iterations per document evaluation; expression depth 256; expression nodes 100,000; diagnostics 10,000. A limit violation emits `RESOURCE_LIMIT_EXCEEDED` and stops the affected control-flow path safely.
 
