@@ -83,6 +83,7 @@ jobs:
           ./.github/scripts/smoke-test-windows-packages.ps1 -MakeDirectory "packages/frontend/apps/electron/out/canary/make" -ProductName "AFFiNE-canary" -Version "0.27.5"
 
       - name: Upload Windows desktop artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: khwarizmi-windows-x64
