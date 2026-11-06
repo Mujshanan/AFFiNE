@@ -286,8 +286,7 @@ export function validateDependencyGraph(graph: unknown): SemanticValidationResul
 
   const queue = [...nodes].filter(node => (indegree.get(node) ?? 0) === 0);
   let processed = 0;
-  for (let cursor = 0; cursor < queue.length; cursor++) {
-    const node = queue[cursor];
+  for (const node of queue) {
     processed++;
     for (const target of edges.get(node) ?? []) {
       const remaining = (indegree.get(target) ?? 0) - 1;
