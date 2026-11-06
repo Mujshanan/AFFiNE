@@ -8,7 +8,8 @@ This workspace package provides the first executable TypeScript validation layer
 - `validateCalculationSemantics` checks document-wide identity, normalized names, calculation-order completeness, symbol bindings, lexical local visibility/no-shadowing, source-map and authored-number paths, and unit references.
 - `validateDependencyGraph` rejects cycles in persisted dependency snapshots.
 - `validateUnitRegistrySemantics` checks unit/prefix identity, exact positive scales, and canonical dimension vectors.
-- `validateUnitReference` distinguishes unknown units from the v1-rejected affine temperature units.\n- `validateDiagnosticRegistrySemantics` and `validateDiagnosticCodeMembership` enforce the stable diagnostic registry.
+- `validateUnitReference` distinguishes unknown units from the v1-rejected affine temperature units.
+- `validateDiagnosticRegistrySemantics` and `validateDiagnosticCodeMembership` enforce the stable diagnostic registry.
 
 ## Deliberate boundary
 
