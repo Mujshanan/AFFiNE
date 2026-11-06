@@ -68,7 +68,7 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - valid symbol resolution and unresolved symbol diagnostics;
 - duplicate symbol names and stable symbol-ID resolution;
 - deterministic topological evaluation order;
-- dependency cycle detection including self-cycle;
+- dependency graph acyclicity and rejection of corrupt persisted cycles (forward reads are `UNRESOLVED_SYMBOL`);
 - independent-node evaluation order deterministic under input permutation;
 - substitutions preserve units and use resolved values;
 - errors retain source block/node locations.
@@ -82,7 +82,7 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - dimensionless and angle handling;
 - incompatible addition/comparison;
 - unknown unit and invalid prefix;
-- absolute temperature versus temperature difference (if supported);
+- rejection of absolute-temperature and temperature-difference operations with `UNSUPPORTED_UNIT_KIND`;
 - no display rounding fed back into computation.
 
 ## 6. Minimum RPC tests
@@ -101,14 +101,9 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - no batch acceptance;
 - no arbitrary code/path execution through method parameters.
 
-## 7. Python worker tests
+## 7. Deferred Python worker
 
-- supported operation success with typed output;
-- invalid input rejected by TypeScript before dispatch;
-- malformed worker output rejected;
-- timeout and worker termination normalized;
-- Python worker cannot resolve symbols or mutate document state;
-- deterministic result contract for each supported numerical operation.
+No Python worker is part of semantic v1. No Python runtime, worker RPC, or Python conformance tests are required. Any future worker requires a separate accepted ADR and must remain subordinate to the TypeScript calculation host.
 
 ## 8. Test harness requirements
 
