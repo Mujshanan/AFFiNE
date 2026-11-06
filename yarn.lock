@@ -3666,7 +3666,13 @@ __metadata:
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/state": "npm:^6.0.0"
     "@codemirror/view": "npm:^6.17.0"
-    "@lezer/common": "npm:^1.0.0"
+    "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts":
+  version: 0.0.0-use.local
+  resolution: "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts"
+  languageName: unknown
+  linkType: soft
+
+"@lezer/common": "npm:^1.0.0"
   checksum: 10/e57d78bb468d615a1448170370fce4ac04268527ef27dd464fac25b5b8d6d21b997f4dc8744d1d3782c568da32c78c9bbf59c425b248baae2f4f8454ce4b0eea
   languageName: node
   linkType: hard
