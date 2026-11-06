@@ -61,7 +61,7 @@ A block's display style is not its semantic type. A result region cannot redefin
 
 ## 5. Ordering and identity
 
-Page order, region order, and block order are explicit. IDs are immutable once persisted. Reordering changes ordering metadata, not identity. References target stable IDs or explicit symbol IDs, never array indices or display labels.
+Page order, region order, and block order are explicit. Executable statements also carry an explicit document-wide calculation order that is independent of visual page/region placement; moving a block visually MUST NOT change evaluation meaning. IDs are immutable once persisted. Reordering changes ordering metadata, not identity. References target stable IDs or explicit symbol IDs, never array indices or display labels.
 
 ## 6. Persistence and migration
 
