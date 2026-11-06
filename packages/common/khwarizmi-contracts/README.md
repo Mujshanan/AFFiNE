@@ -19,7 +19,7 @@ The package does not yet evaluate mathematical expressions, run the Compute Engi
 
 ## Test coverage
 
-`src/contract-validators.spec.ts` loads the checked-in schema bundle and fixture manifest, validates the manifest and unit registry, validates each fixture at its structural boundary, and checks the expected diagnostics for semantic-validation fixtures. Evaluation-result fixtures are schema-checked only; they are not represented as executed calculations.
+`src/contract-validators.spec.ts` loads the checked-in schema bundle and fixture manifest, validates manifest uniqueness and paths, the diagnostic and unit registries, schema-bearing fixture payloads, and expected diagnostics for semantic-validation fixtures. Authoring-parse and evaluation expectations are not executed by this package; mathematical evaluation remains a separate phase.
 
 Run from the repository root:
 
