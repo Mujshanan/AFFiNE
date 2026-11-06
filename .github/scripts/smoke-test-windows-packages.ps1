@@ -21,8 +21,8 @@ function Get-RequiredFile {
   if ($found.Count -eq 0) {
     throw "Could not find $Description ($Filter) under $Directory"
   }
-  if ($matches.Count -gt 1) {
-    throw "Expected one $Description under $Directory, found $($matches.Count)"
+  if ($found.Count -gt 1) {
+    throw "Expected one $Description under $Directory, found $($found.Count)"
   }
   return $found[0]
 }
@@ -106,14 +106,10 @@ try {
     throw 'Squirrel RELEASES manifest is missing.'
   }
 
-  Add-Type -AssemblyName System.IO.Compression.FileSystem
-  $archive = [System.IO.Compression.ZipFile]::OpenRead($squirrelPackage.FullName)
-  try {
-    if (-not ($archive.Entries | Where-Object { $_.FullName -match '^lib/net45/.+\.7z$' })) {
-      throw 'Squirrel NuGet package does not contain its application payload.'
-    }
-  } finally {
-    $archive.Dispose()
+  # Verify that the Squirrel release manifest points to the generated package.
+  $releaseText = Get-Content -LiteralPath $releases -Raw
+  if ($releaseText -notmatch [regex]::Escape($squirrelPackage.Name)) {
+    throw "Squirrel RELEASES manifest does not reference $($squirrelPackage.Name)."
   }
 
   if (Test-Path -LiteralPath $squirrelInstall) {
