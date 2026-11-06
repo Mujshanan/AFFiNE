@@ -17,6 +17,13 @@ type AnyRecord = Record<string, any>;
 const isRecord = (value: unknown): value is AnyRecord =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const gcd = (left: bigint, right: bigint): bigint => {
+  let a = left < 0n ? -left : left;
+  let b = right < 0n ? -right : right;
+  while (b !== 0n) [a, b] = [b, a % b];
+  return a;
+};
+
 const pointerTokens = (pointer: string): string[] =>
   pointer === '' ? [] : pointer.slice(1).split('/').map(token => token.replace(/~1/g, '/').replace(/~0/g, '~'));
 
@@ -324,7 +331,9 @@ export function validateUnitRegistrySemantics(registry: unknown): SemanticValida
     if (!isRecord(prefix) || typeof prefix.prefixId !== 'string') continue;
     if (prefixIds.has(prefix.prefixId)) diagnostics.push({ code: 'DUPLICATE_PREFIX_ID', message: 'Prefix IDs must be unique' });
     prefixIds.add(prefix.prefixId);
-    const numerator = BigInt(String(prefix.scaleNumerator ?? '0'));\n    const denominator = BigInt(String(prefix.scaleDenominator ?? '0'));\n    if (numerator <= 0n || denominator <= 0n || gcd(numerator, denominator) !== 1n) diagnostics.push({ code: 'INVALID_PREFIX_SCALE', message: 'Prefix scale must be a reduced positive rational' });
+    const numerator = BigInt(String(prefix.scaleNumerator ?? '0'));
+    const denominator = BigInt(String(prefix.scaleDenominator ?? '0'));
+    if (numerator <= 0n || denominator <= 0n || gcd(numerator, denominator) !== 1n) diagnostics.push({ code: 'INVALID_PREFIX_SCALE', message: 'Prefix scale must be a reduced positive rational' });
   }
   for (const unitId of registry.prefixableUnitIds) {
     if (typeof unitId !== 'string' || !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_PREFIXABLE_UNIT', message: 'Prefixable unit ID must exist in the registry' });
