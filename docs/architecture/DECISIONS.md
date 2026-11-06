@@ -26,9 +26,9 @@ Persist a versioned Khwarizmi expression AST. MathLive/MathJSON may be used for 
 
 ## ADR-005 — Explicit, document-scoped variable semantics
 
-**Status:** Accepted direction
+**Status:** Accepted
 
-Variables and assignments are explicit and document-scoped. Evaluation must not depend on hidden mutable interpreter state or accidental evaluation order. Dependencies are derived from canonical expressions and explicit references.
+Variables and assignments are explicit and document-scoped. V1 permits sequential reassignment of the same variable identity; each assignment creates a tracked immutable assignment version, and reads resolve to the latest preceding assignment in explicit calculation order. Evaluation must not depend on hidden mutable interpreter state or accidental visual/page order. Dependencies are recorded against the exact assignment versions consumed. Local variables in `if`/`while` use lexical block scope and cannot shadow visible names in v1; see ADR-012.
 
 ## ADR-006 — TypeScript-authoritative calculation core
 

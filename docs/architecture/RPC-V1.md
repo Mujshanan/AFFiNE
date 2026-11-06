@@ -7,17 +7,12 @@
 
 `Renderer → allowlisted preload API → Electron main → named-pipe client → TypeScript calculation host`
 
-A Python worker is deferred from v1. The v1 process topology is:
-
-`Renderer → allowlisted preload API → Electron main → named-pipe client → TypeScript calculation host`
-
-A future Python worker, if separately approved, remains internal to the TypeScript host.
+A Python worker is deferred from v1. The v1 process topology is `Renderer → allowlisted preload API → Electron main → named-pipe client → TypeScript calculation host`.
 
 - Renderer never opens a named pipe, launches a process, or chooses an executable path.
 - Preload exposes a small allowlist of typed operations only.
 - Electron main owns host startup, process verification, connection lifecycle, request forwarding, cancellation, health monitoring, and shutdown.
 - TypeScript host is the named-pipe server and authoritative calculation service.
-- Python is an implementation detail behind the TypeScript host; it is not directly exposed to the renderer.
 
 ## 2. Transport framing
 
@@ -99,10 +94,7 @@ Python worker protocol, runtime dependency, and numerical operation catalog are 
 ## 10. Unresolved v1 details
 
 - Exact JSON Schema definitions for each method's params/results and diagnostic structures.
-- Exact request timeout defaults and maximum concurrent request count.
 - Pipe naming, ACL implementation, process identity verification, and reconnect policy.
-- Whether digest is required on every document RPC or only document-bearing calls.
 - Exact host capability/version negotiation fields.
-- Python worker transport and allowlisted operation catalog.
 
 These are implementation deliverables for contract conformance; they are not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are already accepted normative requirements.

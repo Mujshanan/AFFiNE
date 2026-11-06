@@ -83,7 +83,7 @@ TypeScript owns the quantity and unit model. A quantity is a magnitude plus a no
 - Temperature arithmetic is unsupported in v1 and must be rejected with a stable diagnostic.
 - Unknown units, invalid prefixes, and incompatible dimensions are validation/evaluation errors.
 
-Python/Pint may be used as an optional numerical service, but its results must be checked/normalized through the TypeScript-owned contract. Python must not own symbol resolution or redefine the canonical unit registry semantics.
+Python numerical services are deferred from v1. TypeScript owns numeric evaluation, unit conversion, symbol resolution, and result normalization. Any future worker requires a separate ADR and remains subordinate to the TypeScript contract.
 
 ## 7. Numerical policy
 
