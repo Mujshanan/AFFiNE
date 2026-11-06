@@ -1,0 +1,85 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-local-before",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "if",
+            "statementId": "if-1",
+            "condition": "True",
+            "then": [
+              {
+                "kind": "expression",
+                "statementId": "read-local",
+                "expression": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": "kz_local",
+                  "symbolBindings": [
+                    {
+                      "engineSymbol": "kz_local",
+                      "symbolId": "local-1"
+                    }
+                  ],
+                  "authoredNumbers": [],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "declareLocal",
+                "statementId": "declare-local",
+                "localSymbolId": "local-1",
+                "displayName": "local",
+                "initializer": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 2,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "2",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ],
+            "else": []
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "if-1"
+    ]
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "LOCAL_USE_BEFORE_DECLARATION"
+    ]
+  }
+}

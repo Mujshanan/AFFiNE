@@ -1,0 +1,20 @@
+{
+  "dependencyGraph": [
+    {
+      "from": "event-a",
+      "to": "event-b",
+      "executionOrdinal": 1
+    },
+    {
+      "from": "event-b",
+      "to": "event-a",
+      "executionOrdinal": 2
+    }
+  ],
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "DEPENDENCY_CYCLE"
+    ]
+  }
+}

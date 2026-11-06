@@ -152,6 +152,98 @@
       "expect": "valid",
       "stage": "rpc-envelope",
       "expectedOutcome": "accept"
+    },
+    {
+      "id": "semantic.duplicate-name.001",
+      "kind": "semantics",
+      "path": "semantics/duplicate-symbol-name.json",
+      "stage": "semantic-validation",
+      "expectedOutcome": "reject",
+      "diagnostic": "DUPLICATE_SYMBOL_NAME"
+    },
+    {
+      "id": "semantic.unresolved-symbol.001",
+      "kind": "semantics",
+      "path": "semantics/unresolved-symbol.json",
+      "stage": "evaluation",
+      "expectedOutcome": "completedWithErrors",
+      "diagnostic": "UNRESOLVED_SYMBOL"
+    },
+    {
+      "id": "semantic.local-before-declaration.001",
+      "kind": "semantics",
+      "path": "semantics/local-before-declaration.json",
+      "stage": "semantic-validation",
+      "expectedOutcome": "reject",
+      "diagnostic": "LOCAL_USE_BEFORE_DECLARATION"
+    },
+    {
+      "id": "semantic.nested-local-capture.001",
+      "kind": "semantics",
+      "path": "semantics/nested-local-capture.json",
+      "stage": "evaluation",
+      "expectedOutcome": "completed"
+    },
+    {
+      "id": "semantic.loop-reassignment.001",
+      "kind": "semantics",
+      "path": "semantics/loop-sequential-reassignment.json",
+      "stage": "evaluation",
+      "expectedOutcome": "completed"
+    },
+    {
+      "id": "semantic.dependency-cycle-cache.001",
+      "kind": "semantics",
+      "path": "semantics/dependency-cycle-cache.json",
+      "stage": "semantic-validation",
+      "expectedOutcome": "reject",
+      "diagnostic": "DEPENDENCY_CYCLE"
+    },
+    {
+      "id": "expr.unknown-function.001",
+      "kind": "expression",
+      "path": "semantics/unsupported-function.json",
+      "stage": "mathjson-profile",
+      "expectedOutcome": "reject",
+      "diagnostic": "UNSUPPORTED_FUNCTION"
+    },
+    {
+      "id": "expr.function-arity.001",
+      "kind": "expression",
+      "path": "semantics/function-wrong-arity.json",
+      "stage": "mathjson-profile",
+      "expectedOutcome": "reject",
+      "diagnostic": "INVALID_FUNCTION_ARITY"
+    },
+    {
+      "id": "expr.ambiguous-implicit.001",
+      "kind": "expression",
+      "path": "semantics/ambiguous-implicit-multiplication.json",
+      "stage": "authoring-parse",
+      "expectedOutcome": "reject",
+      "diagnostic": "AMBIGUOUS_IMPLICIT_MULTIPLICATION"
+    },
+    {
+      "id": "units.angle-trig.001",
+      "kind": "units",
+      "path": "units/angle-trigonometry.json",
+      "stage": "evaluation",
+      "expectedOutcome": "completed"
+    },
+    {
+      "id": "units.unknown-unit.001",
+      "kind": "units",
+      "path": "units/unknown-unit.json",
+      "stage": "semantic-validation",
+      "expectedOutcome": "reject",
+      "diagnostic": "UNKNOWN_UNIT"
+    },
+    {
+      "id": "numeric.rounding-no-feedback.001",
+      "kind": "numeric",
+      "path": "numeric/rounding-no-feedback.json",
+      "stage": "evaluation",
+      "expectedOutcome": "completed"
     }
   ]
 }

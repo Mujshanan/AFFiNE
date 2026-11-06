@@ -1,0 +1,101 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-angle",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-theta",
+        "displayName": "theta",
+        "normalizedName": "theta",
+        "unit": {
+          "unitId": "degree",
+          "registryVersion": "si-engineering-1",
+          "symbol": "deg",
+          "dimension": [
+            {
+              "base": "angle",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "theta-set",
+            "assignmentId": "assignment-theta-set",
+            "targetSymbolId": "symbol-theta",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 30,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "30",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "expression",
+            "statementId": "sin-theta",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Sin",
+                "kz_theta"
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_theta",
+                  "symbolId": "symbol-theta"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "theta-set",
+      "sin-theta"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "value": {
+      "kind": "exactRational",
+      "numerator": "1",
+      "denominator": "2"
+    }
+  }
+}

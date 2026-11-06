@@ -1,0 +1,113 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-rounding",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      },
+      {
+        "symbolId": "symbol-y",
+        "displayName": "y",
+        "normalizedName": "y"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "x-third",
+            "assignmentId": "assignment-x-third",
+            "targetSymbolId": "symbol-x",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Rational",
+                {
+                  "num": "1"
+                },
+                {
+                  "num": "3"
+                }
+              ],
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "1/3",
+                  "representation": "exactRational",
+                  "numerator": "1",
+                  "denominator": "3"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "assign",
+            "statementId": "y-times-three",
+            "assignmentId": "assignment-y-times-three",
+            "targetSymbolId": "symbol-y",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Multiply",
+                "kz_x",
+                3
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "3",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "x-third",
+      "y-times-three"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "displayOfX": "0.33",
+    "valueOfY": {
+      "kind": "exactDecimal",
+      "decimal": "1"
+    }
+  }
+}
