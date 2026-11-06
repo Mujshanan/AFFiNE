@@ -113,6 +113,11 @@
       "description": "A persisted dependency graph has an invalid structure."
     },
     {
+      "code": "INVALID_DIAGNOSTIC_REGISTRY",
+      "severity": "fatal",
+      "description": "The diagnostic registry is missing required structure or metadata."
+    },
+    {
       "code": "INVALID_DOCUMENT",
       "severity": "error",
       "description": "The calculation document or its integrity metadata is invalid."
