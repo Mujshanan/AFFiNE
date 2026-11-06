@@ -42,7 +42,10 @@ const manifest = readJson(manifestPath);
 const unitRegistryPath = resolve(schemaRoot, 'unit-registry.v1.json');
 const unitRegistry = readJson(unitRegistryPath);
 
-describe('Khwarizmi v1 contract schemas', () => {\n  it('resolves every schema reference and rejects unsupported schema keywords', () => {\n    expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);\n  });
+describe('Khwarizmi v1 contract schemas', () => {
+  it('resolves every schema reference and rejects unsupported schema keywords', () => {
+    expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);
+  });\n  it('resolves every schema reference and rejects unsupported schema keywords', () => {\n    expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);\n  });
   it('validates the fixture manifest and its complete file inventory', () => {
     const result = validateJsonSchema(
       manifest,
