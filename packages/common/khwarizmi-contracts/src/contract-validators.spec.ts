@@ -5,7 +5,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   validateCalculationSemantics,
-  validateDependencyGraph,\n  validateDiagnosticCodeMembership,\n  validateDiagnosticRegistrySemantics,
+  validateDependencyGraph,
+  validateDiagnosticCodeMembership,
+  validateDiagnosticRegistrySemantics,
   validateJsonSchema,
   validateSchemaBundle,
   validateUnitReference,
@@ -37,7 +39,8 @@ const schemaFiles = [
 ];
 const schemaBundle = Object.fromEntries(schemaFiles.map(path => [repositoryPath(path), readJson(path)]));
 const manifest = readJson(resolve(fixtureRoot, 'manifest.json'));
-const unitRegistry = readJson(resolve(schemaRoot, 'unit-registry.v1.json'));\nconst diagnosticRegistry = readJson(resolve(schemaRoot, 'diagnostic-codes.json'));
+const unitRegistry = readJson(resolve(schemaRoot, 'unit-registry.v1.json'));
+const diagnosticRegistry = readJson(resolve(schemaRoot, 'diagnostic-codes.json'));
 
 describe('Khwarizmi v1 contract schemas', () => {
   it('resolves every schema reference and rejects unsupported schema keywords', () => {
@@ -66,7 +69,8 @@ describe('Khwarizmi v1 contract schemas', () => {
     const fixtureCodes = manifest.fixtures.map((fixture: any) => fixture.diagnostic).filter((code: unknown): code is string => typeof code === 'string');
     expect(validateDiagnosticCodeMembership(fixtureCodes, diagnosticRegistry).diagnostics).toEqual([]);
   });
-\n  it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
+
+  it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
     const profile = 'contracts/schemas/v1/mathjson-profile.schema.json';
     for (const expression of [['Rational', 1], ['Sin', 1, 2], ['Log']]) {
       expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(false);
