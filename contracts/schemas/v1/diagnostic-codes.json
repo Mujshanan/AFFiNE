@@ -43,6 +43,11 @@
       "description": "Assignment IDs must be unique throughout the document."
     },
     {
+      "code": "DUPLICATE_DIAGNOSTIC_CODE",
+      "severity": "fatal",
+      "description": "Diagnostic codes must be unique in the registry."
+    },
+    {
       "code": "DUPLICATE_LOCAL_ID",
       "severity": "error",
       "description": "Local symbol IDs must be unique throughout the document."
@@ -226,6 +231,11 @@
       "code": "UNKNOWN_UNIT",
       "severity": "error",
       "description": "A unit ID or prefix is not present in the selected registry."
+    },
+    {
+      "code": "UNREGISTERED_DIAGNOSTIC_CODE",
+      "severity": "error",
+      "description": "A diagnostic code is not registered in the active diagnostic registry."
     },
     {
       "code": "UNRESOLVED_SYMBOL",
