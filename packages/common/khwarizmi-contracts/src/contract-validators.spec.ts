@@ -60,12 +60,24 @@ describe('Khwarizmi v1 contract schemas', () => {
 
   it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
     const profile = 'contracts/schemas/v1/mathjson-profile.schema.json';
-    for (const expression of [['Rational', 1], ['Sin', 1, 2], ['Log'], ['Not']]) {
+    for (const expression of [['Rational', 1], ['Sin', 1, 2], ['Log']]) {
       expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(false);
     }
     for (const expression of [['Rational', 1, 2], ['Sin', 1], ['Log', 2], ['Log', 2, 10]]) {
       expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(true);
     }
+    const conditionRecord = {
+      format: 'khwarizmi.condition-expression',
+      schemaVersion: 1,
+      mathJson: ['Not'],
+      symbolBindings: [],
+      authoredNumbers: [],
+      unitAttachments: [],
+      sourceMap: [{ path: '', nodeId: 'condition-root', blockId: 'block-test' }],
+    };
+    expect(validateJsonSchema(conditionRecord, 'contracts/schemas/v1/condition-expression.schema.json', schemaBundle).valid).toBe(false);
+    conditionRecord.mathJson = ['Not', 'True'];
+    expect(validateJsonSchema(conditionRecord, 'contracts/schemas/v1/condition-expression.schema.json', schemaBundle).valid).toBe(true);
   });
 
   it('validates every fixture at its declared structural boundary', () => {
