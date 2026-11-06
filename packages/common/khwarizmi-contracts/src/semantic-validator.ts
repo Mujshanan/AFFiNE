@@ -31,8 +31,7 @@ function valueAtPointer(root: unknown, pointer: string): unknown {
 }
 
 function normalizeName(name: string): string {
-  // Locale-independent lowercasing is used here; full Unicode CaseFolding.txt
-  // conformance is tracked separately from this first validator implementation.
+  // This matches the normative NFC + locale-independent Unicode lowercase rule.
   return name.normalize('NFC').toLowerCase();
 }
 
