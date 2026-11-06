@@ -29,15 +29,16 @@ Baseline evidence and remaining gates: [Repository baseline](./docs/BASELINE.md)
 - [x] Record accepted architecture direction and responsibility boundaries.
 - [x] Draft the versioned worksheet/document model and page geometry contract.
 - [x] Draft canonical AST, variable, dependency, substitution, unit, and error semantics.
-- [x] Specify the TypeScript-authoritative core and optional Python worker boundary.
+- [x] Specify the TypeScript-authoritative v1 core; defer the Python worker from v1.
 - [x] Specify the initial JSON-RPC 2.0 named-pipe topology and framing proposal.
-- [ ] Resolve open normative decisions and freeze JSON schemas.
+- [x] Resolve owner decisions A1–A9 and select the T1–T6 implementation contract.
+- [ ] Publish and freeze versioned JSON schemas.
 - [ ] Implement language-neutral contract fixtures and executable conformance tests.
 - [ ] Verify RPC transport/security behavior and cross-implementation conformance.
 
 Architecture documents: [Contract index](./docs/architecture/README.md).
 
-**Exit criteria:** approved normative schemas, stable fixtures, passing contract tests, and verified transport/security behavior before broad editor or production calculation-host implementation. Current documents are proposals; this phase is not yet closed.
+**Exit criteria:** approved normative schemas, stable fixtures, passing contract tests, and verified transport/security behavior before broad editor or production calculation-host implementation. Owner-level decisions are resolved; executable contracts and verification remain outstanding.
 
 ## Phase 2 — Worksheet interaction foundation
 
@@ -85,12 +86,18 @@ Architecture documents: [Contract index](./docs/architecture/README.md).
 
 **Exit criteria:** stable authoring-to-review-to-PDF workflow, repeatable installation, and documented limitations.
 
-## Near-term priorities
+## Next development milestone — PR #3: contract freeze and executable conformance
 
-1. Finish the AFFiNE-derived baseline and Windows packaging validation.
-2. Complete architecture decisions for document schema, calculation semantics, and RPC.
-3. Align contract-conformance tests with the approved RPC specification.
-4. Begin worksheet editor and calculation-host implementation only after those contracts are reviewed.
+PR #3 is the next product-development milestone, not a UI feature. It converts the architecture proposals into versioned, machine-checkable contracts and an executable conformance suite. Scope and acceptance criteria: [PR #3 milestone](./docs/architecture/PR-3-CONTRACT-CONFORMANCE.md).
+
+1. Publish versioned document, expression, evaluation, diagnostic, and RPC JSON Schemas from the accepted ADRs.
+2. Add language-neutral fixtures with stable IDs and independently reviewed expected outcomes.
+3. Implement TypeScript validators and deterministic schema/semantic/unit tests.
+4. Test RPC framing independently and add fake-host integration coverage.
+5. Run the contract suite in CI without Electron or the production calculation host.
+6. Defer independent second-implementation interoperability and Windows named-pipe security verification to their separately tracked milestones.
+
+PR #1's Windows packaging and launch/install/uninstall verification remains a separate release-readiness track. PR #2's accepted architecture contracts are merged into `canary`. PR #3 records the resolved decisions and implementation contract. Its merge does not claim executable conformance is complete. Do not start broad worksheet UI or production calculation-host implementation until PR #3's acceptance criteria pass.
 
 ## Foundation-stage non-goals
 
