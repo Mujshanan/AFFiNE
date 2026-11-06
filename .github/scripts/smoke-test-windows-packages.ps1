@@ -64,22 +64,56 @@ function Test-AppLaunch {
     throw "$Label executable does not exist: $Executable"
   }
 
+  $expectedPath = [System.IO.Path]::GetFullPath($Executable)
+  $processName = [System.IO.Path]::GetFileNameWithoutExtension($Executable)
   $profile = Join-Path $env:TEMP "khwarizmi-smoke-$Label-$PID"
   $arguments = "--disable-gpu --user-data-dir=`"$profile`""
-  $process = Start-Process -FilePath $Executable -ArgumentList $arguments -PassThru -WindowStyle Hidden
+  $launcher = Start-Process -FilePath $Executable -ArgumentList $arguments -PassThru -WindowStyle Hidden
 
   try {
-    Start-Sleep -Seconds 15
-    $process.Refresh()
-    if ($process.HasExited) {
-      throw "$Label application exited during startup with code $($process.ExitCode)"
+    # Squirrel's application executable can be a bootstrapper: it may exit
+    # successfully after handing startup to a child process. Validate the
+    # actual process running from this package path, not the bootstrapper PID.
+    $deadline = (Get-Date).AddSeconds(30)
+    $matchingProcesses = @()
+    do {
+      $matchingProcesses = @(
+        Get-CimInstance Win32_Process -Filter "Name = '$processName.exe'" -ErrorAction SilentlyContinue |
+          Where-Object {
+            $_.ExecutablePath -and
+            [System.IO.Path]::GetFullPath($_.ExecutablePath) -ieq $expectedPath
+          }
+      )
+      if ($matchingProcesses.Count -gt 0) {
+        Start-Sleep -Seconds 15
+        $matchingProcesses = @(
+          Get-CimInstance Win32_Process -Filter "Name = '$processName.exe'" -ErrorAction SilentlyContinue |
+            Where-Object {
+              $_.ExecutablePath -and
+              [System.IO.Path]::GetFullPath($_.ExecutablePath) -ieq $expectedPath
+            }
+        )
+        break
+      }
+      Start-Sleep -Seconds 1
+    } while ((Get-Date) -lt $deadline)
+
+    if ($matchingProcesses.Count -eq 0) {
+      $launcher.Refresh()
+      $exit = if ($launcher.HasExited) { $launcher.ExitCode } else { 'still running' }
+      throw "$Label application process was not found at the packaged executable path (launcher exit: $exit)."
     }
-    Write-Host "$Label application remained running after startup."
+
+    $pids = ($matchingProcesses | ForEach-Object { $_.ProcessId }) -join ', '
+    Write-Host "$Label application process remained available for the startup observation window (PID(s): $pids)."
   } finally {
-    if (-not $process.HasExited) {
-      Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+    $matchingProcesses | ForEach-Object {
+      Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
     }
-    Stop-AppProcesses -Name ([System.IO.Path]::GetFileNameWithoutExtension($Executable))
+    if (-not $launcher.HasExited) {
+      Stop-Process -Id $launcher.Id -Force -ErrorAction SilentlyContinue
+    }
+    Stop-AppProcesses -Name $processName
   }
 }
 
