@@ -30,11 +30,11 @@ Persist a versioned Khwarizmi expression AST. MathLive/MathJSON may be used for 
 
 Variables and assignments are explicit and document-scoped. Evaluation must not depend on hidden mutable interpreter state or accidental evaluation order. Dependencies are derived from canonical expressions and explicit references.
 
-## ADR-006 — TypeScript-authoritative calculation core with optional Python worker
+## ADR-006 — TypeScript-authoritative calculation core
 
 **Status:** Accepted
 
-The application/calculation core is TypeScript. TypeScript owns schema validation, AST validation, symbol resolution, dependency analysis, units/dimensions, evaluation orchestration, deterministic result records, and error normalization. Python may provide specialized numerical services through a controlled worker interface. Python must not independently reinterpret the document, resolve names, or maintain a competing variable environment.
+The application/calculation core is TypeScript. TypeScript owns schema validation, AST validation, symbol resolution, dependency analysis, units/dimensions, evaluation orchestration, deterministic result records, and error normalization. A Python worker is deferred from v1 by ADR-017. If introduced in a future version, it may provide specialized numerical services only through a controlled TypeScript-owned worker interface; it must not independently reinterpret the document, resolve names, or maintain a competing variable environment.
 
 ## ADR-007 — Separate calculation host
 
@@ -44,9 +44,9 @@ The calculation host runs separately from the renderer. Electron main owns host 
 
 ## ADR-008 — RPC v1 transport
 
-**Status:** Accepted direction; detailed wire contract in RPC-V1.md
+**Status:** Accepted
 
-Use JSON-RPC 2.0 over a local Windows named pipe for the first desktop target. Use UTF-8 JSON messages with explicit length-prefix framing, strict message limits, request correlation, normalized errors, cancellation, and no batch requests. The host is the server endpoint; Electron main is the client and lifecycle owner.
+Use JSON-RPC 2.0 over a local Windows named pipe for the first desktop target. Use UTF-8 JSON messages with a four-byte unsigned little-endian length prefix and a fixed 16 MiB maximum payload, strict message limits, request correlation, normalized errors, cancellation, and no batch requests. The host is the server endpoint; Electron main is the client and lifecycle owner. The Windows trust boundary additionally requires spawned-process identity verification and a protected per-launch capability/handshake as recorded in ADR-016.
 
 ## ADR-009 — Contract-first implementation
 
