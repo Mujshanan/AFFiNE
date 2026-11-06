@@ -6,7 +6,12 @@ import { fileURLToPath } from 'node:url';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 
-import { buildType, iconUrl, icoPath, productName } from './scripts/make-env.js';
+import {
+  buildType,
+  iconUrl,
+  icoPath,
+  productName,
+} from './scripts/make-env.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
