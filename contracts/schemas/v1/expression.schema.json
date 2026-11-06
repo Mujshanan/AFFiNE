@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/v1/expression.schema.json",
+  "title": "Khwarizmi Expression Record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "mathJson",
+    "symbolBindings",
+    "authoredNumbers",
+    "sourceMap"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.expression"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "mathJson": {
+      "$ref": "#/$defs/jsonValue"
+    },
+    "symbolBindings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/symbolBinding"
+      }
+    },
+    "authoredNumbers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/authoredNumber"
+      }
+    },
+    "sourceMap": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/sourceMapEntry"
+      }
+    },
+    "authoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "latex": {
+          "type": "string"
+        },
+        "mathLiveVersion": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "jsonValue": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/jsonValue"
+          }
+        }
+      ]
+    },
+    "symbolBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engineSymbol",
+        "symbolId"
+      ],
+      "properties": {
+        "engineSymbol": {
+          "type": "string",
+          "pattern": "^kz_[A-Za-z0-9_-]{1,80}$"
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "authoredNumber": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "lexeme",
+        "representation"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(/(0|[1-9][0-9]*))*$"
+        },
+        "lexeme": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+        },
+        "representation": {
+          "enum": [
+            "exactDecimal",
+            "exactRational",
+            "approximate"
+          ]
+        },
+        "numerator": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]*)$"
+        },
+        "denominator": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        },
+        "precision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "sourceMapEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "nodeId",
+        "blockId"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(/(0|[1-9][0-9]*))*$"
+        },
+        "nodeId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "blockId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

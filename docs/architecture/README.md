@@ -1,6 +1,6 @@
 # Khwarizmi architecture contracts
 
-**Status:** Compute Engine adapter contracts and initial schemas/fixtures in progress  
+**Status:** architecture direction and v1 owner decisions accepted; executable schemas, fixtures, and conformance suite remain to be implemented  
 **Scope:** document model, worksheet geometry, mathematical semantics, evaluation, quantities/units, and calculation-host RPC.
 
 These documents define the contracts that application/editor and calculation-host implementations must obey. They do not claim that the corresponding runtime features already exist.
@@ -37,4 +37,4 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 5. Add CI coverage for the contract suite.
 6. Only after contract conformance passes, begin broad worksheet UI and production calculation-host implementation.
 
-MathLive is the authoring/rendering surface. MathJSON is the canonical expression tree consumed by CortexJS Compute Engine. Khwarizmi wraps it with stable symbol bindings, authored numeric lexemes, source maps, assignment history, and semantic metadata. The wrapper—not raw engine state—is the persisted contract.
+MathLive is an equation authoring/rendering integration, not the canonical semantic model. It may provide an interchange/editor surface; the persisted Khwarizmi AST remains authoritative.

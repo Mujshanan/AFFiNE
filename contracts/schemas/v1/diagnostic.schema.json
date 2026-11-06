@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/v1/diagnostic.schema.json",
+  "title": "Khwarizmi Diagnostic v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "code",
+    "severity",
+    "message"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error",
+        "fatal"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "documentId": {
+          "type": "string"
+        },
+        "pageId": {
+          "type": "string"
+        },
+        "blockId": {
+          "type": "string"
+        },
+        "nodeId": {
+          "type": "string"
+        },
+        "mathJsonPath": {
+          "type": "string"
+        }
+      }
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "relatedLocations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "blockId"
+        ],
+        "properties": {
+          "pageId": {
+            "type": "string"
+          },
+          "blockId": {
+            "type": "string"
+          },
+          "nodeId": {
+            "type": "string"
+          },
+          "mathJsonPath": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

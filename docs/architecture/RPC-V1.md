@@ -49,7 +49,7 @@ The little-endian prefix and fixed 16 MiB cap are normative v1 wire rules and MU
 | `document.evaluate` | request | evaluate a document revision and return result records/traces |
 | `$/cancelRequest` | notification | cancel an in-flight request by its JSON-RPC ID |
 
-Method parameter and result objects MUST be schema-versioned and validated. Document-bearing calls include the canonical authored document and its SHA-256 JCS digest; the receiver recomputes it. `document.evaluate` returns Khwarizmi result records, never raw Compute Engine objects. Each result identifies original and substituted MathJSON, exact assignment-version dependencies, tagged scalar value, normalized unit/dimension, status, diagnostics, and engine/semantic/unit-registry versions. Do not accept arbitrary code, paths, engine snippets, or Python snippets as RPC parameters.
+Method parameter and result objects MUST be schema-versioned and validated. Do not accept arbitrary code, filesystem paths, import expressions, or Python snippets as RPC parameters.
 
 ## 5. Evaluation result statuses
 
@@ -91,8 +91,10 @@ For document payload integrity, use SHA-256 over RFC 8785 JSON Canonicalization 
 
 Python worker protocol, runtime dependency, and numerical operation catalog are deferred from v1. TypeScript remains authoritative and no Python worker is required for v1. A future worker, if approved under a separate ADR, must remain internal to the TypeScript host, use typed bounded requests, and cannot mutate the document, symbol table, or dependency graph.
 
-## 10. Contract files and unresolved transport details
+## 10. Unresolved v1 details
 
-Versioned JSON Schemas and language-neutral fixtures live under `contracts/schemas/v1` and `contracts/fixtures/v1`. Schemas define stable wire shapes; semantic validation additionally enforces the MathJSON/Compute Engine allowlist and worksheet rules that JSON Schema cannot express. Remaining platform details include pipe naming, ACL construction, process identity verification, and reconnect policy. Host capability/version fields must be represented in `host.getInfo` and tested.
+- Exact JSON Schema definitions for each method's params/results and diagnostic structures.
+- Pipe naming, ACL implementation, process identity verification, and reconnect policy.
+- Exact host capability/version negotiation fields.
 
 These are implementation deliverables for contract conformance; they are not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are already accepted normative requirements.
