@@ -86,4 +86,4 @@ BlockSuite may represent and edit visual blocks, selection, and ordering. An ada
 
 Canonical page geometry is accepted as integer micrometres, top-left origin, +X right, +Y down, with standard presets and custom dimensions. Scalar-only v1 values and the assignment/scope rules are defined in CALCULATION-SEMANTICS.md and DECISIONS.md.
 
-The implementation team must still finalize layout-region grammar and responsive behavior, asset embedding/reference policy and size limits, block content-version rules, stable ID syntax, and migration fixtures. No remote asset is fetched implicitly during validation or evaluation.
+The implementation team must still encode the accepted layout modes and asset policy in exact schema fields, define block content-version rules and stable ID syntax, and provide deterministic migration fixtures. V1 assets are embedded only with SHA-256 identity and the limits recorded in PR-3-DECISION-RESOLUTION.md. No remote asset is fetched implicitly during validation or evaluation.
