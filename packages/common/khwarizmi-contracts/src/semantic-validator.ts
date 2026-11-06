@@ -353,3 +353,30 @@ export function validateUnitReference(unitId: string, registry: unknown): Semant
     ? { valid: true, diagnostics: [] }
     : { valid: false, diagnostics: [{ code: 'UNKNOWN_UNIT', message: 'Unit ID is not present in the selected registry' }] };
 }
+
+export function validateDiagnosticRegistrySemantics(registry: unknown): SemanticValidationResult {
+  const diagnostics: SemanticIssue[] = [];
+  if (!isRecord(registry) || !Array.isArray(registry.codes)) {
+    return { valid: false, diagnostics: [{ code: 'INVALID_DIAGNOSTIC_REGISTRY', message: 'Diagnostic registry must contain a codes array' }] };
+  }
+  const seen = new Set<string>();
+  for (const entry of registry.codes) {
+    if (!isRecord(entry) || typeof entry.code !== 'string') continue;
+    if (seen.has(entry.code)) diagnostics.push({ code: 'DUPLICATE_DIAGNOSTIC_CODE', message: 'Diagnostic codes must be unique: ' + entry.code });
+    seen.add(entry.code);
+  }
+  return { valid: diagnostics.length === 0, diagnostics };
+}
+
+export function validateDiagnosticCodeMembership(codes: Iterable<string>, registry: unknown): SemanticValidationResult {
+  const diagnostics: SemanticIssue[] = [];
+  const registered = new Set<string>(
+    isRecord(registry) && Array.isArray(registry.codes)
+      ? registry.codes.filter(isRecord).map(entry => entry.code).filter((code): code is string => typeof code === 'string')
+      : []
+  );
+  for (const code of new Set(codes)) {
+    if (!registered.has(code)) diagnostics.push({ code: 'UNREGISTERED_DIAGNOSTIC_CODE', message: 'Diagnostic code is not registered: ' + code });
+  }
+  return { valid: diagnostics.length === 0, diagnostics };
+}
