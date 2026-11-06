@@ -240,7 +240,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
 
   // Top-level declarations are not lexical declarations; process top-level statements
   // in the explicit calculation order, while each control-flow block creates child scopes.
-  const topById = new Map(topLevel.filter(isRecord).map(statement => [statement.statementId, statement]));
+  const topById = new Map<string, AnyRecord>(topLevel.filter(isRecord).map(statement => [String(statement.statementId), statement] as [string, AnyRecord]));
   for (const statementId of actualOrder) {
     const statement = topById.get(statementId);
     if (statement) visitStatements([statement], rootScope, false);
@@ -266,33 +266,36 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
 export function validateDependencyGraph(graph: unknown): SemanticValidationResult {
   const diagnostics: SemanticIssue[] = [];
   if (!Array.isArray(graph)) return { valid: false, diagnostics: [{ code: 'INVALID_DEPENDENCY_GRAPH', message: 'Dependency graph must be an array' }] };
+
+  const nodes = new Set<string>();
+  const indegree = new Map<string, number>();
   const edges = new Map<string, string[]>();
   for (const edge of graph) {
     if (!isRecord(edge) || typeof edge.from !== 'string' || typeof edge.to !== 'string') {
       diagnostics.push({ code: 'INVALID_DEPENDENCY_GRAPH', message: 'Every dependency edge requires string from and to IDs' });
       continue;
     }
+    nodes.add(edge.from);
+    nodes.add(edge.to);
+    indegree.set(edge.from, indegree.get(edge.from) ?? 0);
+    indegree.set(edge.to, (indegree.get(edge.to) ?? 0) + 1);
     const targets = edges.get(edge.from) ?? [];
     targets.push(edge.to);
     edges.set(edge.from, targets);
   }
-  const visiting = new Set<string>();
-  const visited = new Set<string>();
-  const visit = (node: string): boolean => {
-    if (visiting.has(node)) return true;
-    if (visited.has(node)) return false;
-    visiting.add(node);
-    for (const target of edges.get(node) ?? []) if (visit(target)) return true;
-    visiting.delete(node);
-    visited.add(node);
-    return false;
-  };
-  for (const node of edges.keys()) {
-    if (visit(node)) {
-      diagnostics.push({ code: 'DEPENDENCY_CYCLE', message: 'Persisted dependency graph contains a cycle' });
-      break;
+
+  const queue = [...nodes].filter(node => (indegree.get(node) ?? 0) === 0);
+  let processed = 0;
+  for (let cursor = 0; cursor < queue.length; cursor++) {
+    const node = queue[cursor];
+    processed++;
+    for (const target of edges.get(node) ?? []) {
+      const remaining = (indegree.get(target) ?? 0) - 1;
+      indegree.set(target, remaining);
+      if (remaining === 0) queue.push(target);
     }
   }
+  if (processed !== nodes.size) diagnostics.push({ code: 'DEPENDENCY_CYCLE', message: 'Persisted dependency graph contains a cycle' });
   return { valid: diagnostics.length === 0, diagnostics };
 }
 
