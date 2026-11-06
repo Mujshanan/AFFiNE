@@ -104,8 +104,47 @@ CortexJS Compute Engine is the selected mathematical evaluator and MathJSON impl
 
 Use isolated evaluation contexts per document-evaluation request. Engine-global definitions MUST NOT become the durable symbol table or leak between requests. Khwarizmi resolves exact visible assignment versions before each expression and supplies an immutable binding environment. Engine scoping is not a substitute for Khwarizmi's no-shadowing rule. `simplify()` is a symbolic transform, not worksheet assignment resolution. `evaluate()`/`N()` output alone is not a result record. Preserve original and substituted expressions, consumed assignment versions, tagged scalar value, units/dimensions, and engine metadata. Never route exact values through JavaScript `number`. Compiled JavaScript execution is excluded from the exact v1 path unless separately proven equivalent. Pin MathLive and Compute Engine independently; MathLive does not imply an installed Compute Engine dependency.
 
-## 10. Accepted v1 boundaries and remaining contract work
+## 10. Accepted v1 boundaries
 
-Owner decisions are recorded in DECISIONS.md (ADR-010 through ADR-018): scalar-only values; exact decimal and rational authored literals; tagged approximate results; sequential reassignment with tracked assignment versions; lexical local variables in `if`/`while` without shadowing; unambiguous implicit multiplication normalized to explicit multiplication; versioned built-in units with explicit radian/degree semantics; temperature arithmetic and custom units deferred.
+Owner decisions ADR-010 through ADR-018 remain normative: scalar-only values; exact decimal/rational authored literals; tagged approximate results; sequential reassignment with tracked versions; lexical local variables in `if`/`while` without shadowing; unambiguous implicit multiplication; versioned built-in units; temperature arithmetic and custom units deferred.
 
-The implementation team must still publish the exact grammar/precedence table, function allowlist and arities, condition and block syntax, loop limits, schema fields, stable diagnostics, and executable fixtures. These are not owner approval gates, but they remain blockers to declaring the v1 schemas stable.
+The following sections close the semantic definitions for v1. Executable validators and conformance tests remain a separate implementation phase.
+
+## 13. Final v1 grammar and execution rules
+
+The machine-readable MathJSON profile is `contracts/schemas/v1/mathjson-profile.schema.json`. It is a closed allowlist, not an extensible function registry. V1 built-ins are:
+
+| Function | Arity | Domain / result |
+|---|---:|---|
+| `sqrt`, `abs`, `exp`, `ln`, `log10` | 1 | Real scalar; domain errors are diagnosed |
+| `sin`, `cos`, `tan` | 1 | Angle input only |
+| `asin`, `acos`, `atan` | 1 | Dimensionless input; angle output |
+| `+`, `-`, `*`, `/`, `^` | 2 (unary sign 1) | Scalar arithmetic |
+| comparisons | 2 | Compatible scalar dimensions |
+| `and`, `or`, `not` | 2+, 1 | Boolean conditions |
+
+No function aliases, user-defined functions, lambdas, symbolic integration/differentiation, complex arithmetic, or implicit vectorization are in v1. The parser MUST canonicalize aliases before producing MathJSON. A function name that is not in this table is `UNSUPPORTED_FUNCTION`; wrong arity is `INVALID_FUNCTION_ARITY`.
+
+The precedence table in section 3 is normative. Comparisons are non-associative. `-x^2` means `-(x^2)`; exponentiation is right-associative. Implicit multiplication is accepted only where tokenization has one parse; `2x`, `2(x+1)`, and `(a)(b)` may normalize to Multiply when no identifier/function ambiguity exists. `ab` is one identifier, not automatically `a*b`. A symbol followed by parentheses is a function call only if the name is in the function allowlist; otherwise it is ambiguous and rejected.
+
+A calculation document declares document-level symbols in `symbols`, places statements in page blocks, and supplies `calculationOrder` as an ordered list of every top-level statement ID exactly once. Nested branch/loop statements are ordered by their array position and MUST NOT appear in the top-level order list. IDs are unique across the complete document, including nested statements. Reordering pages or visual blocks does not change calculation order.
+
+The statement schema is a discriminated union: `assign`, `declareLocal`, `if`, `while`, and `expression`. `declareLocal` creates a local binding at that point; assignment never implicitly declares a local. An assignment target must identify an existing document symbol or a visible local. A document symbol's first successful assignment creates version 1; each later successful execution creates the next version. A failed assignment does not increment the version.
+
+Resource limits are fixed for semantic v1: control-flow nesting 32; 10,000 iterations per loop; 100,000 aggregate loop iterations per document evaluation; expression depth 256; expression nodes 100,000; diagnostics 10,000. A limit violation emits `RESOURCE_LIMIT_EXCEEDED` and stops the affected control-flow path safely.
+
+## 14. Numeric and unit wire policy
+
+The wire scalar schema is `contracts/schemas/v1/numeric-value.schema.json`; the initial immutable unit registry is `contracts/schemas/v1/unit-registry.v1.json`. Exact decimals are canonical base-10 strings; exact rationals are reduced numerator/positive-denominator strings; approximate values include a decimal/scientific string, significant-digit precision, and method tag. Default approximate precision is 34 significant decimal digits; supported precision ceiling is 1,000 digits. The display rounding mode is round-half-even and never mutates stored values.
+
+The registry stores exact rational scale factors to canonical base units. Angle degrees use a `piRational` scale (π/180), not a binary floating-point approximation. The selected Compute Engine adapter must preserve this representation or perform a tagged approximation with precision metadata. It may not silently coerce a unit scale to JavaScript `number`.
+
+The v1 registry includes length, mass, time, force, pressure, energy, power, and angle units used in engineering worksheets. Derived-unit dimensions use rational exponents. Absolute temperature, temperature differences, affine conversions, and custom units remain rejected with `UNSUPPORTED_UNIT_KIND`.
+
+## 15. Stable diagnostic registry
+
+The normative code inventory is `contracts/schemas/v1/diagnostic-codes.json`. Diagnostic ordering is deterministic: execution ordinal, source-map path, then code. Consumers branch on code only. Validation failures prevent evaluation; evaluation failures may allow independent later statements to continue. A failed assignment is not visible to later reads, which instead receive `DEPENDENCY_FAILED`.
+
+## 16. Contract completion boundary
+
+The semantic rules, JSON Schemas, diagnostic inventory, unit registry, and language-neutral seed fixtures are now published under `contracts/schemas/v1` and `contracts/fixtures/v1`. JSON Schema validation is necessary but not sufficient: semantic validation must check binding uniqueness, complete calculation order, declaration visibility, no-shadowing, exact assignment-version resolution, MathJSON path provenance, dimensional compatibility, unit-registry membership, and resource limits. Executable TypeScript validators and CI conformance tests are a separate implementation phase; they are not part of this contract-definition deliverable.
