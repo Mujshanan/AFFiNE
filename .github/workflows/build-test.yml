@@ -86,6 +86,10 @@ jobs:
         with:
           electron-install: false
           full-cache: true
+      - name: Diagnose Khwarizmi import sorting
+        run: |
+          yarn oxlint --fix packages/common/khwarizmi-contracts/src/index.ts packages/common/khwarizmi-contracts/src/contract-validators.spec.ts
+          git diff -- packages/common/khwarizmi-contracts/src/index.ts packages/common/khwarizmi-contracts/src/contract-validators.spec.ts
       - name: Run oxlint
         run: yarn lint:ox
       - name: Run i18n codegen
