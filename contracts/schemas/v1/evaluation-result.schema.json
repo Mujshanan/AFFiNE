@@ -187,7 +187,9 @@
         "originalExpression": {
           "$ref": "expression.schema.json"
         },
-        "substitutedMathJson": {},
+        "substitutedMathJson": {
+          "$ref": "mathjson-profile.schema.json"
+        },
         "value": {
           "oneOf": [
             {
