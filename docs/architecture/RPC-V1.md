@@ -91,8 +91,24 @@ For document payload integrity, use SHA-256 over RFC 8785 JSON Canonicalization 
 
 Python worker protocol, runtime dependency, and numerical operation catalog are deferred from v1. TypeScript remains authoritative and no Python worker is required for v1. A future worker, if approved under a separate ADR, must remain internal to the TypeScript host, use typed bounded requests, and cannot mutate the document, symbol table, or dependency graph.
 
-## 10. Contract files and unresolved transport details
+## 12. Platform implementation details
 
-Versioned JSON Schemas and language-neutral fixtures live under `contracts/schemas/v1` and `contracts/fixtures/v1`. Schemas define stable wire shapes; semantic validation additionally enforces the MathJSON/Compute Engine allowlist and worksheet rules that JSON Schema cannot express. Remaining platform details include pipe naming, ACL construction, process identity verification, and reconnect policy. Host capability/version fields must be represented in `host.getInfo` and tested.
+These platform details remain implementation deliverables, not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are normative.
 
-These are implementation deliverables for contract conformance; they are not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are already accepted normative requirements.
+## 10. Method schema references and response payloads
+
+The v1 schemas are:
+- `contracts/schemas/v1/rpc-envelope.schema.json`: closed JSON-RPC method/envelope union;
+- `contracts/schemas/v1/rpc/host-get-info.schema.json`: `host.getInfo` result;
+- `contracts/schemas/v1/rpc/document-validate.schema.json`: `document.validate` params;
+- `contracts/schemas/v1/rpc/document-evaluate.schema.json`: `document.evaluate` params;
+- `contracts/schemas/v1/rpc/cancel-request.schema.json`: cancellation params;
+- `contracts/schemas/v1/evaluation-result.schema.json`: `document.evaluate` result.
+
+The document-validation result is a versioned object containing document ID/revision, schema and semantic versions, a boolean validity flag, and ordered diagnostics. A validation request MUST NOT execute any expression. Evaluation results contain per-statement original expression records, substituted MathJSON, typed scalar values, units, assignment-version dependencies, per-occurrence substitution provenance, control-flow path, node status, and diagnostics. Engine-specific object instances MUST be normalized before serialization.
+
+A request ID is a non-empty string or non-negative safe integer. The error response may use a null ID only when the request could not be parsed or correlated; successful responses always echo the original request ID. Responses contain exactly one of `result` or `error`. Cancellation is a notification and has no response of its own.
+
+## 11. Contract completion boundary
+
+The method schemas and language-neutral fixtures are part of the contract definition. They do not constitute a tested named-pipe implementation. Framing, Windows ACL/process verification, cancellation races, concurrency enforcement, and digest implementation remain executable conformance work.
