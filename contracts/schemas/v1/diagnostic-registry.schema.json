@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/diagnostic-registry.schema.json",
+  "title": "Khwarizmi Diagnostic Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "codes"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.diagnostic-registry"
+    },
+    "version": {
+      "const": 1
+    },
+    "codes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "severity",
+          "description"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]{2,63}$"
+          },
+          "severity": {
+            "enum": [
+              "info",
+              "warning",
+              "error",
+              "fatal"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
