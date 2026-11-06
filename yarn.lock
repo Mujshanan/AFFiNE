@@ -3666,13 +3666,7 @@ __metadata:
     "@codemirror/language": "npm:^6.0.0"
     "@codemirror/state": "npm:^6.0.0"
     "@codemirror/view": "npm:^6.17.0"
-    "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts":
-  version: 0.0.0-use.local
-  resolution: "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts"
-  languageName: unknown
-  linkType: soft
-
-"@lezer/common": "npm:^1.0.0"
+    "@lezer/common": "npm:^1.0.0"
   checksum: 10/e57d78bb468d615a1448170370fce4ac04268527ef27dd464fac25b5b8d6d21b997f4dc8744d1d3782c568da32c78c9bbf59c425b248baae2f4f8454ce4b0eea
   languageName: node
   linkType: hard
@@ -33762,3 +33756,10 @@ __metadata:
   checksum: 10/f22ec5fc2d5f02c423c93d35cdfa83573a3a3bd98c66b927c368ea4d0e7252a500df2a90a6b45522be536a96a73404393c958e945fdba95e6832c200791702b6
   languageName: node
   linkType: hard
+
+"@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts":
+  version: 0.0.0-use.local
+  resolution: "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts"
+  languageName: unknown
+  linkType: soft
+
