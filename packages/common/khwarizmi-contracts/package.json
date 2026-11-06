@@ -8,5 +8,8 @@
   },
   "devDependencies": {
     "vitest": "^4.1.11"
+  },
+  "scripts": {
+    "test:fixtures": "vitest run src/fixture-runner.spec.ts"
   }
 }
