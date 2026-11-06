@@ -10,6 +10,7 @@
     "mathJson",
     "symbolBindings",
     "authoredNumbers",
+    "unitAttachments",
     "sourceMap"
   ],
   "properties": {
@@ -82,7 +83,44 @@
             "minimum": 2,
             "maximum": 1000
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "representation": {
+                  "const": "exactRational"
+                }
+              },
+              "required": [
+                "representation"
+              ]
+            },
+            "then": {
+              "required": [
+                "numerator",
+                "denominator"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "representation": {
+                  "const": "approximate"
+                }
+              },
+              "required": [
+                "representation"
+              ]
+            },
+            "then": {
+              "required": [
+                "precision"
+              ]
+            }
+          }
+        ]
       }
     },
     "unitAttachments": {
