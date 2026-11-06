@@ -92,7 +92,7 @@ describe('Khwarizmi v1 contract schemas', () => {
     expect(validateJsonSchema(conditionRecord, 'contracts/schemas/v1/condition-expression.schema.json', schemaBundle).valid).toBe(true);
   });
 
-  it('validates every fixture at its declared structural boundary', () => {
+  it('validates fixture payloads wherever a schema boundary is defined', () => {
     const failures: string[] = [];
     for (const fixture of manifest.fixtures) {
       const data = readJson(resolve(fixtureRoot, fixture.path));
