@@ -53,7 +53,8 @@
               "semantic-validation",
               "evaluation",
               "rpc-envelope",
-              "rpc-integrity"
+              "rpc-integrity",
+              "authoring-parse"
             ]
           },
           "expectedOutcome": {
