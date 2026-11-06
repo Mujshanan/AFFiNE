@@ -20,7 +20,7 @@ Khwarizmi owns a versioned document schema, stable identities, page geometry, ma
 
 ## ADR-004 — Canonical mathematical representation
 
-**Status:** Accepted direction; grammar details specified in CALCULATION-SEMANTICS.md
+**Status:** Accepted; MathJSON/Compute Engine mapping selected
 
 Use versioned MathJSON as the canonical expression tree because CortexJS Compute Engine evaluates it natively. Persist it inside a Khwarizmi expression record adding stable symbol bindings, authored numeric lexemes/representation tags, source locations, and contract versioning. MathLive LaTeX/DOM is authoring/display data, never executable authority. Engine-safe symbol tokens are deterministic aliases mapped to stable Khwarizmi `symbolId`; display names are never identity. Khwarizmi—not Compute Engine—owns assignment order/history, dependency tracking, units policy, result provenance, and substitution presentation. No evaluation may parse a formatted display string at runtime.
 
