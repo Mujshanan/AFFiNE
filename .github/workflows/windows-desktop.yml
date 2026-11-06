@@ -33,7 +33,6 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=14384
       DEBUG: affine:*,napi:*
       APP_NAME: affine
-      DEV_DRIVE: ${{ runner.temp }}
       DEV_DRIVE_WORKSPACE: ${{ github.workspace }}
     steps:
       - uses: actions/checkout@v7
@@ -53,6 +52,8 @@ jobs:
 
       - name: Build Windows native modules
         uses: ./.github/actions/build-rust
+        env:
+          DEV_DRIVE: ${{ runner.temp }}
         with:
           target: x86_64-pc-windows-msvc
           package: '@affine/native'
