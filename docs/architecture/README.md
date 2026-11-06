@@ -1,6 +1,6 @@
 # Khwarizmi architecture contracts
 
-**Status:** Compute Engine adapter contracts and initial schemas/fixtures in progress  
+**Status:** v1 semantic and wire contract definitions complete; executable validators and conformance tests pending  
 **Scope:** document model, worksheet geometry, mathematical semantics, evaluation, quantities/units, and calculation-host RPC.
 
 These documents define the contracts that application/editor and calculation-host implementations must obey. They do not claim that the corresponding runtime features already exist.
@@ -9,7 +9,7 @@ These documents define the contracts that application/editor and calculation-hos
 
 1. AFFiNE remains the application foundation.
 2. BlockSuite remains the editor and interaction foundation. The product accepts a page-oriented compromise rather than replacing BlockSuite solely to obtain a fully freeform infinite canvas.
-3. Khwarizmi owns its engineering document model, worksheet geometry, mathematical AST, variable/dependency semantics, substitutions, units, evaluation policy, native document format, and A4/PDF semantics.
+3. Khwarizmi owns its engineering document model, worksheet geometry, MathJSON expression records, variable/dependency semantics, substitutions, units, evaluation policy, native document format, and A4/PDF semantics.
 4. BlockSuite owns editor mechanics: text/block editing, selection, object manipulation, undo/redo, and persistence integration. It must not become the authority for calculation meaning.
 5. The v1 calculation architecture is a TypeScript-authoritative core in a separate calculation host. A Python worker is deferred from v1; any future worker must remain behind the TypeScript-owned contract and requires a separate ADR.
 6. Renderer and computation remain isolated. The Electron main process owns calculation-host lifecycle and the local IPC boundary.
@@ -30,8 +30,8 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 
 ## Implementation order
 
-1. Publish versioned document, expression, evaluation, diagnostic, and RPC schemas from the accepted ADRs.
-2. Add language-neutral valid/invalid fixtures and stable diagnostic codes.
+1. Implement TypeScript schema and semantic validators against the published v1 contracts.
+2. Add executable fixture runner and deterministic diagnostic tests.
 3. Implement TypeScript validators and deterministic semantic/unit tests.
 4. Test RPC framing and fake-host behavior independently of Electron.
 5. Add CI coverage for the contract suite.
