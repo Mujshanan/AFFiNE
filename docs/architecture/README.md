@@ -21,6 +21,8 @@ These documents define the contracts that application/editor and calculation-hos
 - [Expression and calculation semantics](./CALCULATION-SEMANTICS.md)
 - [Calculation host and RPC v1](./RPC-V1.md)
 - [Contract conformance plan](./CONFORMANCE.md)
+- [Versioned JSON Schemas](../../contracts/schemas/v1/)
+- [Language-neutral fixtures](../../contracts/fixtures/v1/)
 - [PR #3 decision-resolution document](./PR-3-DECISION-RESOLUTION.md)
 - [PR #3 contract-conformance milestone](./PR-3-CONTRACT-CONFORMANCE.md)
 
@@ -32,7 +34,7 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 
 1. Implement TypeScript schema and semantic validators against the published v1 contracts.
 2. Add executable fixture runner and deterministic diagnostic tests.
-3. Implement TypeScript validators and deterministic semantic/unit tests.
+3. Implement the Compute Engine adapter, exact numeric/unit codecs, and deterministic semantic/unit tests.
 4. Test RPC framing and fake-host behavior independently of Electron.
 5. Add CI coverage for the contract suite.
 6. Only after contract conformance passes, begin broad worksheet UI and production calculation-host implementation.
