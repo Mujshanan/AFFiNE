@@ -108,16 +108,16 @@ const trimElectronPakLocales = async (resourcesAppDir, targetPlatform) => {
 const makers = [
   {
     name: '@electron-forge/maker-zip',
+    platforms: ['win32'],
     config: {
       name: productName,
-      platforms: ['win32'],
     },
   },
   !process.env.SKIP_BUNDLE && {
     name: '@electron-forge/maker-squirrel',
+    platforms: ['win32'],
     config: {
       name: productName,
-      platforms: ['win32'],
       setupIcon: icoPath,
       iconUrl,
       loadingGif: './resources/icons/affine_installing.gif',
