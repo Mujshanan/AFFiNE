@@ -119,7 +119,6 @@
         {
           "enum": [
             "Negate",
-            "Positive",
             "Sqrt",
             "Abs",
             "Exp",
