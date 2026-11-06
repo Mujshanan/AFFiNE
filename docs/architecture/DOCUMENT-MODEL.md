@@ -32,7 +32,7 @@ Evaluation output is not authored content. It is stored separately as a derived 
 
 Each page has a stable `pageId`, a physical width and height, orientation, margins, and ordered layout regions.
 
-**Proposed canonical geometry:** integer micrometres (`um`) for page dimensions, margins, and region geometry. Convert to CSS pixels only at the rendering boundary using the configured display scale. This prevents zoom and device pixel ratio from changing persisted physical layout. The exact canonical unit remains an ADR sign-off item.
+**Accepted canonical geometry:** integer micrometres (`um`) for page dimensions, margins, and region geometry. Use a page-local top-left origin; +X points right and +Y points down. Support named standard page presets and custom dimensions. Convert to CSS pixels only at the rendering boundary using the configured display scale. Zoom and device-pixel ratio never change persisted physical layout.
 
 A region has:
 - stable `regionId`;
@@ -82,10 +82,8 @@ BlockSuite may represent and edit visual blocks, selection, and ordering. An ada
 - keep editor undo/redo synchronized with document commands;
 - serialize the canonical Khwarizmi document, not a raw BlockSuite snapshot as the sole source of truth.
 
-## 8. Open schema decisions
+## 8. Accepted decisions and remaining schema work
 
-- Confirm integer micrometres as canonical physical unit.
-- Finalize layout region grammar and responsive behavior.
-- Finalize asset embedding versus external references and size limits.
-- Decide whether block content versions are independent from document schema version.
-- Define stable symbol-ID syntax and migration rules.
+Canonical page geometry is accepted as integer micrometres, top-left origin, +X right, +Y down, with standard presets and custom dimensions. Scalar-only v1 values and the assignment/scope rules are defined in CALCULATION-SEMANTICS.md and DECISIONS.md.
+
+The implementation team must still finalize layout-region grammar and responsive behavior, asset embedding/reference policy and size limits, block content-version rules, stable ID syntax, and migration fixtures. No remote asset is fetched implicitly during validation or evaluation.
