@@ -73,7 +73,8 @@
           "$ref": "#/$defs/positiveIntegerAtom"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "scalar": {
       "oneOf": [
@@ -136,7 +137,8 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 2
     },
     "binary": {
       "type": "array",
@@ -155,7 +157,8 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "nary": {
       "type": "array",
@@ -198,7 +201,8 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "condition": {
       "oneOf": [
@@ -230,7 +234,8 @@
           ],
           "items": {
             "$ref": "#/$defs/condition"
-          }
+          },
+          "minItems": 3
         },
         {
           "type": "array",
@@ -242,7 +247,8 @@
               "$ref": "#/$defs/condition"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 2
         }
       ]
     },
@@ -258,7 +264,8 @@
               "$ref": "#/$defs/scalar"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 2
         },
         {
           "prefixItems": [
@@ -272,7 +279,8 @@
               "$ref": "#/$defs/scalar"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 3
         }
       ]
     }
