@@ -13,7 +13,7 @@
           {
             "kind": "if",
             "statementId": "if-1",
-            "condition": true,
+            "condition": "True",
             "then": [
               {
                 "kind": "declareLocal",
