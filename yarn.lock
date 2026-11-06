@@ -7139,6 +7139,8 @@ __metadata:
 "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts":
   version: 0.0.0-use.local
   resolution: "@khwarizmi/contracts@workspace:packages/common/khwarizmi-contracts"
+  dependencies:
+    vitest: "npm:^4.1.11"
   languageName: unknown
   linkType: soft
 
