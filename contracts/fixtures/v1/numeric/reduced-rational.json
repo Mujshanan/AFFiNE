@@ -4,8 +4,12 @@
     "schemaVersion": 1,
     "mathJson": [
       "Rational",
-      "1",
-      "8"
+      {
+        "num": "2"
+      },
+      {
+        "num": "16"
+      }
     ],
     "symbolBindings": [],
     "authoredNumbers": [
