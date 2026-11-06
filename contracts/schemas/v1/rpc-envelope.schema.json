@@ -160,14 +160,7 @@
           },
           "properties": {
             "id": {
-              "oneOf": [
-                {
-                  "$ref": "#/$defs/id"
-                },
-                {
-                  "type": "null"
-                }
-              ]
+              "$ref": "#/$defs/errorId"
             }
           }
         }
@@ -177,7 +170,7 @@
           "const": "2.0"
         },
         "id": {
-          "$ref": "#/$defs/id"
+          "$ref": "#/$defs/errorId"
         },
         "result": {},
         "error": {
@@ -200,6 +193,16 @@
           }
         }
       }
+    },
+    "errorId": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   }
 }
