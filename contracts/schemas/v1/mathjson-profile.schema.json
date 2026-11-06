@@ -3,6 +3,63 @@
   "$id": "https://khwarizmi.dev/contracts/schemas/v1/mathjson-profile.schema.json",
   "title": "Khwarizmi MathJSON Scalar Profile v1",
   "$defs": {
+    "integerAtom": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "num"
+          ],
+          "properties": {
+            "num": {
+              "type": "string",
+              "pattern": "^-?(0|[1-9][0-9]*)$"
+            }
+          }
+        }
+      ]
+    },
+    "positiveIntegerAtom": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "num"
+          ],
+          "properties": {
+            "num": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*$"
+            }
+          }
+        }
+      ]
+    },
+    "numberObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "num"
+      ],
+      "properties": {
+        "num": {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?([eE][+-]?[0-9]+)?$"
+        }
+      }
+    },
     "rational": {
       "type": "array",
       "prefixItems": [
@@ -10,12 +67,10 @@
           "const": "Rational"
         },
         {
-          "type": "string",
-          "pattern": "^-?(0|[1-9][0-9]*)$"
+          "$ref": "#/$defs/integerAtom"
         },
         {
-          "type": "string",
-          "pattern": "^[1-9][0-9]*$"
+          "$ref": "#/$defs/positiveIntegerAtom"
         }
       ],
       "items": false
@@ -26,6 +81,9 @@
           "type": "integer",
           "minimum": -9007199254740991,
           "maximum": 9007199254740991
+        },
+        {
+          "$ref": "#/$defs/numberObject"
         },
         {
           "type": "string",
@@ -184,5 +242,5 @@
     }
   },
   "$ref": "#/$defs/scalar",
-  "$comment": "Restricted Khwarizmi v1 profile; semantic validation is still required."
+  "$comment": "Restricted MathJSON profile. Arbitrary precision decimal atoms use the standard MathJSON {num: string} form. Semantic validation is still mandatory."
 }
