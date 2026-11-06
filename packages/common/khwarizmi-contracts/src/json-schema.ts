@@ -141,7 +141,8 @@ export function validateJsonSchema(
     };
 
     if (typeof schema.$ref === 'string') {
-      const resolved = resolveReference(schema.$ref, currentSchemaPath, bundle);
+      const sourceFilePath = currentSchemaPath.slice(0, currentSchemaPath.indexOf('.json') + '.json'.length);
+      const resolved = resolveReference(schema.$ref, sourceFilePath, bundle);
       if (!resolved) add('$ref', 'Unresolved schema reference: ' + schema.$ref);
       else if (!visit(instance, resolved.schema, resolved.path, instancePath, depth + 1)) valid = false;
     }
