@@ -1,224 +1,122 @@
 <div align="center">
 
-<h1 style="border-bottom: none">
-    <b><a href="https://affine.pro">AFFiNE.Pro</a></b><br />
-    Write, Draw and Plan All at Once
-    <br>
-</h1>
-<a href="https://affine.pro/download">
-    <img alt="affine logo" src="https://cdn.affine.pro/Github_hero_image2.png" style="width: 100%">
-</a>
-<br/>
-<p align="center">
-  A privacy-focused, local-first, open-source, and ready-to-use alternative for Notion & Miro. <br />
-  One hyper-fused platform for wildly creative minds.
-</p>
+# Khwarizmi
 
-<br/>
+### A visual engineering calculation workspace
 
-<br/>
-<a href="https://www.producthunt.com/posts/affine-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-affine&#0045;3" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=440671&theme=light" alt="AFFiNE - One&#0032;app&#0032;for&#0032;all&#0032;&#0045;&#0032;Where&#0032;Notion&#0032;meets&#0032;Miro | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
-<br/>
-<br/>
+**Write calculations naturally. See substitutions. Understand every result.**
 
-<div align="center">
-    <a href="https://affine.pro">Home Page</a> |
-    <a href="https://affine.pro/redirect/discord">Discord</a> |
-    <a href="https://app.affine.pro">Live Demo</a> |
-    <a href="https://affine.pro/blog/">Blog</a> |
-    <a href="https://docs.affine.pro/">Documentation</a>
-</div>
-<br/>
-
-[![Releases](https://img.shields.io/github/downloads/toeverything/AFFiNE/total)](https://github.com/toeverything/AFFiNE/releases/latest)
-[![All Contributors][all-contributors-badge]](#contributors)
-[![TypeScript-version-icon]](https://www.typescriptlang.org/)
+Khwarizmi is an open-source project exploring a Mathcad-style worksheet for engineering calculations, combining a visual mathematical workspace with transparent intermediate substitutions and professional calculation-note output.
 
 </div>
 
-<br />
-<div align="center">
-<em>Docs, canvas and tables are hyper-merged with AFFiNE - just like the word affine (əˈfʌɪn | a-fine).</em>
-</div>
-<br />
+---
 
-<div align="center">
-<img src="https://github.com/toeverything/AFFiNE/assets/79301703/49a426bb-8d2b-4216-891a-fa5993642253" style="width: 100%"/>
-</div>
+## Project status
 
-## Getting started & staying tuned with us.
+<badge>Early development</badge>
 
-Star us, and you will receive all release notifications from GitHub without any delay!
+Khwarizmi is being developed from the AFFiNE codebase, with BlockSuite retained as the editor foundation. The repository is currently in the foundation and desktop-isolation stage. The Windows x64 desktop packaging work is being separated from the upstream cross-platform release system.
 
-<img src="https://user-images.githubusercontent.com/79301703/230891830-0110681e-8c7e-483b-b6d9-9e42b291b9ef.gif" style="width: 100%"/>
+**This is not yet a usable engineering calculation application.** The calculation language, evaluation engine, worksheet format, and PDF workflow are still being designed and implemented in stages.
 
-## What is AFFiNE
+## Why Khwarizmi?
 
-[AFFiNE](https://affine.pro) is an open-source, all-in-one workspace and an operating system for all the building blocks that assemble your knowledge base and much more -- wiki, knowledge management, presentation and digital assets. It's a better alternative to Notion and Miro.
+Engineering calculations need more than a final numerical answer. A useful calculation environment should make the reasoning visible:
 
-## Features
+- **Natural mathematical input** — write equations in a worksheet rather than programming every calculation.
+- **Visible substitutions** — show how defined values are substituted into each expression, not only the final result.
+- **Units and dimensional checks** — treat physical quantities and units as part of the calculation.
+- **Spatial worksheets** — arrange equations, text, tables, inputs, and results freely on a page, including side-by-side calculation columns.
+- **Calculation-note output** — produce clear, structured documents suitable for review, sharing, and printing.
 
-**A true canvas for blocks in any form. Docs and whiteboard are now fully merged.**
+The project takes inspiration from the worksheet experience of Mathcad, the transparent substitutions of Calcpad, and the structured calculation templates and presentation of Tekla Tedds.
 
-- Many editor apps claim to be a canvas for productivity, but AFFiNE is one of the very few which allows you to put any building block on an edgeless canvas -- rich text, sticky notes, any embedded web pages, multi-view databases, linked pages, shapes and even slides. We have it all.
+## Direction and design principles
 
-**Multimodal AI partner ready to kick in any work**
+The intended experience is a **page-oriented engineering worksheet**, not an unrestricted infinite whiteboard.
 
-- Write up professional work report? Turn an outline into expressive and presentable slides? Summary an article into a well-structured mindmap? Sorting your job plan and backlog for tasks? Or... draw and code prototype apps and web pages directly all with one prompt? With you, [AFFiNE AI](https://affine.pro/ai) pushes your creativity to the edge of your imagination, just like [Canvas AI](https://affine.pro/blog/best-canvas-ai) to generate mind map for brainstorming.
+- A4 portrait is the default page format, with landscape support.
+- Equations, text, images, and tables are positioned on the page.
+- Multiple columns and parallel calculations can share the same horizontal space.
+- Evaluation follows a defined worksheet order, with visible dependency and error reporting.
+- The native Khwarizmi document format and calculation semantics remain independent of the underlying editor's internal document model.
+- PDF output will be generated through a dedicated renderer rather than relying on editor screenshots.
 
-**Local-first & Real-time collaborative**
+## Planned calculation pipeline
 
-- We love the idea of local-first that you always own your data on your disk, in spite of the cloud. Furthermore, AFFiNE supports real-time sync and collaborations on web and cross-platform clients.
+The current architectural direction is:
 
-**Self-host & Shape your own AFFiNE**
+1. Mathematical input through a visual equation editor.
+2. Conversion to a structured mathematical representation.
+3. Unit-aware evaluation and dependency resolution in a separate calculation host.
+4. Return of structured results, including original expressions, substituted expressions, numerical values, units, and errors.
+5. Rendering in the worksheet and export to PDF.
 
-- You have the freedom to manage, self-host, fork and build your own AFFiNE. Plugin community and third-party blocks are coming soon. More tractions on [Blocksuite](https://blocksuite.io). Check there to learn how to [self-host AFFiNE](https://docs.affine.pro/self-host-affine).
+The planned technology direction is a TypeScript application with a separate Python-assisted calculation host and a versioned RPC contract. These are architectural goals; they should not be read as a claim that the complete pipeline is already implemented.
 
-## Acknowledgement
+## Current scope
 
-“We shape our tools and thereafter our tools shape us”. A lot of pioneers have inspired us along the way, e.g.:
+The initial work focuses on establishing a stable desktop foundation while preserving useful parts of the upstream editor.
 
-- Quip & Notion with their great concept of “everything is a block”
-- Trello with their Kanban
-- Airtable & Miro with their no-code programmable datasheets
-- Miro & Whimiscal with their edgeless visual whiteboard
-- Remote & Capacities with their object-based tag system
+| Area | Current direction |
+| --- | --- |
+| Desktop target | Windows x64 |
+| Editor foundation | BlockSuite |
+| Visual tools | Preserve relevant shapes, connectors, and flowchart capabilities |
+| Worksheet model | Khwarizmi-owned page and region model |
+| Calculation engine | Separate, versioned calculation service |
+| Document format | Native Khwarizmi format |
+| Export | Dedicated PDF renderer |
 
-There is a large overlap of their atomic “building blocks” between these apps. They are not open source, nor do they have a plugin system like Vscode for contributors to customize. We want to have something that contains all the features we love and also goes one step even further.
-
-Thanks for checking us out, we appreciate your interest and sincerely hope that AFFiNE resonates with you! 🎵 Checking https://affine.pro/ for more details ions.
-
-## Contributing
-
-| Bug Reports                                                                                                                                         | Feature Requests                                                                                                                                               | Questions/Discussions                                                         | AFFiNE Community                                                  |
-| --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [Create a bug report](https://github.com/toeverything/AFFiNE/issues/new?assignees=&labels=bug%2Cproduct-review&template=BUG-REPORT.yml&title=TITLE) | [Submit a feature request](https://github.com/toeverything/AFFiNE/issues/new?assignees=&labels=feat%2Cproduct-review&template=FEATURE-REQUEST.yml&title=TITLE) | [Check GitHub Discussion](https://github.com/toeverything/AFFiNE/discussions) | [Visit the AFFiNE's Discord](https://affine.pro/redirect/discord) |
-| Something isn't working as expected                                                                                                                 | An idea for a new feature, or improvements                                                                                                                     | Discuss and ask questions                                                     | A place to ask, learn and engage with others                      |
-
-Calling all developers, testers, tech writers and more! Contributions of all types are more than welcome, you can read more in [docs/types-of-contributions.md](docs/types-of-contributions.md). If you are interested in contributing code, read our [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) and feel free to check out our GitHub issues to get stuck in to show us what you’re made of.
-
-**Before you start contributing, please sign our [Contributor License Agreement] — it takes less than a minute with your GitHub account. Pull requests cannot be merged until every committer has signed (the `license/cla` check on your PR). Full text: [CLA.md](.github/CLA.md).**
-
-For **bug reports**, **feature requests** and other **suggestions** you can also [create a new issue](https://github.com/toeverything/AFFiNE/issues/new/choose) and choose the most appropriate template for your feedback.
-
-For **translation** and **language support** you can visit our [Discord](https://affine.pro/redirect/discord).
-
-If you have questions, you are welcome to contact us. One of the best places to get more info and learn more is in the [Discord](https://affine.pro/redirect/discord) where you can engage with other like-minded individuals.
-
-## Templates
-
-AFFiNE now provides pre-built [templates](https://affine.pro/templates) from our team. Following are the Top 10 most popular templates among AFFiNE users,if you want to contribute, you can contribute your own template so other people can use it too.
-
-- [vision board template](https://affine.pro/templates/category-vision-board-template)
-- [one pager template](https://affine.pro/templates/category-one-pager-template-free)
-- [sample lesson plan math template](https://affine.pro/templates/sample-lesson-plan-math-template)
-- [grr lesson plan template free](https://affine.pro/templates/grr-lesson-plan-template-free)
-- [free editable lesson plan template for pre k](https://affine.pro/templates/free-editable-lesson-plan-template-for-pre-k)
-- [high note collection planners](https://affine.pro/templates/high-note-collection-planners)
-- [digital planner](https://affine.pro/templates/category-digital-planner)
-- [ADHD Planner](https://affine.pro/templates/adhd-planner)
-- [Reading Log](https://affine.pro/templates/reading-log)
-- [Cornell Notes Template](https://affine.pro/templates/category-cornell-notes-template)
-
-## Blog
-
-Welcome to the AFFiNE blog section! Here, you’ll find the latest insights, tips, and guides on how to maximize your experience with AFFiNE and AFFiNE AI, the leading Canvas AI tool for flexible note-taking and creative organization.
-
-- [vision board template](https://affine.pro/blog/8-free-printable-vision-board-templates-examples-2023)
-- [ai homework helper](https://affine.pro/blog/ai-homework-helper)
-- [vision board maker](https://affine.pro/blog/vision-board-maker)
-- [itinerary template](https://affine.pro/blog/free-customized-travel-itinerary-planner-templates)
-- [one pager template](https://affine.pro/blog/top-12-one-pager-examples-how-to-create-your-own)
-- [cornell notes template](https://affine.pro/blog/the-cornell-notes-template-and-system-learning-tips)
-- [swot chart template](https://affine.pro/blog/top-10-free-editable-swot-analysis-template-examples)
-- [apps like luna task](https://affine.pro/blog/apps-like-luna-task)
-- [note taking ai from rough notes to mind map](https://affine.pro/blog/dynamic-AI-notes)
-- [canvas ai](https://affine.pro/blog/best-canvas-ai)
-- [one pager](https://affine.pro/blog/top-12-one-pager-examples-how-to-create-your-own)
-- [SOP Template](https://affine.pro/blog/how-to-write-sop-step-by-step-guide-5-best-free-tools-templates)
-- [Chore Chart](https://affine.pro/blog/10-best-free-chore-chart-templates-kids-adults)
-
-## Ecosystem
-
-| Name                                             |                            |                                                                                                                                         |
-| ------------------------------------------------ | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [@affine/component](packages/frontend/component) | AFFiNE Component Resources | ![](https://img.shields.io/codecov/c/github/toeverything/affine?style=flat-square)                                                      |
-| [@toeverything/theme](packages/common/theme)     | AFFiNE theme               | [![](https://img.shields.io/npm/dm/@toeverything/theme?style=flat-square&color=eee)](https://www.npmjs.com/package/@toeverything/theme) |
-
-## Upstreams
-
-We would also like to give thanks to open-source projects that make AFFiNE possible:
-
-- [Blocksuite](https://github.com/toeverything/BlockSuite) - 💠 BlockSuite is the open-source collaborative editor project behind AFFiNE.
-- [y-octo](https://github.com/y-crdt/y-octo) - 🐙 y-octo is a native, high-performance, thread-safe YJS CRDT implementation, serving as the core engine enabling the AFFiNE Client/Server to achieve "local-first" functionality.
-- [OctoBase](https://github.com/toeverything/OctoBase) - 🐙 OctoBase is the open-source database behind AFFiNE, local-first, yet collaborative. A light-weight, scalable, data engine written in Rust.
-
-- [yjs](https://github.com/yjs/yjs) - Fundamental support of CRDTs for our implementation on state management and data sync on web.
-- [electron](https://github.com/electron/electron) - Build cross-platform desktop apps with JavaScript, HTML, and CSS.
-- [React](https://github.com/facebook/react) - The library for web and native user interfaces.
-- [napi-rs](https://github.com/napi-rs/napi-rs) - A framework for building compiled Node.js add-ons in Rust via Node-API.
-- [Jotai](https://github.com/pmndrs/jotai) - Primitive and flexible state management for React.
-- [async-call-rpc](https://github.com/Jack-Works/async-call-rpc) - A lightweight JSON RPC client & server.
-- [Vite](https://github.com/vitejs/vite) - Next generation frontend tooling.
-- Other upstream [dependencies](https://github.com/toeverything/AFFiNE/network/dependencies).
-
-Thanks a lot to the community for providing such powerful and simple libraries, so that we can focus more on the implementation of the product logic, and we hope that in the future our projects will also provide a more easy-to-use knowledge base for everyone.
-
-## Contributors
-
-We would like to express our gratitude to all the individuals who have already contributed to AFFiNE! If you have any AFFiNE-related project, documentation, tool or template, please feel free to contribute it by submitting a pull request to our curated list on GitHub: [awesome-affine](https://github.com/toeverything/awesome-affine).
-
-<a href="https://github.com/toeverything/affine/graphs/contributors">
-  <img alt="contributors" src="https://opencollective.com/affine/contributors.svg?width=890&button=false" />
-</a>
-
-## Self-Host
-
-Begin with Docker to deploy your own feature-rich, unrestricted version of AFFiNE. Our team is diligently updating to the latest version. For more information on how to self-host AFFiNE, please refer to our [documentation](https://docs.affine.pro/self-host-affine).
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/toeverything/AFFiNE)
-
-[![Run on Sealos](https://sealos.io/Deploy-on-Sealos.svg)](https://sealos.io/products/app-store/affine)
-
-## Feature Request
-
-For feature requests, please see [discussions](https://github.com/toeverything/AFFiNE/discussions/categories/ideas).
+The Windows-only packaging work does not mean the web or mobile source packages have all been removed. It isolates the active desktop release path; broader source and dependency cleanup is a separate task.
 
 ## Building
 
-### Codespaces
+The current desktop build instructions are maintained here:
 
-From the GitHub repo main page, click the green "Code" button and select "Create codespace on master". This will open a new Codespace with the (supposedly auto-forked
-AFFiNE repo cloned, built, and ready to go).
+- [Windows x64 desktop build guide](docs/building-desktop-client-app.md)
 
-### Local
+The Windows packaging workflow is:
 
-See [BUILDING.md] for instructions on how to build AFFiNE from source code.
+- [Windows desktop workflow](.github/workflows/windows-desktop.yml)
+
+Build requirements and commands may change while the desktop foundation is being stabilized. The workflow and build guide should be treated as the current reference.
+
+## Development roadmap
+
+The work is being approached in deliberate stages:
+
+1. **Desktop foundation** — isolate and validate the Windows x64 desktop build.
+2. **Architecture contracts** — define and test the document schema, calculation model, and RPC boundary before broad implementation.
+3. **Worksheet experience** — establish page coordinates, regions, positioning, and multi-column layout.
+4. **Mathematical input** — integrate equation editing and a canonical mathematical representation.
+5. **Calculation host** — implement safe, unit-aware evaluation, dependencies, substitutions, and structured errors.
+6. **Presentation and export** — build calculation-note styling and independent PDF output.
+
+The roadmap describes intended work, not completed features. Decisions and implementation status should be documented as each stage is reviewed.
 
 ## Contributing
 
-We welcome contributions from everyone.
-See [docs/contributing/tutorial.md](./docs/contributing/tutorial.md) for details.
+At this early stage, focused technical contributions and architectural reviews are especially valuable. Please open an issue or discussion before undertaking large changes so that work can be aligned with the project direction.
 
-## License
+When proposing changes, keep these principles in mind:
 
-### Editions
+- Avoid replacing or extending the calculation architecture without reviewing its contracts first.
+- Do not treat the editor's internal document format as the public Khwarizmi file format.
+- Keep calculation evaluation separate from UI rendering.
+- Preserve transparent substitutions, units, and traceable results as core requirements.
 
-- AFFiNE Community Edition (CE) is the current available version, it's free for self-host under the MIT license.
+## Upstream
 
-- AFFiNE Enterprise Edition (EE) is yet to be published, it will have more advanced features and enterprise-oriented offerings, including but not exclusive to rebranding and SSO, advanced admin and audit, etc., you may refer to https://affine.pro/pricing for more information
+Khwarizmi builds on the open-source work of [AFFiNE](https://github.com/toeverything/AFFiNE) and [BlockSuite](https://github.com/toeverything/BlockSuite). Their editor, collaboration, and application infrastructure provide a starting point for the project.
 
-See [LICENSE] for details.
+We are grateful to the AFFiNE and BlockSuite maintainers and contributors. Please consult the repository's license files and upstream notices when using or redistributing code; this README does not replace those terms.
 
-[all-contributors-badge]: https://img.shields.io/github/contributors/toeverything/AFFiNE
-[license]: ./LICENSE
-[building.md]: ./docs/BUILDING.md
-[update page]: https://affine.pro/blog?tag=Release%20Note
-[jobs available]: ./docs/jobs.md
-[latest packages]: https://github.com/toeverything/AFFiNE/pkgs/container/affine-self-hosted
-[contributor license agreement]: https://cla-assistant.io/toeverything/AFFiNE
-[stars-icon]: https://img.shields.io/github/stars/toeverything/AFFiNE.svg?style=flat&logo=github&colorB=red&label=stars
-[codecov]: https://codecov.io/gh/toeverything/affine/branch/canary/graphs/badge.svg?branch=canary
-[typescript-version-icon]: https://img.shields.io/github/package-json/dependency-version/toeverything/affine/dev/typescript
-[react-version-icon]: https://img.shields.io/github/package-json/dependency-version/toeverything/AFFiNE/react?filename=packages%2Ffrontend%2Fcore%2Fpackage.json&color=rgb(97%2C228%2C251)
-[blocksuite-icon]: https://img.shields.io/github/package-json/dependency-version/toeverything/AFFiNE/@blocksuite/store?color=6880ff&filename=packages%2Ffrontend%2Fcore%2Fpackage.json&label=blocksuite
+---
+
+<div align="center">
+
+**Khwarizmi — engineering calculations, made visible.**
+
+</div>
