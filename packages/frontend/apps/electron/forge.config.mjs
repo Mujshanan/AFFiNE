@@ -196,7 +196,7 @@ export default {
         );
       }
     },
-    generateAssets: async (_, platform, arch) => {
+    generateAssets: async () => {
       if (process.env.SKIP_GENERATE_ASSETS) {
         return;
       }
