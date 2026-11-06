@@ -10,7 +10,7 @@
 3. **Persistence tests:** canonical serialization, round trips, stable IDs, unknown extension preservation, and migrations.
 4. **Transport tests:** byte framing, fragmented reads/writes, malformed frames, size limits, correlation, cancellation, and disconnects.
 5. **Security tests:** unauthorized pipe client, pipe squatting, wrong process identity, remote connection rejection, and shutdown behavior.
-6. **Cross-implementation tests:** TypeScript RPC client and host must pass the same fixtures; Python worker fixtures validate only the narrow internal worker contract.
+6. **Interoperability tests:** TypeScript client and host modules must consume the same language-neutral fixtures. A second independent implementation is deferred to a later interoperability milestone; no Python worker is required in v1.
 
 ## 2. Required fixture layout
 
