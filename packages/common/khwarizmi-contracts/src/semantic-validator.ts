@@ -160,6 +160,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
         assignmentIds.add(statement.assignmentId);
       }
       if (statement.kind === 'declareLocal' && typeof statement.localSymbolId === 'string') {
+        if (documentSymbolIds.has(statement.localSymbolId)) diagnostics.push({ code: 'DUPLICATE_SYMBOL_ID', message: 'Local and document symbol IDs must not collide', statementId: statement.statementId, symbolId: statement.localSymbolId });
         if (localIds.has(statement.localSymbolId)) diagnostics.push({ code: 'DUPLICATE_LOCAL_ID', message: 'Local symbol IDs must be unique throughout the document', statementId: statement.statementId, symbolId: statement.localSymbolId });
         localIds.add(statement.localSymbolId);
       }
@@ -192,11 +193,12 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
     if (isRecord(expr)) validateExpressionRecord(expr, new Set(scope.symbols.keys()), localIds, future, diagnostics, statementId);
   };
 
-  const visitStatements = (statements: unknown, inherited: Scope, allowLocals: boolean) => {
+  const visitStatements = (statements: unknown, inherited: Scope, allowLocals: boolean, outerFuture: Set<string> = new Set()) => {
     if (!Array.isArray(statements)) return;
-    const futureDirectLocals = new Set(
-      statements.filter(isRecord).filter(s => s.kind === 'declareLocal' && typeof s.localSymbolId === 'string').map(s => s.localSymbolId)
-    );
+    const futureDirectLocals = new Set([
+      ...outerFuture,
+      ...statements.filter(isRecord).filter(s => s.kind === 'declareLocal' && typeof s.localSymbolId === 'string').map(s => s.localSymbolId)
+    ]);
     const scope: Scope = { symbols: new Map(inherited.symbols) };
 
     statements.forEach((statement: unknown, index: number) => {
@@ -219,11 +221,11 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
         if (typeof statement.localSymbolId === 'string' && typeof statement.displayName === 'string') scope.symbols.set(statement.localSymbolId, statement.displayName);
       } else if (statement.kind === 'if') {
         visitExpression(statement.condition, scope, futureDirectLocals, statementId);
-        visitStatements(statement.then, scope, true);
-        visitStatements(statement.else, scope, true);
+        visitStatements(statement.then, scope, true, futureDirectLocals);
+        visitStatements(statement.else, scope, true, futureDirectLocals);
       } else if (statement.kind === 'while') {
         visitExpression(statement.condition, scope, futureDirectLocals, statementId);
-        visitStatements(statement.body, scope, true);
+        visitStatements(statement.body, scope, true, futureDirectLocals);
       }
       if (statement.kind === 'declareLocal' && typeof statement.localSymbolId === 'string') futureDirectLocals.delete(statement.localSymbolId);
       if (index >= statements.length) return;
