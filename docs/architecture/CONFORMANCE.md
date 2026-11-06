@@ -44,7 +44,7 @@ contracts/
   manifest.json
 ```
 
-Every fixture has a stable ID, contract version, input payload, expected outcome, and expected diagnostic/error code where relevant. Numeric fixtures state precision and tolerance explicitly.
+Every fixture has a stable ID, contract version, input payload, expected outcome, and expected diagnostic/error code where relevant. Numeric fixtures state precision and tolerance explicitly. Initial schemas and seed fixtures live under `contracts/schemas/v1` and `contracts/fixtures/v1`. MathJSON structural validation is distinct from Khwarizmi semantic validation.
 
 ## 3. Minimum document tests
 
