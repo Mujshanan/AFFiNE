@@ -21,14 +21,14 @@ An optional Python worker may be invoked by the TypeScript host for specialized 
 
 - Encoding: UTF-8.
 - Payload: one JSON-RPC 2.0 object per frame.
-- Framing: 4-byte unsigned length prefix followed by exactly that many UTF-8 bytes. **Proposed byte order: little-endian.**
-- Maximum frame payload: 16 MiB (proposed v1 ceiling).
+- Framing: 4-byte unsigned length prefix followed by exactly that many UTF-8 bytes. **Byte order: little-endian.**
+- Maximum frame payload: fixed 16 MiB for v1; peers do not negotiate or override it.
 - Reject zero-length, oversized, truncated, malformed UTF-8, and invalid JSON frames.
 - Read exactly the declared payload length; pipe read boundaries are not message boundaries.
 - One request per frame; JSON-RPC batch arrays are not supported.
 - No newline-delimited JSON and no delimiter scanning.
 
-The little-endian prefix and 16 MiB cap must be encoded in shared test fixtures before host implementation. Changing either requires a protocol version change or explicit compatibility decision.
+The little-endian prefix and fixed 16 MiB cap are normative v1 wire rules and MUST be encoded in shared fixtures. Changing either requires a protocol version change or explicit compatibility decision.
 
 ## 3. JSON-RPC rules
 
@@ -71,7 +71,8 @@ Transport/process failure is not an evaluation status; it is an RPC/transport er
 - A cancelled request must not publish a completed result snapshot.
 - Requests are isolated; no shared mutable document evaluation context between requests.
 - Duplicate in-flight request IDs are rejected.
-- Timeouts are enforced by the caller and host policy; exact default values remain open and must be specified before conformance freeze.
+- Default host safeguards: 30 seconds for validation, 120 seconds for evaluation, and at most eight concurrent requests per host instance. Callers may cancel earlier; these limits are not a guarantee that all evaluations finish within the timeout.
+- Timeout and concurrency behavior MUST be deterministic, documented, and covered by conformance fixtures.
 
 ## 7. Security and lifecycle
 
@@ -83,7 +84,7 @@ The named pipe is local-only and restricted to the current Windows user via a pr
 - Main process performs controlled shutdown and bounded termination.
 - Do not expose a general-purpose pipe name or privileged process-launch method to renderer content.
 
-The exact pipe naming scheme, DACL construction, and process verification implementation are release-blocking security details.
+Electron main MUST verify the spawned host process identity/ownership and bind readiness to a per-launch unguessable capability delivered through a protected channel, in addition to a restrictive DACL and unpredictable per-instance pipe name. The capability MUST NOT be exposed to renderer code or logs. Exact Windows API calls and ACL entries remain implementation details, but these security properties are normative and release-blocking.
 
 ## 8. Integrity and canonicalization
 
@@ -91,7 +92,7 @@ For document payload integrity, use SHA-256 over RFC 8785 JSON Canonicalization 
 
 ## 9. Python worker boundary
 
-Python worker calls are internal to the TypeScript host. The TypeScript host sends typed, bounded requests and validates typed responses. No Python worker API is exposed over the renderer RPC. Worker crash, timeout, invalid output, or unsupported operation becomes a normalized host diagnostic/error. The worker cannot mutate the document, symbol table, or dependency graph.
+Python worker protocol, runtime dependency, and numerical operation catalog are deferred from v1. TypeScript remains authoritative and no Python worker is required for v1. A future worker, if approved under a separate ADR, must remain internal to the TypeScript host, use typed bounded requests, and cannot mutate the document, symbol table, or dependency graph.
 
 ## 10. Unresolved v1 details
 
@@ -102,4 +103,4 @@ Python worker calls are internal to the TypeScript host. The TypeScript host sen
 - Exact host capability/version negotiation fields.
 - Python worker transport and allowlisted operation catalog.
 
-These must be resolved in the contract-conformance phase; they are not implementation freedoms.
+These are implementation deliverables for contract conformance; they are not open owner approvals. The fixed 16 MiB limit, little-endian framing, process verification, and per-launch capability are already accepted normative requirements.
