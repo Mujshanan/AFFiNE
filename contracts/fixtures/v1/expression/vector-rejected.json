@@ -15,6 +15,5 @@
       "nodeId": "vector-node",
       "blockId": "vector-block"
     }
-  ],
-  "expectedDiagnostic": "UNSUPPORTED_VALUE_KIND"
+  ]
 }
