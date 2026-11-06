@@ -25,8 +25,16 @@ type SchemaBundle = Record<string, JsonSchema>;
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return '[' + value.map(canonicalJson).join(',') + ']';
+  if (isObject(value)) {
+    return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonicalJson(value[key])).join(',') + '}';
+  }
+  return JSON.stringify(value);
+}
+
 const sameJson = (a: unknown, b: unknown): boolean =>
-  JSON.stringify(a) === JSON.stringify(b);
+  canonicalJson(a) === canonicalJson(b);
 
 const escapePointer = (value: string): string =>
   value.replace(/~/g, '~0').replace(/\//g, '~1');
