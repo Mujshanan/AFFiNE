@@ -17,14 +17,14 @@ function Get-RequiredFile {
     [string]$Description
   )
 
-  $matches = @(Get-ChildItem -LiteralPath $Directory -Filter $Filter -File -Recurse)
-  if ($matches.Count -eq 0) {
+  $found = @(Get-ChildItem -LiteralPath $Directory -Filter $Filter -File -Recurse)
+  if ($found.Count -eq 0) {
     throw "Could not find $Description ($Filter) under $Directory"
   }
   if ($matches.Count -gt 1) {
     throw "Expected one $Description under $Directory, found $($matches.Count)"
   }
-  return $matches[0]
+  return $found[0]
 }
 
 function Wait-ForFile {
@@ -99,7 +99,7 @@ try {
 
   # Squirrel: validate the installer and update package, install, launch and uninstall.
   $squirrelDirectory = Join-Path $MakeDirectory 'squirrel.windows/x64'
-  $squirrelSetup = Get-RequiredFile -Directory $squirrelDirectory -Filter "$ProductName-$Version Setup.exe" -Description 'Squirrel installer'
+  $squirrelSetup = Get-RequiredFile -Directory $squirrelDirectory -Filter "$ProductName*Setup.exe" -Description 'Squirrel installer'
   $squirrelPackage = Get-RequiredFile -Directory $squirrelDirectory -Filter '*.nupkg' -Description 'Squirrel NuGet package'
   $releases = Join-Path $squirrelDirectory 'RELEASES'
   if (-not (Test-Path -LiteralPath $releases -PathType Leaf)) {
