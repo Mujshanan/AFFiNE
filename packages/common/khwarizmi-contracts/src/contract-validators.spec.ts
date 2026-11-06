@@ -67,6 +67,17 @@ describe('Khwarizmi v1 contract schemas', () => {
     expect(validateUnitRegistrySemantics(unitRegistry).diagnostics).toEqual([]);
   });
 
+
+  it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
+    const profile = 'contracts/schemas/v1/mathjson-profile.schema.json';
+    for (const expression of [['Rational', 1], ['Sin', 1, 2], ['Log'], ['Not']]) {
+      expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(false);
+    }
+    for (const expression of [['Rational', 1, 2], ['Sin', 1], ['Log', 2], ['Log', 2, 10]]) {
+      expect(validateJsonSchema(expression, profile, schemaBundle).valid).toBe(true);
+    }
+  });
+
   it('validates every fixture at its declared structural boundary', () => {
     const failures: string[] = [];
     for (const fixture of manifest.fixtures) {
