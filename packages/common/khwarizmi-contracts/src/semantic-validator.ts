@@ -122,7 +122,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
   const pages = Array.isArray(document.pages) ? document.pages : [];
   const registry = isRecord(options.unitRegistry) ? options.unitRegistry : undefined;
   const registryVersion = typeof registry?.version === 'string' ? registry.version : undefined;
-  const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
+  const hasUnitRegistry = registry !== undefined;\n  const unitIds = new Set<string>(Array.isArray(registry?.units) ? registry.units.filter(isRecord).map(unit => unit.unitId).filter((id): id is string => typeof id === 'string') : []);
   const documentSymbolIds = new Set<string>();
   const documentNames = new Map<string, string>();
 
@@ -135,7 +135,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
     if (isRecord(symbol.unit)) {
       const unitId = symbol.unit.unitId;
       if (unitId === 'unit.celsius' || unitId === 'unit.fahrenheit') diagnostics.push({ code: 'UNSUPPORTED_UNIT_KIND', message: 'Affine temperature units are not supported in v1', symbolId: symbol.symbolId });
-      else if (typeof unitId === 'string' && unitIds.size > 0 && !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Symbol refers to a unit absent from the selected registry', symbolId: symbol.symbolId });
+      else if (typeof unitId === 'string' && hasUnitRegistry && !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Symbol refers to a unit absent from the selected registry', symbolId: symbol.symbolId });
       if (registryVersion && symbol.unit.registryVersion !== registryVersion) diagnostics.push({ code: 'UNIT_REGISTRY_VERSION_MISMATCH', message: 'Symbol unit metadata uses a different registry version', symbolId: symbol.symbolId });
     }
     if (typeof symbol.displayName === 'string' && typeof symbol.normalizedName === 'string') {
@@ -253,7 +253,7 @@ export function validateCalculationSemantics(document: JsonValue | unknown, opti
       for (const attachment of value.unitAttachments) {
         if (!isRecord(attachment) || typeof attachment.unitId !== 'string') continue;
         if (attachment.unitId === 'unit.celsius' || attachment.unitId === 'unit.fahrenheit') diagnostics.push({ code: 'UNSUPPORTED_UNIT_KIND', message: 'Affine temperature units are not supported in v1', path: attachment.path });
-        else if (unitIds.size > 0 && !unitIds.has(attachment.unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Expression refers to a unit absent from the selected registry', path: attachment.path });
+        else if (hasUnitRegistry && !unitIds.has(attachment.unitId)) diagnostics.push({ code: 'UNKNOWN_UNIT', message: 'Expression refers to a unit absent from the selected registry', path: attachment.path });
       }
     }
     Object.values(value).forEach(inspectUnits);
