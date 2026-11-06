@@ -30,7 +30,7 @@ function canonicalJson(value: unknown): string {
   if (isObject(value)) {
     return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonicalJson(value[key])).join(',') + '}';
   }
-  return JSON.stringify(value);
+  return JSON.stringify(value) ?? 'undefined';
 }
 
 const sameJson = (a: unknown, b: unknown): boolean =>
