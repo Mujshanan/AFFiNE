@@ -13,7 +13,21 @@
           {
             "kind": "if",
             "statementId": "outer-if",
-            "condition": "True",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-outer-if",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
             "then": [
               {
                 "kind": "declareLocal",
@@ -45,7 +59,21 @@
               {
                 "kind": "if",
                 "statementId": "inner-if",
-                "condition": "True",
+                "condition": {
+                  "format": "khwarizmi.condition-expression",
+                  "schemaVersion": 1,
+                  "mathJson": "True",
+                  "symbolBindings": [],
+                  "authoredNumbers": [],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "condition-inner-if",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                },
                 "then": [
                   {
                     "kind": "expression",
