@@ -13,7 +13,7 @@
           {
             "kind": "while",
             "statementId": "loop",
-            "condition": true,
+            "condition": "True",
             "body": [
               {
                 "kind": "expression",
