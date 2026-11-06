@@ -5,11 +5,5 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts"
-  },
-  "scripts": {
-    "test": "vitest run"
-  },
-  "devDependencies": {
-    "vitest": "^4.1.11"
   }
 }
