@@ -178,7 +178,7 @@ Every v1 block kind needs an explicit content schema; avoid arbitrary untyped co
 
 Define asset identity/hash, media type, byte length, embedded versus external reference rules, per-asset and aggregate limits, and missing/hash-mismatch behavior. External references must not trigger arbitrary network fetching during document validation or calculation.
 
-**Selected:** V1 assets are embedded and content-addressed by SHA-256. External/network asset fetching is not part of validation or evaluation. Maximum 32 MiB per asset and 128 MiB aggregate embedded assets per document. Exceeding either limit is a stable validation error. Schema field names remain implementation details.
+**Selected:** V1 assets are embedded and content-addressed by SHA-256. External/network asset fetching is not part of validation or evaluation. Maximum 4 MiB per asset and 8 MiB aggregate raw embedded assets per document. The complete canonical JSON document, including base64 asset encoding, MUST remain within the fixed 16 MiB RPC frame limit. Exceeding either limit is a stable validation error. Schema field names remain implementation details.
 
 ### T4 — Layout grammar and validation (F6)
 
