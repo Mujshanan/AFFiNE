@@ -2,11 +2,9 @@
   "expression": {
     "format": "khwarizmi.expression",
     "schemaVersion": 1,
-    "mathJson": [
-      "Rational",
-      "123",
-      "100"
-    ],
+    "mathJson": {
+      "num": "1.23"
+    },
     "symbolBindings": [],
     "authoredNumbers": [
       {
