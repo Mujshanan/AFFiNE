@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - '.github/workflows/windows-desktop.yml'
+      - '.github/scripts/**'
       - '.github/actions/setup-node/**'
       - '.github/actions/build-rust/**'
       - 'blocksuite/**'
@@ -79,7 +80,7 @@ jobs:
       - name: Smoke test Windows ZIP, Squirrel, and NSIS packages
         shell: pwsh
         run: |
-          ./\.github/scripts/smoke-test-windows-packages.ps1 -MakeDirectory "packages/frontend/apps/electron/out/canary/make" -ProductName "AFFiNE-canary" -Version "0.27.5"
+          ./.github/scripts/smoke-test-windows-packages.ps1 -MakeDirectory "packages/frontend/apps/electron/out/canary/make" -ProductName "AFFiNE-canary" -Version "0.27.5"
 
       - name: Upload Windows desktop artifacts
         uses: actions/upload-artifact@v4
