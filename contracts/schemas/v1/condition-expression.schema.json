@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/condition-expression.schema.json",
+  "title": "Khwarizmi Condition Expression Record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "mathJson",
+    "symbolBindings",
+    "authoredNumbers",
+    "unitAttachments",
+    "sourceMap"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.condition-expression"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "mathJson": {
+      "$ref": "mathjson-profile.schema.json#/$defs/condition"
+    },
+    "symbolBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "engineSymbol",
+          "symbolId"
+        ],
+        "properties": {
+          "engineSymbol": {
+            "type": "string",
+            "pattern": "^kz_[A-Za-z0-9_-]{1,80}$"
+          },
+          "symbolId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "authoredNumbers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "lexeme",
+          "representation"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "lexeme": {
+            "type": "string"
+          },
+          "representation": {
+            "enum": [
+              "exactDecimal",
+              "exactRational",
+              "approximate"
+            ]
+          },
+          "numerator": {
+            "type": "string"
+          },
+          "denominator": {
+            "type": "string"
+          },
+          "precision": {
+            "type": "integer",
+            "minimum": 2
+          }
+        }
+      }
+    },
+    "unitAttachments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "unitId"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "unitId": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "sourceMap": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "nodeId",
+          "blockId"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "nodeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "blockId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "pageId": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
