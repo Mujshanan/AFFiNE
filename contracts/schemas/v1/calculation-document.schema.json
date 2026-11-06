@@ -39,7 +39,8 @@
         "additionalProperties": false,
         "required": [
           "symbolId",
-          "displayName"
+          "displayName",
+          "normalizedName"
         ],
         "properties": {
           "symbolId": {
