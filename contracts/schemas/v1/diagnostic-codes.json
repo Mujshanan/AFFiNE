@@ -1,0 +1,261 @@
+{
+  "format": "khwarizmi.diagnostic-registry",
+  "version": 1,
+  "codes": [
+    {
+      "code": "AMBIGUOUS_IMPLICIT_MULTIPLICATION",
+      "severity": "error",
+      "description": "The authored expression has more than one valid implicit-multiplication parse."
+    },
+    {
+      "code": "CANCELLED",
+      "severity": "info",
+      "description": "The calculation or request was cancelled."
+    },
+    {
+      "code": "DEPENDENCY_CYCLE",
+      "severity": "fatal",
+      "description": "A persisted dependency graph violates the acyclic execution invariant."
+    },
+    {
+      "code": "DEPENDENCY_FAILED",
+      "severity": "error",
+      "description": "A referenced assignment failed and has no published value."
+    },
+    {
+      "code": "DIMENSION_MISMATCH",
+      "severity": "error",
+      "description": "The operation combines quantities with incompatible dimensions."
+    },
+    {
+      "code": "DIVISION_BY_ZERO",
+      "severity": "error",
+      "description": "The expression divides by zero."
+    },
+    {
+      "code": "DOMAIN_ERROR",
+      "severity": "error",
+      "description": "A mathematical function received an operand outside its real domain."
+    },
+    {
+      "code": "DUPLICATE_ASSIGNMENT_ID",
+      "severity": "error",
+      "description": "Assignment IDs must be unique throughout the document."
+    },
+    {
+      "code": "DUPLICATE_LOCAL_ID",
+      "severity": "error",
+      "description": "Local symbol IDs must be unique throughout the document."
+    },
+    {
+      "code": "DUPLICATE_PAGE_ID",
+      "severity": "error",
+      "description": "Page IDs must be unique throughout the document."
+    },
+    {
+      "code": "DUPLICATE_PREFIX_ID",
+      "severity": "error",
+      "description": "Unit prefix IDs must be unique."
+    },
+    {
+      "code": "DUPLICATE_STATEMENT_ID",
+      "severity": "error",
+      "description": "Statement IDs must be unique throughout the document."
+    },
+    {
+      "code": "DUPLICATE_SYMBOL_BINDING",
+      "severity": "error",
+      "description": "An expression binds an engine token or symbol more than once."
+    },
+    {
+      "code": "DUPLICATE_SYMBOL_ID",
+      "severity": "error",
+      "description": "Symbol IDs must be unique and must not collide across symbol classes."
+    },
+    {
+      "code": "DUPLICATE_SYMBOL_NAME",
+      "severity": "error",
+      "description": "Document-level display names are not unique after normalization."
+    },
+    {
+      "code": "DUPLICATE_UNIT_ID",
+      "severity": "fatal",
+      "description": "Unit IDs must be unique in a unit registry."
+    },
+    {
+      "code": "DUPLICATE_UNIT_SYMBOL",
+      "severity": "fatal",
+      "description": "Unit symbols must be unique in a unit registry."
+    },
+    {
+      "code": "FRAME_TOO_LARGE",
+      "severity": "error",
+      "description": "An RPC frame exceeds the configured maximum size."
+    },
+    {
+      "code": "INTERNAL_EVALUATOR_FAILURE",
+      "severity": "fatal",
+      "description": "The calculation engine failed unexpectedly."
+    },
+    {
+      "code": "INVALID_CALCULATION_ORDER",
+      "severity": "error",
+      "description": "The calculation order does not contain every top-level statement exactly once."
+    },
+    {
+      "code": "INVALID_DEPENDENCY_GRAPH",
+      "severity": "fatal",
+      "description": "A persisted dependency graph has an invalid structure."
+    },
+    {
+      "code": "INVALID_DOCUMENT",
+      "severity": "error",
+      "description": "The calculation document or its integrity metadata is invalid."
+    },
+    {
+      "code": "INVALID_DOCUMENT_DIGEST",
+      "severity": "fatal",
+      "description": "The supplied document digest does not match the canonical document bytes."
+    },
+    {
+      "code": "INVALID_FUNCTION_ARITY",
+      "severity": "error",
+      "description": "A mathematical function was supplied with an unsupported number of arguments."
+    },
+    {
+      "code": "INVALID_JSONRPC_ENVELOPE",
+      "severity": "error",
+      "description": "An RPC message does not conform to the supported JSON-RPC envelope."
+    },
+    {
+      "code": "INVALID_MATHJSON_PATH",
+      "severity": "error",
+      "description": "A source-map, authored-number, or unit path does not resolve in the MathJSON tree."
+    },
+    {
+      "code": "INVALID_NORMALIZED_NAME",
+      "severity": "error",
+      "description": "A symbol normalizedName does not match the canonical normalization rule."
+    },
+    {
+      "code": "INVALID_PREFIX_SCALE",
+      "severity": "fatal",
+      "description": "A unit prefix scale is not a reduced positive rational."
+    },
+    {
+      "code": "INVALID_UNIT_DIMENSION",
+      "severity": "fatal",
+      "description": "A unit dimension vector is not canonical."
+    },
+    {
+      "code": "INVALID_UNIT_REGISTRY",
+      "severity": "fatal",
+      "description": "The built-in unit registry is structurally or semantically invalid."
+    },
+    {
+      "code": "INVALID_UNIT_SCALE",
+      "severity": "fatal",
+      "description": "A unit scale is not a reduced positive rational."
+    },
+    {
+      "code": "LOCAL_OUT_OF_SCOPE",
+      "severity": "error",
+      "description": "A local variable is referenced outside its lexical scope."
+    },
+    {
+      "code": "LOCAL_USE_BEFORE_DECLARATION",
+      "severity": "error",
+      "description": "A local variable is referenced before its declaration."
+    },
+    {
+      "code": "NUMERIC_OVERFLOW",
+      "severity": "error",
+      "description": "A numeric operation exceeds the supported range or precision."
+    },
+    {
+      "code": "NUMERIC_UNDERFLOW",
+      "severity": "warning",
+      "description": "A numeric operation underflows the configured precision."
+    },
+    {
+      "code": "RESOURCE_LIMIT_EXCEEDED",
+      "severity": "fatal",
+      "description": "A deterministic evaluation resource limit was exceeded."
+    },
+    {
+      "code": "SCHEMA_INVALID",
+      "severity": "error",
+      "description": "A document, expression, RPC payload, or result fails schema validation."
+    },
+    {
+      "code": "SHADOWED_LOCAL",
+      "severity": "error",
+      "description": "A local declaration shadows a document symbol or visible local."
+    },
+    {
+      "code": "UNBOUND_ENGINE_SYMBOL",
+      "severity": "error",
+      "description": "A MathJSON engine token has no stable symbol binding."
+    },
+    {
+      "code": "UNIT_PARSE_ERROR",
+      "severity": "error",
+      "description": "A unit expression cannot be parsed or resolved."
+    },
+    {
+      "code": "UNIT_REGISTRY_VERSION_MISMATCH",
+      "severity": "error",
+      "description": "Unit metadata refers to a different registry version."
+    },
+    {
+      "code": "UNKNOWN_ASSIGNMENT_TARGET",
+      "severity": "error",
+      "description": "An assignment target is neither a document symbol nor a visible local."
+    },
+    {
+      "code": "UNKNOWN_PREFIXABLE_UNIT",
+      "severity": "fatal",
+      "description": "A prefixable unit ID is absent from the unit registry."
+    },
+    {
+      "code": "UNKNOWN_SYMBOL",
+      "severity": "error",
+      "description": "A symbol identifier is not declared in the document namespace."
+    },
+    {
+      "code": "UNKNOWN_UNIT",
+      "severity": "error",
+      "description": "A unit ID or prefix is not present in the selected registry."
+    },
+    {
+      "code": "UNRESOLVED_SYMBOL",
+      "severity": "error",
+      "description": "A symbol read has no visible successful assignment or binding."
+    },
+    {
+      "code": "UNSUPPORTED_FUNCTION",
+      "severity": "error",
+      "description": "A function is outside the closed v1 MathJSON allowlist."
+    },
+    {
+      "code": "UNSUPPORTED_OPERATOR",
+      "severity": "error",
+      "description": "An operator is outside the supported v1 expression grammar."
+    },
+    {
+      "code": "UNSUPPORTED_UNIT_KIND",
+      "severity": "error",
+      "description": "The unit kind is outside the supported v1 unit model."
+    },
+    {
+      "code": "UNSUPPORTED_VALUE_KIND",
+      "severity": "error",
+      "description": "A value is outside the scalar-only v1 value model."
+    },
+    {
+      "code": "UNUSED_SYMBOL_BINDING",
+      "severity": "error",
+      "description": "A symbol binding is not referenced by the expression MathJSON."
+    }
+  ]
+}
