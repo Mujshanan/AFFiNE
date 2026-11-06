@@ -435,5 +435,51 @@
         }
       ]
     }
+  ],
+  "prefixes": [
+    {
+      "prefixId": "micro",
+      "symbol": "µ",
+      "scaleNumerator": "1",
+      "scaleDenominator": "1000000"
+    },
+    {
+      "prefixId": "milli",
+      "symbol": "m",
+      "scaleNumerator": "1",
+      "scaleDenominator": "1000"
+    },
+    {
+      "prefixId": "centi",
+      "symbol": "c",
+      "scaleNumerator": "1",
+      "scaleDenominator": "100"
+    },
+    {
+      "prefixId": "kilo",
+      "symbol": "k",
+      "scaleNumerator": "1000",
+      "scaleDenominator": "1"
+    },
+    {
+      "prefixId": "mega",
+      "symbol": "M",
+      "scaleNumerator": "1000000",
+      "scaleDenominator": "1"
+    },
+    {
+      "prefixId": "giga",
+      "symbol": "G",
+      "scaleNumerator": "1000000000",
+      "scaleDenominator": "1"
+    }
+  ],
+  "prefixableUnitIds": [
+    "metre",
+    "second",
+    "newton",
+    "pascal",
+    "joule",
+    "watt"
   ]
 }
