@@ -21,6 +21,7 @@ These documents define the contracts that application/editor and calculation-hos
 - [Expression and calculation semantics](./CALCULATION-SEMANTICS.md)
 - [Calculation host and RPC v1](./RPC-V1.md)
 - [Contract conformance plan](./CONFORMANCE.md)
+- [PR #3 decision-resolution document](./PR-3-DECISION-RESOLUTION.md)
 
 ## Normative language
 
@@ -28,10 +29,11 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 
 ## Implementation order
 
-1. Freeze document and calculation schemas.
-2. Freeze RPC envelope, method schemas, errors, framing, lifecycle, and security rules.
-3. Align schema validators and contract fixtures with those definitions.
-4. Run cross-process conformance tests against a fake host before implementing the real host.
-5. Only after contract conformance passes, begin broad worksheet editor and calculation-host implementation.
+1. Resolve approval-gated decisions and record accepted/deferred outcomes in ADRs.
+2. Freeze document and calculation schemas.
+3. Freeze RPC envelope, method schemas, errors, framing, lifecycle, and security rules.
+4. Align schema validators and contract fixtures with those definitions.
+5. Run cross-process conformance tests against a fake host before implementing the real host.
+6. Only after contract conformance passes, begin broad worksheet editor and calculation-host implementation.
 
 MathLive is an equation authoring/rendering integration, not the canonical semantic model. It may provide an interchange/editor surface; the persisted Khwarizmi AST remains authoritative.
