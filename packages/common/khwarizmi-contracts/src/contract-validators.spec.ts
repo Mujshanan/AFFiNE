@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative, resolve, sep } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
@@ -125,7 +125,7 @@ describe('Khwarizmi v1 semantic validators', () => {
       else if (Array.isArray(data.dependencyGraph)) actual = validateDependencyGraph(data.dependencyGraph).diagnostics.map(item => item.code);
       else if (typeof data.unitId === 'string') actual = validateUnitReference(data.unitId, unitRegistry).diagnostics.map(item => item.code);
       const expected = data.expected?.diagnostics ?? (fixture.diagnostic ? [fixture.diagnostic] : []);
-      if (JSON.stringify([...new Set(actual)].sort()) !== JSON.stringify([...new Set(expected)].sort())) {
+      if (JSON.stringify([...new Set(actual)].sort((a, b) => a.localeCompare(b))) !== JSON.stringify([...new Set(expected)].sort((a, b) => a.localeCompare(b)))) {
         failures.push(fixture.id + ': expected [' + expected.join(', ') + '], got [' + actual.join(', ') + ']');
       }
     }
