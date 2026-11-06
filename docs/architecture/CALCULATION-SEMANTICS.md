@@ -5,27 +5,15 @@
 
 ## 1. Canonical expression model
 
-Persist a versioned, typed AST. A formatted equation string, MathLive DOM, LaTeX string, or MathJSON interchange payload is not the authoritative executable representation.
+Persist a versioned Khwarizmi expression record whose `mathJson` field is a MathJSON expression accepted by the pinned CortexJS Compute Engine. Do not maintain a second arithmetic AST. The record adds `schemaVersion`, `mathJson`, `symbolBindings` (engine-safe token to stable `symbolId`), `authoredNumbers` (original numeric lexeme and A3 representation tag by structural path), `sourceMap` (structural path to stable node/block/page IDs), and optional `authoring` data (original LaTeX/MathLive version, never executable).
 
-Initial AST node families:
-
-- `NumberLiteral`: exact decimal/rational or explicitly tagged floating-point literal;
-- `SymbolRef`: stable symbol ID, with display name as presentation metadata;
-- `UnaryOp`: sign and supported unary operators;
-- `BinaryOp`: arithmetic operators;
-- `Call`: allowlisted function identifier and argument list;
-- `UnitAttach`: quantity unit expression;
-- `Group`: explicit grouping where required;
-- `Assignment`: assignment to a stable variable identity, creating a new immutable assignment event/version;
-- `Comparison` and `BooleanOp`: typed condition expressions;
-- `IfBlock` and `WhileBlock`: ordered control-flow statements with lexical bodies and local declarations;
-- Vector/matrix/tensor nodes: unsupported in v1; reject with `UNSUPPORTED_VALUE_KIND`.
+Engine tokens are deterministic aliases, never user display names. Assignment statements and control-flow blocks remain Khwarizmi execution records, not mutable engine-global definitions. MathJSON is a tree format, not a worksheet language: Khwarizmi MUST validate the supported head/arity allowlist, scalar-only values, unit policy, and conditions before evaluation. Reject vectors/matrices/tensors with `UNSUPPORTED_VALUE_KIND`. Structural JSON Schema validation is not semantic validation.
 
 Every node has a stable node ID or deterministic path for diagnostics. AST schema version is independent from document schema version.
 
 ## 2. Authoring and interchange
 
-MathLive may provide visual math editing and LaTeX/MathJSON interchange. Import must pass through a normalization and validation layer that produces the canonical AST. Unsupported constructs are rejected with a location-aware diagnostic; they must not be silently approximated or converted into executable text.
+MathLive provides visual editing and LaTeX input/output. Its MathJSON export is normalized into the Khwarizmi expression record. Normalization binds names to stable symbol IDs, preserves authored numeric lexemes, builds source maps, and validates supported MathJSON forms. Original LaTeX may be retained for editing fidelity but is never reparsed during evaluation.
 
 ## 3. Symbols, assignments, and scopes
 
@@ -61,14 +49,14 @@ Independent calculations may be scheduled in parallel only when doing so preserv
 ## 5. Substitution and traceability
 
 A calculation result MUST retain:
-- source expression AST and a display-safe expression representation;
+- original Khwarizmi expression record, including MathJSON, authored numeric lexemes, and source map;
 - resolved symbol values and units;
 - substitution representation suitable for human review;
 - evaluated value and resulting unit/dimension;
 - status and diagnostics;
 - engine/semantic version and input document revision.
 
-Substitution is a presentation of resolved operands in the expression tree, not a string replacement algorithm. Intermediate results are referenced by symbol/result IDs, never by copying formatted output text.
+Substitution is a presentation of resolved operands in the expression tree, not string replacement. Khwarizmi resolves each engine token to the exact preceding assignment version, then emits a separate substituted MathJSON tree and provenance entries. Engine `subs()` helpers may transform expressions but cannot infer worksheet assignment identity or history.
 
 ## 6. Values, quantities, and units
 
@@ -110,7 +98,13 @@ At minimum distinguish:
 
 Errors include stable code, message, severity, document/page/block/node location, and optional structured details. Error text is not a machine-readable discriminator; consumers branch on stable codes.
 
-## 9. Accepted v1 boundaries and remaining contract work
+## 9. Compute Engine adapter boundary
+
+CortexJS Compute Engine is the selected mathematical evaluator and MathJSON implementation. It owns symbolic simplification and expression evaluation inside the validated v1 subset. Khwarizmi owns normalization policy, symbol-token binding, execution order, immutable assignment versions, lexical scope/no-shadowing validation, dependency graph, invalidation/replay, unit registry, numeric representation policy, source mapping, substitution provenance, diagnostics, and durable result records.
+
+Use isolated evaluation contexts per document-evaluation request. Engine-global definitions MUST NOT become the durable symbol table or leak between requests. Khwarizmi resolves exact visible assignment versions before each expression and supplies an immutable binding environment. Engine scoping is not a substitute for Khwarizmi's no-shadowing rule. `simplify()` is a symbolic transform, not worksheet assignment resolution. `evaluate()`/`N()` output alone is not a result record. Preserve original and substituted expressions, consumed assignment versions, tagged scalar value, units/dimensions, and engine metadata. Never route exact values through JavaScript `number`. Compiled JavaScript execution is excluded from the exact v1 path unless separately proven equivalent. Pin MathLive and Compute Engine independently; MathLive does not imply an installed Compute Engine dependency.
+
+## 10. Accepted v1 boundaries and remaining contract work
 
 Owner decisions are recorded in DECISIONS.md (ADR-010 through ADR-018): scalar-only values; exact decimal and rational authored literals; tagged approximate results; sequential reassignment with tracked assignment versions; lexical local variables in `if`/`while` without shadowing; unambiguous implicit multiplication normalized to explicit multiplication; versioned built-in units with explicit radian/degree semantics; temperature arithmetic and custom units deferred.
 
