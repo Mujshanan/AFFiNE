@@ -50,7 +50,7 @@ Every block has a stable `blockId`, a `type`, a `contentVersion`, and authored `
 - `text`: rich text and headings;
 - `math`: canonical expression AST plus optional display/editor interchange data;
 - `variable`: explicit variable declaration/assignment;
-- `input`: user-supplied scalar or structured input;
+- `input`: user-supplied scalar quantity input (structured/vector/matrix inputs are unsupported in v1);
 - `table`: typed cells and optional calculated bindings;
 - `diagram`: asset or structured diagram reference;
 - `reference`: citation/standard/source metadata;
