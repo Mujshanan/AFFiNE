@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/mathjson-profile.schema.json",
+  "title": "Khwarizmi MathJSON Scalar Profile v1",
+  "$defs": {
+    "rational": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "const": "Rational"
+        },
+        {
+          "type": "string",
+          "pattern": "^-?(0|[1-9][0-9]*)$"
+        },
+        {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      ],
+      "items": false
+    },
+    "scalar": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "string",
+          "enum": [
+            "Pi",
+            "ExponentialE"
+          ]
+        },
+        {
+          "type": "string",
+          "pattern": "^kz_[A-Za-z0-9_-]{1,80}$"
+        },
+        {
+          "$ref": "#/$defs/rational"
+        },
+        {
+          "$ref": "#/$defs/unary"
+        },
+        {
+          "$ref": "#/$defs/binary"
+        },
+        {
+          "$ref": "#/$defs/nary"
+        }
+      ]
+    },
+    "unary": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "enum": [
+            "Negate",
+            "Positive",
+            "Sqrt",
+            "Abs",
+            "Exp",
+            "Ln",
+            "Log10",
+            "Sin",
+            "Cos",
+            "Tan",
+            "Asin",
+            "Acos",
+            "Atan"
+          ]
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        }
+      ],
+      "items": false
+    },
+    "binary": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "enum": [
+            "Subtract",
+            "Divide",
+            "Power"
+          ]
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        }
+      ],
+      "items": false
+    },
+    "nary": {
+      "type": "array",
+      "minItems": 3,
+      "prefixItems": [
+        {
+          "enum": [
+            "Add",
+            "Multiply"
+          ]
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        }
+      ],
+      "items": {
+        "$ref": "#/$defs/scalar"
+      }
+    },
+    "comparison": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "enum": [
+            "Equal",
+            "NotEqual",
+            "Less",
+            "LessEqual",
+            "Greater",
+            "GreaterEqual"
+          ]
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        },
+        {
+          "$ref": "#/$defs/scalar"
+        }
+      ],
+      "items": false
+    },
+    "condition": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "$ref": "#/$defs/comparison"
+        },
+        {
+          "type": "array",
+          "prefixItems": [
+            {
+              "enum": [
+                "And",
+                "Or"
+              ]
+            },
+            {
+              "$ref": "#/$defs/condition"
+            },
+            {
+              "$ref": "#/$defs/condition"
+            }
+          ],
+          "items": {
+            "$ref": "#/$defs/condition"
+          }
+        },
+        {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "Not"
+            },
+            {
+              "$ref": "#/$defs/condition"
+            }
+          ],
+          "items": false
+        }
+      ]
+    }
+  },
+  "$ref": "#/$defs/scalar",
+  "$comment": "Restricted Khwarizmi v1 profile; semantic validation is still required."
+}

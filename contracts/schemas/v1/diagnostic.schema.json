@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://khwarizmi.dev/contracts/v1/diagnostic.schema.json",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/diagnostic.schema.json",
   "title": "Khwarizmi Diagnostic v1",
   "type": "object",
   "additionalProperties": false,
@@ -31,19 +31,28 @@
       "additionalProperties": false,
       "properties": {
         "documentId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "pageId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "blockId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
         },
         "nodeId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "mathJsonPath": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^(|/(0|[1-9][0-9]*)(/(0|[1-9][0-9]*))*)$"
         }
       }
     },
@@ -61,16 +70,20 @@
         ],
         "properties": {
           "pageId": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "blockId": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "nodeId": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "mathJsonPath": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^(|/(0|[1-9][0-9]*)(/(0|[1-9][0-9]*))*)$"
           }
         }
       }

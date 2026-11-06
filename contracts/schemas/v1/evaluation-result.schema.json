@@ -1,15 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://khwarizmi.dev/contracts/v1/evaluation-result.schema.json",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/evaluation-result.schema.json",
   "title": "Khwarizmi Evaluation Result v1",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "format",
     "schemaVersion",
+    "evaluationId",
     "documentId",
     "documentRevision",
     "semanticVersion",
+    "unitRegistryVersion",
     "engine",
     "status",
     "results",
@@ -22,6 +24,10 @@
     "schemaVersion": {
       "const": 1
     },
+    "evaluationId": {
+      "type": "string",
+      "minLength": 1
+    },
     "documentId": {
       "type": "string",
       "minLength": 1
@@ -31,8 +37,7 @@
       "pattern": "^[a-f0-9]{64}$"
     },
     "semanticVersion": {
-      "type": "string",
-      "minLength": 1
+      "const": "1.0.0"
     },
     "unitRegistryVersion": {
       "type": "string",
@@ -76,91 +81,76 @@
     }
   },
   "$defs": {
-    "scalarValue": {
-      "oneOf": [
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "kind",
-            "decimal"
-          ],
-          "properties": {
-            "kind": {
-              "const": "exactDecimal"
-            },
-            "decimal": {
-              "type": "string",
-              "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "kind",
-            "numerator",
-            "denominator"
-          ],
-          "properties": {
-            "kind": {
-              "const": "exactRational"
-            },
-            "numerator": {
-              "type": "string",
-              "pattern": "^-?(0|[1-9][0-9]*)$"
-            },
-            "denominator": {
-              "type": "string",
-              "pattern": "^[1-9][0-9]*$"
-            }
-          }
-        },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "kind",
-            "value",
-            "precision"
-          ],
-          "properties": {
-            "kind": {
-              "const": "approximate"
-            },
-            "value": {
-              "type": "string"
-            },
-            "precision": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "method": {
-              "type": "string"
-            }
-          }
-        }
-      ]
-    },
     "dependency": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "symbolId",
         "assignmentId",
-        "assignmentVersion"
+        "assignmentVersion",
+        "assignmentEventId"
       ],
       "properties": {
         "symbolId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "assignmentId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "assignmentVersion": {
           "type": "integer",
           "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "substitution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mathJsonPath",
+        "engineSymbol",
+        "symbolId",
+        "assignmentId",
+        "assignmentVersion",
+        "assignmentEventId",
+        "value"
+      ],
+      "properties": {
+        "mathJsonPath": {
+          "type": "string",
+          "pattern": "^(|/(0|[1-9][0-9]*)(/(0|[1-9][0-9]*))*)$"
+        },
+        "engineSymbol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "$ref": "numeric-value.schema.json"
+        },
+        "unit": {
+          "$ref": "unit.schema.json"
         }
       }
     },
@@ -169,20 +159,23 @@
       "additionalProperties": false,
       "required": [
         "resultId",
-        "blockId",
+        "statementId",
         "status",
-        "originalMathJson",
+        "originalExpression",
         "substitutedMathJson",
         "value",
         "dependencies",
+        "substitutions",
         "diagnostics"
       ],
       "properties": {
         "resultId": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
-        "blockId": {
-          "type": "string"
+        "statementId": {
+          "type": "string",
+          "minLength": 1
         },
         "status": {
           "enum": [
@@ -191,17 +184,22 @@
             "error"
           ]
         },
-        "originalMathJson": {},
+        "originalExpression": {
+          "$ref": "expression.schema.json"
+        },
         "substitutedMathJson": {},
         "value": {
           "oneOf": [
             {
-              "$ref": "#/$defs/scalarValue"
+              "$ref": "numeric-value.schema.json"
             },
             {
               "type": "null"
             }
           ]
+        },
+        "unit": {
+          "$ref": "unit.schema.json"
         },
         "dependencies": {
           "type": "array",
@@ -209,47 +207,44 @@
             "$ref": "#/$defs/dependency"
           }
         },
+        "substitutions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/substitution"
+          }
+        },
+        "controlFlowPath": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "statementId",
+              "kind"
+            ],
+            "properties": {
+              "statementId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "if-then",
+                  "if-else",
+                  "while-iteration"
+                ]
+              },
+              "iteration": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
         "diagnostics": {
           "type": "array",
           "items": {
             "$ref": "diagnostic.schema.json"
-          }
-        },
-        "unit": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": [
-            "unitId",
-            "dimension"
-          ],
-          "properties": {
-            "unitId": {
-              "type": "string"
-            },
-            "dimension": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": [
-                  "base",
-                  "numerator",
-                  "denominator"
-                ],
-                "properties": {
-                  "base": {
-                    "type": "string"
-                  },
-                  "numerator": {
-                    "type": "string"
-                  },
-                  "denominator": {
-                    "type": "string",
-                    "pattern": "^[1-9][0-9]*$"
-                  }
-                }
-              }
-            }
           }
         }
       }
