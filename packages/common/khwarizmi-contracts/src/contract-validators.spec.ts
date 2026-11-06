@@ -6,7 +6,8 @@ import { describe, expect, it } from 'vitest';
 import {
   validateCalculationSemantics,
   validateDependencyGraph,
-  validateJsonSchema,\n  validateSchemaBundle,
+  validateJsonSchema,
+  validateSchemaBundle,
   validateUnitReference,
   validateUnitRegistrySemantics,
 } from '../src/index.js';
@@ -34,42 +35,28 @@ const schemaFiles = [
   ...filesUnder(schemaRoot).filter(path => path.endsWith('.schema.json')),
   resolve(fixtureRoot, 'manifest.schema.json'),
 ];
-const schemaBundle = Object.fromEntries(
-  schemaFiles.map(path => [repositoryPath(path), readJson(path)])
-);
-const manifestPath = resolve(fixtureRoot, 'manifest.json');
-const manifest = readJson(manifestPath);
-const unitRegistryPath = resolve(schemaRoot, 'unit-registry.v1.json');
-const unitRegistry = readJson(unitRegistryPath);
+const schemaBundle = Object.fromEntries(schemaFiles.map(path => [repositoryPath(path), readJson(path)]));
+const manifest = readJson(resolve(fixtureRoot, 'manifest.json'));
+const unitRegistry = readJson(resolve(schemaRoot, 'unit-registry.v1.json'));
 
 describe('Khwarizmi v1 contract schemas', () => {
   it('resolves every schema reference and rejects unsupported schema keywords', () => {
     expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);
-  });\n  it('resolves every schema reference and rejects unsupported schema keywords', () => {\n    expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);\n  });
-  it('validates the fixture manifest and its complete file inventory', () => {
-    const result = validateJsonSchema(
-      manifest,
-      'contracts/fixtures/v1/manifest.schema.json',
-      schemaBundle
-    );
+  });
+
+  it('validates the fixture manifest and complete file inventory', () => {
+    const result = validateJsonSchema(manifest, 'contracts/fixtures/v1/manifest.schema.json', schemaBundle);
     expect(result.errors).toEqual([]);
     const ids = manifest.fixtures.map((fixture: any) => fixture.id);
     expect(new Set(ids).size).toBe(ids.length);
-    for (const fixture of manifest.fixtures) {
-      expect(existsSync(resolve(fixtureRoot, fixture.path))).toBe(true);
-    }
+    for (const fixture of manifest.fixtures) expect(existsSync(resolve(fixtureRoot, fixture.path))).toBe(true);
   });
 
   it('validates the built-in unit registry schema and semantic invariants', () => {
-    const schema = validateJsonSchema(
-      unitRegistry,
-      'contracts/schemas/v1/unit-registry.schema.json',
-      schemaBundle
-    );
+    const schema = validateJsonSchema(unitRegistry, 'contracts/schemas/v1/unit-registry.schema.json', schemaBundle);
     expect(schema.errors).toEqual([]);
     expect(validateUnitRegistrySemantics(unitRegistry).diagnostics).toEqual([]);
   });
-
 
   it('enforces minimum MathJSON operator arities, including Rational and Log', () => {
     const profile = 'contracts/schemas/v1/mathjson-profile.schema.json';
@@ -95,12 +82,9 @@ describe('Khwarizmi v1 contract schemas', () => {
       } else if (data.jsonrpc === '2.0') {
         result = validateJsonSchema(data, 'contracts/schemas/v1/rpc-envelope.schema.json', schemaBundle);
       }
-
       if (result) {
         const shouldFailSchema = fixture.stage === 'mathjson-profile';
-        if (shouldFailSchema === result.valid) {
-          failures.push(fixture.id + ': expected schema ' + (shouldFailSchema ? 'rejection' : 'acceptance') + ', got ' + (result.valid ? 'valid' : result.errors.map(error => error.keyword).join(',')));
-        }
+        if (shouldFailSchema === result.valid) failures.push(fixture.id + ': unexpected schema result: ' + JSON.stringify(result.errors));
       }
     }
     expect(failures).toEqual([]);
@@ -113,13 +97,9 @@ describe('Khwarizmi v1 semantic validators', () => {
     for (const fixture of manifest.fixtures.filter((entry: any) => entry.stage === 'semantic-validation')) {
       const data = readJson(resolve(fixtureRoot, fixture.path));
       let actual: string[] = [];
-      if (data.document) {
-        actual = validateCalculationSemantics(data.document, { unitRegistry }).diagnostics.map(item => item.code);
-      } else if (Array.isArray(data.dependencyGraph)) {
-        actual = validateDependencyGraph(data.dependencyGraph).diagnostics.map(item => item.code);
-      } else if (typeof data.unitId === 'string') {
-        actual = validateUnitReference(data.unitId, unitRegistry).diagnostics.map(item => item.code);
-      }
+      if (data.document) actual = validateCalculationSemantics(data.document, { unitRegistry }).diagnostics.map(item => item.code);
+      else if (Array.isArray(data.dependencyGraph)) actual = validateDependencyGraph(data.dependencyGraph).diagnostics.map(item => item.code);
+      else if (typeof data.unitId === 'string') actual = validateUnitReference(data.unitId, unitRegistry).diagnostics.map(item => item.code);
       const expected = data.expected?.diagnostics ?? (fixture.diagnostic ? [fixture.diagnostic] : []);
       if (JSON.stringify([...new Set(actual)].sort()) !== JSON.stringify([...new Set(expected)].sort())) {
         failures.push(fixture.id + ': expected [' + expected.join(', ') + '], got [' + actual.join(', ') + ']');
@@ -128,7 +108,7 @@ describe('Khwarizmi v1 semantic validators', () => {
     expect(failures).toEqual([]);
   });
 
-  it('accepts nested local capture and rejects no-shadowing, local leakage, and use-before-declaration', () => {
+  it('accepts nested local capture and rejects no-shadowing, leakage, and use-before-declaration', () => {
     const valid = readJson(resolve(fixtureRoot, 'semantics/nested-local-capture.json'));
     expect(validateCalculationSemantics(valid.document, { unitRegistry }).diagnostics).toEqual([]);
     for (const name of ['no-shadowing.json', 'local-scope-leak.json', 'local-before-declaration.json']) {
