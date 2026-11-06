@@ -1,0 +1,25 @@
+{
+  "jsonrpc": "2.0",
+  "id": "eval-bad",
+  "method": "document.evaluate",
+  "params": {
+    "schemaVersion": 1,
+    "document": {
+      "format": "khwarizmi.calculation-document",
+      "schemaVersion": 1,
+      "documentId": "doc-rpc",
+      "semanticVersion": "1.0.0",
+      "unitRegistryVersion": "si-engineering-1",
+      "symbols": [],
+      "pages": [
+        {
+          "pageId": "page-1",
+          "statements": []
+        }
+      ],
+      "calculationOrder": []
+    },
+    "documentDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "semanticVersion": "1.0.0"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-leak",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "if",
+            "statementId": "if-1",
+            "condition": true,
+            "then": [
+              {
+                "kind": "declareLocal",
+                "statementId": "local-1",
+                "localSymbolId": "local-temp",
+                "displayName": "temp",
+                "initializer": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 2,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "2",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ],
+            "else": []
+          },
+          {
+            "kind": "expression",
+            "statementId": "after-if",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": "kz_temp",
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_temp",
+                  "symbolId": "local-temp"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "if-1",
+      "after-if"
+    ]
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "LOCAL_OUT_OF_SCOPE"
+    ]
+  }
+}

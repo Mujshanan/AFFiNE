@@ -1,0 +1,31 @@
+{
+  "expression": {
+    "format": "khwarizmi.expression",
+    "schemaVersion": 1,
+    "mathJson": [
+      "Rational",
+      "123",
+      "100"
+    ],
+    "symbolBindings": [],
+    "authoredNumbers": [
+      {
+        "path": "",
+        "lexeme": "1.23",
+        "representation": "exactDecimal"
+      }
+    ],
+    "unitAttachments": [],
+    "sourceMap": [
+      {
+        "path": "",
+        "nodeId": "node-root",
+        "blockId": "block-fixture"
+      }
+    ]
+  },
+  "expected": {
+    "kind": "exactDecimal",
+    "decimal": "1.23"
+  }
+}

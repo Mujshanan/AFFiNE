@@ -1,0 +1,439 @@
+{
+  "format": "khwarizmi.unit-registry",
+  "version": "si-engineering-1",
+  "scaleEncoding": "exact-rational-to-base; piRational for angle units",
+  "units": [
+    {
+      "unitId": "metre",
+      "symbol": "m",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "millimetre",
+      "symbol": "mm",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1000"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "centimetre",
+      "symbol": "cm",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "100"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "kilometre",
+      "symbol": "km",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1000",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "inch",
+      "symbol": "in",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "127",
+        "denominator": "5000"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "foot",
+      "symbol": "ft",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "381",
+        "denominator": "1250"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "kilogram",
+      "symbol": "kg",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "gram",
+      "symbol": "g",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1000"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "second",
+      "symbol": "s",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "time",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "minute",
+      "symbol": "min",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "60",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "time",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "hour",
+      "symbol": "h",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "3600",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "time",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "newton",
+      "symbol": "N",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "kilonewton",
+      "symbol": "kN",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1000",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "pascal",
+      "symbol": "Pa",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "-1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "kilopascal",
+      "symbol": "kPa",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1000",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "-1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "megapascal",
+      "symbol": "MPa",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1000000",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "-1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "gigapascal",
+      "symbol": "GPa",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1000000000",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "-1",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "joule",
+      "symbol": "J",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "2",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-2",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "watt",
+      "symbol": "W",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "mass",
+          "numerator": "1",
+          "denominator": "1"
+        },
+        {
+          "base": "length",
+          "numerator": "2",
+          "denominator": "1"
+        },
+        {
+          "base": "time",
+          "numerator": "-3",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "radian",
+      "symbol": "rad",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1"
+      },
+      "dimension": [
+        {
+          "base": "angle",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "degree",
+      "symbol": "deg",
+      "scale": {
+        "kind": "piRational",
+        "numerator": "1",
+        "denominator": "180"
+      },
+      "dimension": [
+        {
+          "base": "angle",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    },
+    {
+      "unitId": "square-millimetre",
+      "symbol": "mm²",
+      "scale": {
+        "kind": "exact-rational",
+        "numerator": "1",
+        "denominator": "1000000"
+      },
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "2",
+          "denominator": "1"
+        }
+      ]
+    }
+  ]
+}

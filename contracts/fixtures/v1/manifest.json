@@ -16,28 +16,105 @@
       "diagnostic": "UNSUPPORTED_VALUE_KIND"
     },
     {
-      "id": "eval.substitution.trace.001",
-      "kind": "evaluation",
-      "path": "evaluation/substitution-trace.json",
+      "id": "semantic.reassignment.snapshot.001",
+      "kind": "semantics",
+      "path": "semantics/reassignment-snapshot.json",
       "expect": "valid"
     },
     {
-      "id": "rpc.evaluate.request.001",
-      "kind": "rpc",
-      "path": "rpc/evaluate-request.json",
-      "expect": "valid"
-    },
-    {
-      "id": "expr.vector.rejected.001",
-      "kind": "expression",
-      "path": "expression/vector-rejected.json",
+      "id": "semantic.scope.no-shadow.001",
+      "kind": "semantics",
+      "path": "semantics/no-shadowing.json",
       "expect": "invalid",
-      "diagnostic": "UNSUPPORTED_VALUE_KIND"
+      "diagnostic": "SHADOWED_LOCAL"
+    },
+    {
+      "id": "semantic.scope.local-leak.001",
+      "kind": "semantics",
+      "path": "semantics/local-scope-leak.json",
+      "expect": "invalid",
+      "diagnostic": "LOCAL_OUT_OF_SCOPE"
+    },
+    {
+      "id": "semantic.dependency.failed.001",
+      "kind": "semantics",
+      "path": "semantics/failed-assignment-propagation.json",
+      "expect": "valid"
+    },
+    {
+      "id": "semantic.if.branch.001",
+      "kind": "semantics",
+      "path": "semantics/if-branch-selection.json",
+      "expect": "valid"
+    },
+    {
+      "id": "semantic.while.limit.001",
+      "kind": "semantics",
+      "path": "semantics/while-limit.json",
+      "expect": "invalid",
+      "diagnostic": "RESOURCE_LIMIT_EXCEEDED"
+    },
+    {
+      "id": "semantic.substitution.provenance.001",
+      "kind": "semantics",
+      "path": "semantics/substitution-provenance.json",
+      "expect": "valid"
+    },
+    {
+      "id": "numeric.decimal.exact.001",
+      "kind": "numeric",
+      "path": "numeric/exact-decimal.json",
+      "expect": "valid"
+    },
+    {
+      "id": "numeric.rational.reduced.001",
+      "kind": "numeric",
+      "path": "numeric/reduced-rational.json",
+      "expect": "valid"
+    },
+    {
+      "id": "numeric.approximate.tagged.001",
+      "kind": "numeric",
+      "path": "numeric/approximate-tagged.json",
+      "expect": "valid"
+    },
+    {
+      "id": "units.compatible.convert.001",
+      "kind": "units",
+      "path": "units/compatible-conversion.json",
+      "expect": "valid"
+    },
+    {
+      "id": "units.dimension.mismatch.001",
+      "kind": "units",
+      "path": "units/dimension-mismatch.json",
+      "expect": "invalid",
+      "diagnostic": "DIMENSION_MISMATCH"
+    },
+    {
+      "id": "units.temperature.reject.001",
+      "kind": "units",
+      "path": "units/temperature-rejected.json",
+      "expect": "invalid",
+      "diagnostic": "UNSUPPORTED_UNIT_KIND"
     },
     {
       "id": "rpc.evaluate.request.001",
       "kind": "rpc",
       "path": "rpc/evaluate-request.json",
+      "expect": "valid"
+    },
+    {
+      "id": "rpc.evaluate.bad-digest.001",
+      "kind": "rpc",
+      "path": "rpc/evaluate-bad-digest.json",
+      "expect": "invalid",
+      "diagnostic": "INVALID_DOCUMENT"
+    },
+    {
+      "id": "rpc.cancel.notification.001",
+      "kind": "rpc",
+      "path": "rpc/cancel-notification.json",
       "expect": "valid"
     }
   ]

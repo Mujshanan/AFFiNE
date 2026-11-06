@@ -3,20 +3,21 @@
   "schemaVersion": 1,
   "mathJson": [
     "Add",
-    "kz_symbol_a",
-    "kz_symbol_b"
+    "kz_a",
+    "kz_b"
   ],
   "symbolBindings": [
     {
-      "engineSymbol": "kz_symbol_a",
+      "engineSymbol": "kz_a",
       "symbolId": "symbol-a"
     },
     {
-      "engineSymbol": "kz_symbol_b",
+      "engineSymbol": "kz_b",
       "symbolId": "symbol-b"
     }
   ],
   "authoredNumbers": [],
+  "unitAttachments": [],
   "sourceMap": [
     {
       "path": "/1",

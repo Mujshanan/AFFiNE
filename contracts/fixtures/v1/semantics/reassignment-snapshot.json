@@ -1,0 +1,162 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-reassign",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "s1",
+            "assignmentId": "assignment-s1",
+            "targetSymbolId": "symbol-x",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 2,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "2",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "assign",
+            "statementId": "s2",
+            "assignmentId": "assignment-s2",
+            "targetSymbolId": "symbol-x",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Add",
+                "kz_x",
+                3
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "3",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "expression",
+            "statementId": "s3",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": "kz_x",
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "s1",
+      "s2",
+      "s3"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "assignmentEvents": [
+      {
+        "statementId": "s1",
+        "assignmentVersion": 1,
+        "value": {
+          "kind": "exactDecimal",
+          "decimal": "2"
+        }
+      },
+      {
+        "statementId": "s2",
+        "assignmentVersion": 2,
+        "value": {
+          "kind": "exactDecimal",
+          "decimal": "5"
+        },
+        "dependencies": [
+          {
+            "symbolId": "symbol-x",
+            "assignmentId": "assignment-s1",
+            "assignmentVersion": 1,
+            "assignmentEventId": "event-1"
+          }
+        ]
+      }
+    ],
+    "results": [
+      {
+        "statementId": "s3",
+        "value": {
+          "kind": "exactDecimal",
+          "decimal": "5"
+        },
+        "dependencies": [
+          {
+            "symbolId": "symbol-x",
+            "assignmentId": "assignment-s2",
+            "assignmentVersion": 2,
+            "assignmentEventId": "event-2"
+          }
+        ]
+      }
+    ],
+    "historicalResultFromPreviousRevisionMustRemainUnchanged": true
+  }
+}

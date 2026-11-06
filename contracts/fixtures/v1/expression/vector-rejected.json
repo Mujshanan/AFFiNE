@@ -8,12 +8,29 @@
     3
   ],
   "symbolBindings": [],
-  "authoredNumbers": [],
+  "authoredNumbers": [
+    {
+      "path": "/1",
+      "lexeme": "1",
+      "representation": "exactDecimal"
+    },
+    {
+      "path": "/2",
+      "lexeme": "2",
+      "representation": "exactDecimal"
+    },
+    {
+      "path": "/3",
+      "lexeme": "3",
+      "representation": "exactDecimal"
+    }
+  ],
+  "unitAttachments": [],
   "sourceMap": [
     {
       "path": "",
-      "nodeId": "vector-node",
-      "blockId": "vector-block"
+      "nodeId": "node-root",
+      "blockId": "block-fixture"
     }
   ]
 }

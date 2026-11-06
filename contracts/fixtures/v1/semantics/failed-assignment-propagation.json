@@ -1,0 +1,105 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-failed",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "bad",
+            "assignmentId": "assignment-bad",
+            "targetSymbolId": "symbol-x",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Divide",
+                1,
+                0
+              ],
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "/1",
+                  "lexeme": "1",
+                  "representation": "exactDecimal"
+                },
+                {
+                  "path": "/2",
+                  "lexeme": "0",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "expression",
+            "statementId": "read",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Add",
+                "kz_x",
+                1
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "1",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "bad",
+      "read"
+    ]
+  },
+  "expected": {
+    "status": "completedWithErrors",
+    "diagnostics": [
+      "DIVISION_BY_ZERO",
+      "DEPENDENCY_FAILED"
+    ],
+    "failedAssignmentPublishesVersion": false
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-unit-ok",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-m",
+        "displayName": "length-m",
+        "normalizedName": "length-m",
+        "unit": {
+          "unitId": "metre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "m",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      },
+      {
+        "symbolId": "symbol-y",
+        "displayName": "length-mm",
+        "normalizedName": "length-mm",
+        "unit": {
+          "unitId": "millimetre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "mm",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "m-set",
+            "assignmentId": "assignment-m-set",
+            "targetSymbolId": "symbol-m",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 1,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "1",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "assign",
+            "statementId": "mm-set",
+            "assignmentId": "assignment-mm-set",
+            "targetSymbolId": "symbol-y",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 1000,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "1000",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "expression",
+            "statementId": "sum",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Add",
+                "kz_m",
+                "kz_mm"
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_m",
+                  "symbolId": "symbol-m"
+                },
+                {
+                  "engineSymbol": "kz_mm",
+                  "symbolId": "symbol-y"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "m-set",
+      "mm-set",
+      "sum"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "value": {
+      "kind": "exactDecimal",
+      "decimal": "2"
+    },
+    "unit": {
+      "unitId": "metre",
+      "registryVersion": "si-engineering-1",
+      "symbol": "m",
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "1",
+          "denominator": "1"
+        }
+      ]
+    }
+  }
+}

@@ -1,16 +1,25 @@
 {
   "jsonrpc": "2.0",
-  "id": "request-1",
+  "id": "eval-1",
   "method": "document.evaluate",
   "params": {
     "schemaVersion": 1,
     "document": {
-      "format": "khwarizmi.document",
+      "format": "khwarizmi.calculation-document",
       "schemaVersion": 1,
-      "documentId": "doc-1",
-      "pages": []
+      "documentId": "doc-rpc",
+      "semanticVersion": "1.0.0",
+      "unitRegistryVersion": "si-engineering-1",
+      "symbols": [],
+      "pages": [
+        {
+          "pageId": "page-1",
+          "statements": []
+        }
+      ],
+      "calculationOrder": []
     },
-    "documentDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "documentDigest": "2263d3bea0af83e9124d3578513843d18627039ed7be066200aa14e5e98b51fb",
     "semanticVersion": "1.0.0"
   }
 }
