@@ -52,20 +52,20 @@ Upstream build instructions in `docs/BUILDING.md` are explicitly marked as poten
 | Clean install | Not verified here | Run on clean Windows checkout |
 | Unmodified app launch | Not verified here | Run and record screenshot/log/commit |
 | Windows ZIP/Squirrel/NSIS package generation | Builds | PR #1 workflow reached all three package build steps |
-| Packaged-app smoke tests | Failing | PR #1 latest checked run: Squirrel app exited with code 0 before expected running-state check |
+| Packaged-app smoke tests | Re-test in progress | The Squirrel bootstrapper may exit after handing off to the installed app. PR #1 smoke test now checks for the actual packaged executable process at its installed path; fresh Windows run pending |
 | Release artifacts | Not verified | Upload step skipped after smoke-test failure |
 
 ## Packaging gate: PR #1
 
-PR #1 remains draft and unmerged. Latest checked head: `3608823d82affeced4195d910d905e12c14f3ef9`.
+PR #1 remains draft and unmerged. Latest checked head before the smoke-test correction: `3608823d82affeced4195d910d905e12c14f3ef9`. The correction and formatting fixes are committed on `khwarizmi/pr-1-windows-only`; the latest Windows workflow is still running.
 
-The Windows workflow successfully built ZIP, Squirrel, and NSIS packages. The smoke-test step failed while checking the Squirrel package: the launched process exited with code 0, while the script expected the application to remain running. This may be a Squirrel bootstrapper lifecycle mismatch rather than a packaging build failure, but it must be diagnosed from the package's actual launch behavior; do not weaken the test to accept any zero exit code without verifying that the app was installed/launched.
+The previous Windows workflow successfully built ZIP, Squirrel, and NSIS packages. Its smoke test treated the Squirrel bootstrapper's successful exit (code 0) as an application failure. The corrected smoke test now observes a process whose executable path matches the packaged application and verifies that it remains available for a startup observation window. A fresh run must pass before this gate is closed.
 
-The general Build & Test workflow also failed:
-- i18n code generation reported generated changes were not submitted.
-- formatting check failed.
-- mobile E2E shard 1 failed.
-- BlockSuite E2E, several general E2E shards, native builds, Electron renderer build, and CodeQL jobs passed.
+The latest general Build & Test run before the final formatting fix failed on:
+- inherited i18n code generation reporting generated changes were not submitted;
+- Oxfmt formatting in two PR #1-modified Electron files (now corrected on the PR branch; a fresh run is required);
+- one BlockSuite cross-browser shard, where the browser connection closed during the test.
+Several other E2E shards, native builds, Electron renderer build, and static analysis jobs passed. These failures are recorded separately from the Windows package-specific validation.
 
 PR #1's stated purpose is Windows x64 release packaging. It intentionally leaves general cross-platform validation workflows intact. Separate packaging-specific success from unrelated upstream CI failures, but do not ignore failures without documenting whether they are required checks.
 
