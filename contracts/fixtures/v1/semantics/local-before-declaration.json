@@ -13,7 +13,21 @@
           {
             "kind": "if",
             "statementId": "if-1",
-            "condition": "True",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-if-1",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
             "then": [
               {
                 "kind": "expression",
