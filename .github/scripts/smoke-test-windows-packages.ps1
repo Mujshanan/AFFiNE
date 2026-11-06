@@ -101,7 +101,17 @@ function Test-AppLaunch {
     if ($matchingProcesses.Count -eq 0) {
       $launcher.Refresh()
       $exit = if ($launcher.HasExited) { $launcher.ExitCode } else { 'still running' }
-      throw "$Label application process was not found at the packaged executable path (launcher exit: $exit)."
+      $candidates = @(
+        Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
+          Where-Object { $_.Name -ieq "$processName.exe" } |
+          Select-Object ProcessId, ParentProcessId, Name, ExecutablePath, CommandLine
+      )
+      $candidateDetails = if ($candidates.Count -gt 0) {
+        ($candidates | ConvertTo-Json -Compress -Depth 3)
+      } else {
+        'No process with the expected executable name was visible.'
+      }
+      throw "$Label application process was not found at the packaged executable path (expected: $expectedPath; launcher exit: $exit; process candidates: $candidateDetails)."
     }
 
     $pids = ($matchingProcesses | ForEach-Object { $_.ProcessId }) -join ', '
