@@ -14,24 +14,30 @@ A visual engineering worksheet where engineers define inputs, write equations, s
 
 - [x] Establish an AFFiNE-derived repository baseline.
 - [x] Document the AFFiNE and BlockSuite foundation.
-- [ ] Maintain an upstream change and license/notice inventory.
-- [ ] Document reproducible development and build environments.
+- [x] Identify the AFFiNE baseline commit and document inherited repository/toolchain structure.
+- [ ] Complete the nested license/notice inventory.
+- [ ] Verify a clean Windows install, build, and unmodified desktop launch.
+- [ ] Complete Windows ZIP/Squirrel/NSIS install-launch-uninstall smoke tests (PR #1 remains blocked).
 - [ ] Establish a routine for reviewing upstream changes.
 
-**Exit criteria:** reproducible baseline, clear provenance, documented build steps, and separation of inherited versus Khwarizmi-owned code.
+Baseline evidence and remaining gates: [Repository baseline](./docs/BASELINE.md).
+
+**Exit criteria:** reproducible baseline, clear provenance, documented build steps, and separation of inherited versus Khwarizmi-owned code. The audit is documented; clean runtime and packaging validation remain open.
 
 ## Phase 1 — Architecture and engineering document contracts
 
-- [ ] Define worksheet document schema and versioning.
-- [ ] Define physical page coordinates, layout regions, and persistence.
-- [ ] Define mathematical expression and variable-reference semantics.
-- [ ] Define evaluation order, dependency tracking, and error states.
-- [ ] Define quantities, units, conversion, and dimensional checking.
-- [ ] Specify the TypeScript/Python calculation-host boundary.
-- [ ] Align RPC schemas, errors, transport rules, and conformance tests.
-- [ ] Record architecture decisions and compatibility guarantees.
+- [x] Record accepted architecture direction and responsibility boundaries.
+- [x] Draft the versioned worksheet/document model and page geometry contract.
+- [x] Draft canonical AST, variable, dependency, substitution, unit, and error semantics.
+- [x] Specify the TypeScript-authoritative core and optional Python worker boundary.
+- [x] Specify the initial JSON-RPC 2.0 named-pipe topology and framing proposal.
+- [ ] Resolve open normative decisions and freeze JSON schemas.
+- [ ] Implement language-neutral contract fixtures and executable conformance tests.
+- [ ] Verify RPC transport/security behavior and cross-implementation conformance.
 
-**Exit criteria:** reviewed and tested contracts before broad editor or calculation-host implementation.
+Architecture documents: [Contract index](./docs/architecture/README.md).
+
+**Exit criteria:** approved normative schemas, stable fixtures, passing contract tests, and verified transport/security behavior before broad editor or production calculation-host implementation. Current documents are proposals; this phase is not yet closed.
 
 ## Phase 2 — Worksheet interaction foundation
 
