@@ -44,7 +44,7 @@ contracts/
   manifest.json
 ```
 
-Every fixture has a stable ID, contract version, input payload, expected outcome, and expected diagnostic/error code where relevant. Numeric fixtures state precision and tolerance explicitly.
+Every fixture has a stable ID, contract version, input payload, expected outcome, and expected diagnostic/error code where relevant. Numeric fixtures state precision and tolerance explicitly. Initial schemas and seed fixtures live under `contracts/schemas/v1` and `contracts/fixtures/v1`. MathJSON structural validation is distinct from Khwarizmi semantic validation.
 
 ## 3. Minimum document tests
 
@@ -68,7 +68,7 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - valid symbol resolution and unresolved symbol diagnostics;
 - duplicate symbol names and stable symbol-ID resolution;
 - deterministic topological evaluation order;
-- dependency cycle detection including self-cycle;
+- dependency graph acyclicity and rejection of corrupt persisted cycles (forward reads are `UNRESOLVED_SYMBOL`);
 - independent-node evaluation order deterministic under input permutation;
 - substitutions preserve units and use resolved values;
 - errors retain source block/node locations.
@@ -82,7 +82,7 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - dimensionless and angle handling;
 - incompatible addition/comparison;
 - unknown unit and invalid prefix;
-- absolute temperature versus temperature difference (if supported);
+- rejection of absolute-temperature and temperature-difference operations with `UNSUPPORTED_UNIT_KIND`;
 - no display rounding fed back into computation.
 
 ## 6. Minimum RPC tests
@@ -101,14 +101,9 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 - no batch acceptance;
 - no arbitrary code/path execution through method parameters.
 
-## 7. Python worker tests
+## 7. Deferred Python worker
 
-- supported operation success with typed output;
-- invalid input rejected by TypeScript before dispatch;
-- malformed worker output rejected;
-- timeout and worker termination normalized;
-- Python worker cannot resolve symbols or mutate document state;
-- deterministic result contract for each supported numerical operation.
+No Python worker is part of semantic v1. No Python runtime, worker RPC, or Python conformance tests are required. Any future worker requires a separate accepted ADR and must remain subordinate to the TypeScript calculation host.
 
 ## 8. Test harness requirements
 
@@ -133,3 +128,13 @@ The phase is complete only when:
 - CI runs the contract suite on every relevant change.
 
 No editor-wide implementation or production calculation-host implementation should begin before these exit criteria are met.
+
+## 10. Published v1 semantic fixture inventory
+
+The authoritative fixture manifest is `contracts/fixtures/v1/manifest.json`. It covers scalar expression acceptance and vector rejection; sequential reassignment snapshots; no-shadowing and local-scope leakage; failed assignment propagation; branch selection; loop resource limits; substitution provenance; exact decimal/rational and tagged approximate values; compatible-unit conversion and dimensional mismatch; temperature rejection; valid and invalid document-evaluation digests; and cancellation notification shape.
+
+The schemas and fixtures are language-neutral. A validator must load fixture files by manifest path, reject duplicate fixture IDs, validate each file against its schema, and then run semantic assertions. Expected outcomes are not embedded in the implementation under test.
+
+## 11. Remaining implementation conformance
+
+This contract-definition pass does not claim that TypeScript validators, Compute Engine adapter tests, transport tests, or CI jobs already exist. The next phase must implement schema resolution (including relative references), the MathJSON profile validator, worksheet semantic validator, numeric/unit codecs, deterministic diagnostic sorting, fixture runner, and RPC framing tests. Only after those tests pass may the semantic contract be marked implementation-conformant.

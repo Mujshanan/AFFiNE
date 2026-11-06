@@ -1,0 +1,32 @@
+{
+  "expression": {
+    "format": "khwarizmi.expression",
+    "schemaVersion": 1,
+    "mathJson": [
+      "Exp",
+      1
+    ],
+    "symbolBindings": [],
+    "authoredNumbers": [
+      {
+        "path": "/1",
+        "lexeme": "1",
+        "representation": "exactDecimal"
+      }
+    ],
+    "unitAttachments": [],
+    "sourceMap": [
+      {
+        "path": "",
+        "nodeId": "node-root",
+        "blockId": "block-fixture"
+      }
+    ]
+  },
+  "expected": {
+    "kind": "approximate",
+    "value": "2.718281828459045235360287471352662",
+    "precision": 34,
+    "method": "compute-engine"
+  }
+}

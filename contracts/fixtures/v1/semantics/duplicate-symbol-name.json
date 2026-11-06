@@ -1,0 +1,34 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-duplicate-name",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-a",
+        "displayName": "Width",
+        "normalizedName": "width"
+      },
+      {
+        "symbolId": "symbol-b",
+        "displayName": "width",
+        "normalizedName": "width"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": []
+      }
+    ],
+    "calculationOrder": []
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "DUPLICATE_SYMBOL_NAME"
+    ]
+  }
+}

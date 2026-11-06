@@ -1,0 +1,32 @@
+{
+  "expression": {
+    "format": "khwarizmi.expression",
+    "schemaVersion": 1,
+    "mathJson": [
+      "Gamma",
+      2
+    ],
+    "symbolBindings": [],
+    "authoredNumbers": [
+      {
+        "path": "/1",
+        "lexeme": "2",
+        "representation": "exactDecimal"
+      }
+    ],
+    "unitAttachments": [],
+    "sourceMap": [
+      {
+        "path": "",
+        "nodeId": "node-root",
+        "blockId": "block-fixture"
+      }
+    ]
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "UNSUPPORTED_FUNCTION"
+    ]
+  }
+}

@@ -1,0 +1,164 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-loop-reassign",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-i",
+        "displayName": "i",
+        "normalizedName": "i"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "i-init",
+            "assignmentId": "assignment-i-init",
+            "targetSymbolId": "symbol-i",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 0,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "0",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "while",
+            "statementId": "loop",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Less",
+                "kz_i",
+                3
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_i",
+                  "symbolId": "symbol-i"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "3",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-loop",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
+            "body": [
+              {
+                "kind": "assign",
+                "statementId": "i-step",
+                "assignmentId": "assignment-i-step",
+                "targetSymbolId": "symbol-i",
+                "expression": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": [
+                    "Add",
+                    "kz_i",
+                    1
+                  ],
+                  "symbolBindings": [
+                    {
+                      "engineSymbol": "kz_i",
+                      "symbolId": "symbol-i"
+                    }
+                  ],
+                  "authoredNumbers": [
+                    {
+                      "path": "/2",
+                      "lexeme": "1",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "kind": "expression",
+            "statementId": "i-read",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": "kz_i",
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_i",
+                  "symbolId": "symbol-i"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "i-init",
+      "loop",
+      "i-read"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "value": {
+      "kind": "exactDecimal",
+      "decimal": "3"
+    },
+    "assignmentVersions": [
+      1,
+      2,
+      3,
+      4
+    ]
+  }
+}

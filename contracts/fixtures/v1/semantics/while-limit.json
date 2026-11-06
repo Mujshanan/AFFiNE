@@ -1,0 +1,73 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-loop",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "while",
+            "statementId": "loop",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-loop",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
+            "body": [
+              {
+                "kind": "expression",
+                "statementId": "loop-expression",
+                "expression": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 1,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "1",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "loop"
+    ]
+  },
+  "expected": {
+    "status": "completedWithErrors",
+    "diagnostics": [
+      "RESOURCE_LIMIT_EXCEEDED"
+    ],
+    "iterationCount": 10000
+  }
+}

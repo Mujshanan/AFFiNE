@@ -1,0 +1,218 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-area",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-b",
+        "displayName": "b",
+        "normalizedName": "b",
+        "unit": {
+          "unitId": "millimetre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "mm",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      },
+      {
+        "symbolId": "symbol-h",
+        "displayName": "h",
+        "normalizedName": "h",
+        "unit": {
+          "unitId": "millimetre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "mm",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      },
+      {
+        "symbolId": "symbol-A",
+        "displayName": "A",
+        "normalizedName": "a",
+        "unit": {
+          "unitId": "square-millimetre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "mm²",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "2",
+              "denominator": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "assign",
+            "statementId": "b-set",
+            "assignmentId": "assignment-b-set",
+            "targetSymbolId": "symbol-b",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 300,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "300",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "assign",
+            "statementId": "h-set",
+            "assignmentId": "assignment-h-set",
+            "targetSymbolId": "symbol-h",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": 500,
+              "symbolBindings": [],
+              "authoredNumbers": [
+                {
+                  "path": "",
+                  "lexeme": "500",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "assign",
+            "statementId": "area-set",
+            "assignmentId": "assignment-area-set",
+            "targetSymbolId": "symbol-A",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Divide",
+                [
+                  "Multiply",
+                  "kz_b",
+                  "kz_h"
+                ],
+                2
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_b",
+                  "symbolId": "symbol-b"
+                },
+                {
+                  "engineSymbol": "kz_h",
+                  "symbolId": "symbol-h"
+                }
+              ],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "2",
+                  "representation": "exactDecimal"
+                }
+              ],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "b-set",
+      "h-set",
+      "area-set"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "value": {
+      "kind": "exactDecimal",
+      "decimal": "75000"
+    },
+    "unit": {
+      "unitId": "square-millimetre",
+      "registryVersion": "si-engineering-1",
+      "symbol": "mm²",
+      "dimension": [
+        {
+          "base": "length",
+          "numerator": "2",
+          "denominator": "1"
+        }
+      ]
+    },
+    "substitutedMathJson": [
+      "Divide",
+      [
+        "Multiply",
+        300,
+        500
+      ],
+      2
+    ],
+    "dependencies": [
+      {
+        "symbolId": "symbol-b",
+        "assignmentId": "assignment-b-set",
+        "assignmentVersion": 1,
+        "assignmentEventId": "event-b1"
+      },
+      {
+        "symbolId": "symbol-h",
+        "assignmentId": "assignment-h-set",
+        "assignmentVersion": 1,
+        "assignmentEventId": "event-h1"
+      }
+    ],
+    "substitutionPaths": [
+      "/1/1",
+      "/1/2"
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/unit.schema.json",
+  "title": "Khwarizmi Unit Quantity Metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "unitId",
+    "registryVersion",
+    "dimension"
+  ],
+  "properties": {
+    "unitId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registryVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "symbol": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dimension": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "base",
+          "numerator",
+          "denominator"
+        ],
+        "properties": {
+          "base": {
+            "type": "string",
+            "minLength": 1
+          },
+          "numerator": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]*)$"
+          },
+          "denominator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          }
+        }
+      }
+    },
+    "factors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "unitId",
+          "numerator",
+          "denominator"
+        ],
+        "properties": {
+          "unitId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "numerator": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]*)$"
+          },
+          "denominator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          }
+        }
+      }
+    },
+    "scaleToBaseMathJson": {
+      "$ref": "mathjson-profile.schema.json"
+    }
+  }
+}

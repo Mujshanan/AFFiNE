@@ -1,0 +1,38 @@
+{
+  "expression": {
+    "format": "khwarizmi.expression",
+    "schemaVersion": 1,
+    "mathJson": [
+      "Rational",
+      {
+        "num": "2"
+      },
+      {
+        "num": "16"
+      }
+    ],
+    "symbolBindings": [],
+    "authoredNumbers": [
+      {
+        "path": "",
+        "lexeme": "2/16",
+        "representation": "exactRational",
+        "numerator": "2",
+        "denominator": "16"
+      }
+    ],
+    "unitAttachments": [],
+    "sourceMap": [
+      {
+        "path": "",
+        "nodeId": "node-root",
+        "blockId": "block-fixture"
+      }
+    ]
+  },
+  "expected": {
+    "kind": "exactRational",
+    "numerator": "1",
+    "denominator": "8"
+  }
+}

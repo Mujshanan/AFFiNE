@@ -1,0 +1,36 @@
+{
+  "format": "khwarizmi.expression",
+  "schemaVersion": 1,
+  "mathJson": [
+    "List",
+    1,
+    2,
+    3
+  ],
+  "symbolBindings": [],
+  "authoredNumbers": [
+    {
+      "path": "/1",
+      "lexeme": "1",
+      "representation": "exactDecimal"
+    },
+    {
+      "path": "/2",
+      "lexeme": "2",
+      "representation": "exactDecimal"
+    },
+    {
+      "path": "/3",
+      "lexeme": "3",
+      "representation": "exactDecimal"
+    }
+  ],
+  "unitAttachments": [],
+  "sourceMap": [
+    {
+      "path": "",
+      "nodeId": "node-root",
+      "blockId": "block-fixture"
+    }
+  ]
+}

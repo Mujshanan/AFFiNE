@@ -1,0 +1,56 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-unresolved",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "expression",
+            "statementId": "read-x",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": "kz_x",
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "read-x"
+    ]
+  },
+  "expected": {
+    "status": "completedWithErrors",
+    "diagnostics": [
+      "UNRESOLVED_SYMBOL"
+    ]
+  }
+}

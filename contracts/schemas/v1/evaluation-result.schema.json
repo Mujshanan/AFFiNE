@@ -1,0 +1,255 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/evaluation-result.schema.json",
+  "title": "Khwarizmi Evaluation Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "evaluationId",
+    "documentId",
+    "documentRevision",
+    "semanticVersion",
+    "unitRegistryVersion",
+    "engine",
+    "status",
+    "results",
+    "diagnostics"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.evaluation-result"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "evaluationId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentRevision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "semanticVersion": {
+      "const": "1.0.0"
+    },
+    "unitRegistryVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "const": "cortexjs-compute-engine"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "completedWithErrors",
+        "cancelled"
+      ]
+    },
+    "results": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/result"
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "diagnostic.schema.json"
+      }
+    }
+  },
+  "$defs": {
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "symbolId",
+        "assignmentId",
+        "assignmentVersion",
+        "assignmentEventId"
+      ],
+      "properties": {
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "substitution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mathJsonPath",
+        "engineSymbol",
+        "symbolId",
+        "assignmentId",
+        "assignmentVersion",
+        "assignmentEventId",
+        "value"
+      ],
+      "properties": {
+        "mathJsonPath": {
+          "type": "string",
+          "pattern": "^(|/(0|[1-9][0-9]*)(/(0|[1-9][0-9]*))*)$"
+        },
+        "engineSymbol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "$ref": "numeric-value.schema.json"
+        },
+        "unit": {
+          "$ref": "unit.schema.json"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultId",
+        "statementId",
+        "status",
+        "originalExpression",
+        "substitutedMathJson",
+        "value",
+        "dependencies",
+        "substitutions",
+        "diagnostics"
+      ],
+      "properties": {
+        "resultId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "evaluated",
+            "skipped",
+            "error"
+          ]
+        },
+        "originalExpression": {
+          "$ref": "expression.schema.json"
+        },
+        "substitutedMathJson": {
+          "$ref": "mathjson-profile.schema.json"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "numeric-value.schema.json"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "$ref": "unit.schema.json"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
+          }
+        },
+        "substitutions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/substitution"
+          }
+        },
+        "controlFlowPath": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "statementId",
+              "kind"
+            ],
+            "properties": {
+              "statementId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "enum": [
+                  "if-then",
+                  "if-else",
+                  "while-iteration"
+                ]
+              },
+              "iteration": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "diagnostic.schema.json"
+          }
+        }
+      }
+    }
+  }
+}

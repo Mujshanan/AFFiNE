@@ -1,0 +1,81 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-shadow",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "if",
+            "statementId": "if-1",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-if-1",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
+            "then": [
+              {
+                "kind": "declareLocal",
+                "statementId": "local-1",
+                "localSymbolId": "local-x",
+                "displayName": "x",
+                "initializer": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 1,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "1",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ],
+            "else": []
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "if-1"
+    ]
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "SHADOWED_LOCAL"
+    ]
+  }
+}

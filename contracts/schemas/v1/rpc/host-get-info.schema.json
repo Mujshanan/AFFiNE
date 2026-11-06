@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/rpc/host-get-info.schema.json",
+  "title": "host.getInfo Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "hostBuild",
+    "semanticVersion",
+    "documentSchemaVersion",
+    "expressionSchemaVersion",
+    "unitRegistryVersion",
+    "engine",
+    "capabilities",
+    "maxFrameBytes",
+    "limits"
+  ],
+  "properties": {
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "major",
+        "minor"
+      ],
+      "properties": {
+        "major": {
+          "const": 1
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "hostBuild": {
+      "type": "string",
+      "minLength": 1
+    },
+    "semanticVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentSchemaVersion": {
+      "const": 1
+    },
+    "expressionSchemaVersion": {
+      "const": 1
+    },
+    "unitRegistryVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "const": "cortexjs-compute-engine"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "scalar",
+          "exact-decimal",
+          "exact-rational",
+          "approximate",
+          "units",
+          "if",
+          "while",
+          "substitution-trace",
+          "cancellation"
+        ]
+      }
+    },
+    "maxFrameBytes": {
+      "const": 16777216
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "validationTimeoutMs",
+        "evaluationTimeoutMs",
+        "maxConcurrentRequests",
+        "maxControlDepth",
+        "maxLoopIterations",
+        "maxAggregateLoopIterations",
+        "maxExpressionDepth",
+        "maxExpressionNodes",
+        "maxDiagnostics"
+      ],
+      "properties": {
+        "validationTimeoutMs": {
+          "const": 30000
+        },
+        "evaluationTimeoutMs": {
+          "const": 120000
+        },
+        "maxConcurrentRequests": {
+          "const": 8
+        },
+        "maxControlDepth": {
+          "const": 32
+        },
+        "maxLoopIterations": {
+          "const": 10000
+        },
+        "maxAggregateLoopIterations": {
+          "const": 100000
+        },
+        "maxExpressionDepth": {
+          "const": 256
+        },
+        "maxExpressionNodes": {
+          "const": 100000
+        },
+        "maxDiagnostics": {
+          "const": 10000
+        }
+      }
+    }
+  }
+}

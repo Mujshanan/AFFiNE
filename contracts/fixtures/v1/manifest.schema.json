@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/fixtures/v1/manifest.schema.json",
+  "title": "Khwarizmi Fixture Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "fixtures"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.contract-fixtures"
+    },
+    "version": {
+      "const": 1
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "path",
+          "stage",
+          "expectedOutcome"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$"
+          },
+          "kind": {
+            "enum": [
+              "expression",
+              "semantics",
+              "numeric",
+              "units",
+              "rpc"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^[a-z0-9/-]+\\.json$"
+          },
+          "stage": {
+            "enum": [
+              "schema-and-profile",
+              "mathjson-profile",
+              "semantic-validation",
+              "evaluation",
+              "rpc-envelope",
+              "rpc-integrity",
+              "authoring-parse"
+            ]
+          },
+          "expectedOutcome": {
+            "enum": [
+              "accept",
+              "reject",
+              "completed",
+              "completedWithErrors",
+              "cancelled"
+            ]
+          },
+          "diagnostic": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9_]+$"
+          }
+        }
+      }
+    }
+  }
+}

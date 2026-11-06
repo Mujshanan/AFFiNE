@@ -1,0 +1,141 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-if",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "if",
+            "statementId": "if-1",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-if-1",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
+            "then": [
+              {
+                "kind": "assign",
+                "statementId": "then-x",
+                "assignmentId": "assignment-then-x",
+                "targetSymbolId": "symbol-x",
+                "expression": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 5,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "5",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ],
+            "else": [
+              {
+                "kind": "assign",
+                "statementId": "else-x",
+                "assignmentId": "assignment-else-x",
+                "targetSymbolId": "symbol-x",
+                "expression": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 7,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "7",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "kind": "expression",
+            "statementId": "read",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": "kz_x",
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "if-1",
+      "read"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "value": {
+      "kind": "exactDecimal",
+      "decimal": "5"
+    },
+    "assignmentEvents": [
+      "assignment-then-x"
+    ],
+    "unexecutedAssignmentEvents": [
+      "assignment-else-x"
+    ]
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/unit-registry.schema.json",
+  "title": "Khwarizmi Unit Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "version",
+    "scaleEncoding",
+    "units",
+    "prefixes",
+    "prefixableUnitIds"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.unit-registry"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scaleEncoding": {
+      "const": "exact-rational-to-base; piRational for angle units"
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "unitId",
+          "symbol",
+          "scale",
+          "dimension"
+        ],
+        "properties": {
+          "unitId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "symbol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "scale": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "numerator",
+              "denominator"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "exact-rational",
+                  "piRational"
+                ]
+              },
+              "numerator": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$"
+              },
+              "denominator": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$"
+              }
+            }
+          },
+          "dimension": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "base",
+                "numerator",
+                "denominator"
+              ],
+              "properties": {
+                "base": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "numerator": {
+                  "type": "string",
+                  "pattern": "^-?(0|[1-9][0-9]*)$"
+                },
+                "denominator": {
+                  "type": "string",
+                  "pattern": "^[1-9][0-9]*$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "prefixes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "prefixId",
+          "symbol",
+          "scaleNumerator",
+          "scaleDenominator"
+        ],
+        "properties": {
+          "prefixId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "symbol": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scaleNumerator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          },
+          "scaleDenominator": {
+            "type": "string",
+            "pattern": "^[1-9][0-9]*$"
+          }
+        }
+      }
+    },
+    "prefixableUnitIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

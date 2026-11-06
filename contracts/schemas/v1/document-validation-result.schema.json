@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://khwarizmi.dev/contracts/schemas/v1/document-validation-result.schema.json",
+  "title": "Khwarizmi Document Validation Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "schemaVersion",
+    "documentId",
+    "documentRevision",
+    "valid",
+    "documentSchemaVersion",
+    "semanticVersion",
+    "diagnostics"
+  ],
+  "properties": {
+    "format": {
+      "const": "khwarizmi.document-validation-result"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "documentId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "documentRevision": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "documentSchemaVersion": {
+      "const": 1
+    },
+    "semanticVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "diagnostic.schema.json"
+      }
+    }
+  }
+}

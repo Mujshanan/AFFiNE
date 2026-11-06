@@ -1,0 +1,41 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-unknown-unit",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x",
+        "unit": {
+          "unitId": "unit.unknown",
+          "registryVersion": "si-engineering-1",
+          "symbol": "qu",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": []
+      }
+    ],
+    "calculationOrder": []
+  },
+  "expected": {
+    "status": "invalid",
+    "diagnostics": [
+      "UNKNOWN_UNIT"
+    ]
+  }
+}

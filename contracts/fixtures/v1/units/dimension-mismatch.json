@@ -1,0 +1,93 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-unit-bad",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [
+      {
+        "symbolId": "symbol-m",
+        "displayName": "length",
+        "normalizedName": "length",
+        "unit": {
+          "unitId": "metre",
+          "registryVersion": "si-engineering-1",
+          "symbol": "m",
+          "dimension": [
+            {
+              "base": "length",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      },
+      {
+        "symbolId": "symbol-mass",
+        "displayName": "mass",
+        "normalizedName": "mass",
+        "unit": {
+          "unitId": "kilogram",
+          "registryVersion": "si-engineering-1",
+          "symbol": "kg",
+          "dimension": [
+            {
+              "base": "mass",
+              "numerator": "1",
+              "denominator": "1"
+            }
+          ]
+        }
+      }
+    ],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "expression",
+            "statementId": "bad-add",
+            "expression": {
+              "format": "khwarizmi.expression",
+              "schemaVersion": 1,
+              "mathJson": [
+                "Add",
+                "kz_length",
+                "kz_mass"
+              ],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_length",
+                  "symbolId": "symbol-m"
+                },
+                {
+                  "engineSymbol": "kz_mass",
+                  "symbolId": "symbol-mass"
+                }
+              ],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "bad-add"
+    ]
+  },
+  "expected": {
+    "status": "completedWithErrors",
+    "diagnostics": [
+      "DIMENSION_MISMATCH"
+    ]
+  }
+}

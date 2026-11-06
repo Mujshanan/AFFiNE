@@ -1,0 +1,37 @@
+{
+  "format": "khwarizmi.expression",
+  "schemaVersion": 1,
+  "mathJson": [
+    "Add",
+    "kz_a",
+    "kz_b"
+  ],
+  "symbolBindings": [
+    {
+      "engineSymbol": "kz_a",
+      "symbolId": "symbol-a"
+    },
+    {
+      "engineSymbol": "kz_b",
+      "symbolId": "symbol-b"
+    }
+  ],
+  "authoredNumbers": [],
+  "unitAttachments": [],
+  "sourceMap": [
+    {
+      "path": "/1",
+      "nodeId": "node-a",
+      "blockId": "block-1"
+    },
+    {
+      "path": "/2",
+      "nodeId": "node-b",
+      "blockId": "block-1"
+    }
+  ],
+  "authoring": {
+    "latex": "a+b",
+    "mathLiveVersion": "0.111.4"
+  }
+}

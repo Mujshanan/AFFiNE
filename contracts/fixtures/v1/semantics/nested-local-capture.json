@@ -1,0 +1,122 @@
+{
+  "document": {
+    "format": "khwarizmi.calculation-document",
+    "schemaVersion": 1,
+    "documentId": "doc-nested-local",
+    "semanticVersion": "1.0.0",
+    "unitRegistryVersion": "si-engineering-1",
+    "symbols": [],
+    "pages": [
+      {
+        "pageId": "page-1",
+        "statements": [
+          {
+            "kind": "if",
+            "statementId": "outer-if",
+            "condition": {
+              "format": "khwarizmi.condition-expression",
+              "schemaVersion": 1,
+              "mathJson": "True",
+              "symbolBindings": [],
+              "authoredNumbers": [],
+              "unitAttachments": [],
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "condition-outer-if",
+                  "blockId": "block-fixture"
+                }
+              ]
+            },
+            "then": [
+              {
+                "kind": "declareLocal",
+                "statementId": "local-declare",
+                "localSymbolId": "local-a",
+                "displayName": "a",
+                "initializer": {
+                  "format": "khwarizmi.expression",
+                  "schemaVersion": 1,
+                  "mathJson": 4,
+                  "symbolBindings": [],
+                  "authoredNumbers": [
+                    {
+                      "path": "",
+                      "lexeme": "4",
+                      "representation": "exactDecimal"
+                    }
+                  ],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "node-root",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                }
+              },
+              {
+                "kind": "if",
+                "statementId": "inner-if",
+                "condition": {
+                  "format": "khwarizmi.condition-expression",
+                  "schemaVersion": 1,
+                  "mathJson": "True",
+                  "symbolBindings": [],
+                  "authoredNumbers": [],
+                  "unitAttachments": [],
+                  "sourceMap": [
+                    {
+                      "path": "",
+                      "nodeId": "condition-inner-if",
+                      "blockId": "block-fixture"
+                    }
+                  ]
+                },
+                "then": [
+                  {
+                    "kind": "expression",
+                    "statementId": "inner-read",
+                    "expression": {
+                      "format": "khwarizmi.expression",
+                      "schemaVersion": 1,
+                      "mathJson": "kz_a",
+                      "symbolBindings": [
+                        {
+                          "engineSymbol": "kz_a",
+                          "symbolId": "local-a"
+                        }
+                      ],
+                      "authoredNumbers": [],
+                      "unitAttachments": [],
+                      "sourceMap": [
+                        {
+                          "path": "",
+                          "nodeId": "node-root",
+                          "blockId": "block-fixture"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "else": []
+              }
+            ],
+            "else": []
+          }
+        ]
+      }
+    ],
+    "calculationOrder": [
+      "outer-if"
+    ]
+  },
+  "expected": {
+    "status": "completed",
+    "innerValue": {
+      "kind": "exactDecimal",
+      "decimal": "4"
+    }
+  }
+}
