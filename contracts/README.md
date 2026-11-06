@@ -38,4 +38,4 @@ Document schema, expression-record schema, semantic contract, unit registry, eng
 
 ## Current implementation boundary
 
-The schemas, semantic rules, registry, and 30 language-neutral seed fixtures are defined. The TypeScript validators, Compute Engine adapter, executable fixture runner, transport tests, and CI conformance gates remain implementation work. No broad worksheet UI or production calculation host should begin until the conformance exit criteria are met.
+The schemas, semantic rules, registry, and 30 language-neutral seed fixtures are defined. The initial TypeScript schema/semantic validator package and fixture checks now exist at `packages/common/khwarizmi-contracts`. The schema interpreter intentionally supports the exact vocabulary used by this bundle and fails closed on new keywords; it is not a general-purpose JSON Schema implementation. Compute Engine execution, full evaluation fixture execution, RFC 8785 digest verification, RPC framing, Windows host isolation, and CI enforcement remain separate work. No broad worksheet UI or production calculation host should begin until the conformance exit criteria are met.
