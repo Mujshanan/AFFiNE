@@ -306,7 +306,7 @@ export function validateUnitRegistrySemantics(registry: unknown): SemanticValida
     if (isRecord(unit.scale)) {
       const numerator = BigInt(String(unit.scale.numerator ?? '0'));
       const denominator = BigInt(String(unit.scale.denominator ?? '0'));
-      if (numerator <= 0n || denominator <= 0n) diagnostics.push({ code: 'INVALID_UNIT_SCALE', message: 'Unit scale numerator and denominator must be positive' });
+      if (numerator <= 0n || denominator <= 0n || gcd(numerator, denominator) !== 1n) diagnostics.push({ code: 'INVALID_UNIT_SCALE', message: 'Unit scale must be a reduced positive rational' });
     }
     if (Array.isArray(unit.dimension)) {
       const bases = unit.dimension.filter(isRecord).map(item => item.base);
@@ -315,7 +315,7 @@ export function validateUnitRegistrySemantics(registry: unknown): SemanticValida
       for (const item of unit.dimension.filter(isRecord)) {
         const numerator = BigInt(String(item.numerator ?? '0'));
         const denominator = BigInt(String(item.denominator ?? '0'));
-        if (denominator <= 0n || numerator === 0n) diagnostics.push({ code: 'INVALID_UNIT_DIMENSION', message: 'Dimension exponents must be non-zero reduced rationals with positive denominators' });
+        if (denominator <= 0n || numerator === 0n || gcd(numerator, denominator) !== 1n) diagnostics.push({ code: 'INVALID_UNIT_DIMENSION', message: 'Dimension exponents must be non-zero reduced rationals with positive denominators' });
       }
     }
   }
@@ -324,7 +324,7 @@ export function validateUnitRegistrySemantics(registry: unknown): SemanticValida
     if (!isRecord(prefix) || typeof prefix.prefixId !== 'string') continue;
     if (prefixIds.has(prefix.prefixId)) diagnostics.push({ code: 'DUPLICATE_PREFIX_ID', message: 'Prefix IDs must be unique' });
     prefixIds.add(prefix.prefixId);
-    if (BigInt(String(prefix.scaleNumerator ?? '0')) <= 0n || BigInt(String(prefix.scaleDenominator ?? '0')) <= 0n) diagnostics.push({ code: 'INVALID_PREFIX_SCALE', message: 'Prefix scale must be a positive rational' });
+    const numerator = BigInt(String(prefix.scaleNumerator ?? '0'));\n    const denominator = BigInt(String(prefix.scaleDenominator ?? '0'));\n    if (numerator <= 0n || denominator <= 0n || gcd(numerator, denominator) !== 1n) diagnostics.push({ code: 'INVALID_PREFIX_SCALE', message: 'Prefix scale must be a reduced positive rational' });
   }
   for (const unitId of registry.prefixableUnitIds) {
     if (typeof unitId !== 'string' || !unitIds.has(unitId)) diagnostics.push({ code: 'UNKNOWN_PREFIXABLE_UNIT', message: 'Prefixable unit ID must exist in the registry' });
