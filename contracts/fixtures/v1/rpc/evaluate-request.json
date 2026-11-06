@@ -1,0 +1,16 @@
+{
+  "jsonrpc": "2.0",
+  "id": "request-1",
+  "method": "document.evaluate",
+  "params": {
+    "schemaVersion": 1,
+    "document": {
+      "format": "khwarizmi.document",
+      "schemaVersion": 1,
+      "documentId": "doc-1",
+      "pages": []
+    },
+    "documentDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "semanticVersion": "1.0.0"
+  }
+}

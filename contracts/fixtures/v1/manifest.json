@@ -26,6 +26,19 @@
       "kind": "rpc",
       "path": "rpc/evaluate-request.json",
       "expect": "valid"
+    },
+    {
+      "id": "expr.vector.rejected.001",
+      "kind": "expression",
+      "path": "expression/vector-rejected.json",
+      "expect": "invalid",
+      "diagnostic": "UNSUPPORTED_VALUE_KIND"
+    },
+    {
+      "id": "rpc.evaluate.request.001",
+      "kind": "rpc",
+      "path": "rpc/evaluate-request.json",
+      "expect": "valid"
     }
   ]
 }

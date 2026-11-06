@@ -1,0 +1,20 @@
+{
+  "format": "khwarizmi.expression",
+  "schemaVersion": 1,
+  "mathJson": [
+    "List",
+    1,
+    2,
+    3
+  ],
+  "symbolBindings": [],
+  "authoredNumbers": [],
+  "sourceMap": [
+    {
+      "path": "",
+      "nodeId": "vector-node",
+      "blockId": "vector-block"
+    }
+  ],
+  "expectedDiagnostic": "UNSUPPORTED_VALUE_KIND"
+}
