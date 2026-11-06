@@ -8,12 +8,8 @@ import { utils } from '@electron-forge/core';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 
 import {
-  appIdMap,
-  arch,
-  buildType,
   iconUrl,
   icoPath,
-  platform,
   productName,
 } from './scripts/make-env.js';
 
