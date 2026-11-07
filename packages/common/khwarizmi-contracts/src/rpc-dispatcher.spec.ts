@@ -186,7 +186,7 @@ describe('Khwarizmi JSON-RPC dispatcher', () => {
     const dispatcher = new RpcRequestDispatcher({
       declared: {
         handler: () => {
-          throw new RpcDispatchFailure(4220, 'Document revision conflict', {
+          throw new RpcDispatchFailure(-32010, 'Document revision conflict', {
             expected: 'a',
             actual: 'b',
           });
@@ -203,7 +203,7 @@ describe('Khwarizmi JSON-RPC dispatcher', () => {
       dispatcher.dispatch({ jsonrpc: '2.0', id: 1, method: 'declared' })
     ).resolves.toMatchObject({
       error: {
-        code: 4220,
+        code: -32010,
         message: 'Document revision conflict',
         data: { expected: 'a', actual: 'b' },
       },
