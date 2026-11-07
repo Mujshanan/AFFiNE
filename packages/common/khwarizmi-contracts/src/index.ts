@@ -1,4 +1,13 @@
 export {
+  decodeRpcPayload,
+  encodeRpcFrame,
+  RequestCancellationRegistry,
+  RPC_MAX_FRAME_BYTES,
+  RpcFrameDecoder,
+  type RpcRequestId,
+  RpcTransportError,
+} from './rpc-transport.js';
+export {
   type FixtureManifestEntry,
   type FixtureRunReport,
   type FixtureRunResult,

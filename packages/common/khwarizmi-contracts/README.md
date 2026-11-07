@@ -10,6 +10,7 @@ This workspace package provides the first executable TypeScript validation layer
 - `validateUnitRegistrySemantics` checks unit/prefix identity, exact positive scales, and canonical dimension vectors.
 - `validateUnitReference` distinguishes unknown units from the v1-rejected affine temperature units.
 - `validateDiagnosticRegistrySemantics` and `validateDiagnosticCodeMembership` enforce the stable diagnostic registry.
+- `rpc-transport.ts` implements bounded little-endian frame encoding/stream decoding and request-ID cancellation tracking.
 
 ## Deliberate boundary
 
