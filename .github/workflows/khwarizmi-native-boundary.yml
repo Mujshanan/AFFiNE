@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if rg -n 'affine_common|packages/common/native' packages/frontend/native/src packages/frontend/native/Cargo.toml; then
+          if grep -RInE 'affine_common|packages/common/native' packages/frontend/native/src packages/frontend/native/Cargo.toml packages/frontend/native/nbstore/src packages/frontend/native/nbstore/Cargo.toml; then
             echo 'Frontend native package must not import or depend on EE-scoped native source.'
             exit 1
           fi
