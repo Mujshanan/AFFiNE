@@ -5,7 +5,7 @@ export interface BoxedExpressionPort {
 
 export interface ComputeEnginePort {
   precision: number;
-  box(mathJson: never): BoxedExpressionPort;
+  box(mathJson: unknown): BoxedExpressionPort;
 }
 
 export type ComputeEngineFactory = () => ComputeEnginePort;
@@ -37,7 +37,7 @@ export function evaluateMathJson(
   }
   const engine = createEngine();
   engine.precision = precision;
-  const boxed = engine.box(mathJson as never);
+  const boxed = engine.box(mathJson);
   const evaluated = boxed.evaluate();
   return {
     // Use the precision-preserving serializer, not BoxedExpression.json.
