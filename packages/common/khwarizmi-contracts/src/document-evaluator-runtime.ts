@@ -448,7 +448,11 @@ export function evaluateCalculationDocument(
       numericValue: evaluated.value,
       ...(isRecord(symbol?.unit) ? { unit: symbol.unit } : {}),
     };
-    setState(symbolId, state);
+    if (localDeclaration && localScopes.length) {
+      localScopes[localScopes.length - 1]?.set(symbolId, state);
+    } else {
+      setState(symbolId, state);
+    }
     failedSymbols.delete(symbolId);
     assignmentEvents.push({
       statementId: statement.statementId,
