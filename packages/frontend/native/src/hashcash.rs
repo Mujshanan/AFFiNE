@@ -219,6 +219,7 @@ mod tests {
     let stamp = Stamp::parse(&Stamp::mint("resource-a".into(), Some(8)).unwrap()).unwrap();
     assert!(!stamp.verify(8, "resource-b"));
     assert!(!stamp.verify(9, "resource-a"));
+    assert!(!stamp.verify(0, "resource-a"));
   }
 
   #[test]
