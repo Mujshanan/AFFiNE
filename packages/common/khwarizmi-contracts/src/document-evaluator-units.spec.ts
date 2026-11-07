@@ -205,6 +205,37 @@ describe('document evaluator unit semantics', () => {
     });
   });
 
+  it('applies explicit unit attachments to MathJSON nodes', () => {
+    const document = {
+      format: 'khwarizmi.calculation-document',
+      schemaVersion: 1,
+      documentId: 'unit-attachment-document',
+      semanticVersion: '1.0.0',
+      unitRegistryVersion: 'si-engineering-1',
+      symbols: [],
+      pages: [{
+        pageId: 'page-1',
+        statements: [{
+          kind: 'expression',
+          statementId: 'attached-sum',
+          expression: {
+            ...expression(['Add', 1, 1000]),
+            unitAttachments: [
+              { path: '/1', unitId: 'metre' },
+              { path: '/2', unitId: 'millimetre' },
+            ],
+          },
+        }],
+      }],
+      calculationOrder: ['attached-sum'],
+    };
+
+    const result = evaluateCalculationDocument(document, options('unit-attachment'));
+    expect(result.status).toBe('completed');
+    expect(result.results[0]?.value).toEqual({ kind: 'exactDecimal', decimal: '2' });
+    expect(result.results[0]?.unit).toMatchObject({ unitId: 'metre', symbol: 'm' });
+  });
+
   it('rejects addition of incompatible dimensions with a stable diagnostic', () => {
     const document = {
       format: 'khwarizmi.calculation-document',
