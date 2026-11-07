@@ -7,6 +7,21 @@ export {
   evaluateMathJson,
 } from './compute-engine-adapter.js';
 export {
+  type FixtureManifestEntry,
+  type FixtureRunReport,
+  type FixtureRunResult,
+  type FixtureRunnerOptions,
+  runFixtureManifest,
+} from './fixture-runner.js';
+export {
+  type JsonSchema,
+  type JsonValue,
+  type SchemaIssue,
+  type SchemaValidationResult,
+  validateJsonSchema,
+  validateSchemaBundle,
+} from './json-schema.js';
+export {
   decimalToRational,
   type ExactMathJsonNumber,
   type ExactMathJsonRational,
@@ -28,21 +43,6 @@ export {
   type RpcRequestId,
   RpcTransportError,
 } from './rpc-transport.js';
-export {
-  type FixtureManifestEntry,
-  type FixtureRunReport,
-  type FixtureRunResult,
-  type FixtureRunnerOptions,
-  runFixtureManifest,
-} from './fixture-runner.js';
-export {
-  type JsonSchema,
-  type JsonValue,
-  type SchemaIssue,
-  type SchemaValidationResult,
-  validateJsonSchema,
-  validateSchemaBundle,
-} from './json-schema.js';
 export {
   type SemanticIssue,
   type SemanticValidationResult,
