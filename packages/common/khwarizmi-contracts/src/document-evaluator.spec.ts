@@ -106,6 +106,69 @@ describe('document evaluation vertical slice', () => {
     })).toThrow(/Document validation failed/);
   });
 
+  it('preserves authored decimal scale including trailing zeros', () => {
+    const scaled = {
+      ...doc,
+      pages: [{
+        pageId: 'page-1',
+        statements: [{
+          kind: 'expression',
+          statementId: 'scaled',
+          expression: {
+            ...expression(1.2),
+            authoredNumbers: [{ path: '', representation: 'exactDecimal', lexeme: '1.20' }],
+          },
+        }],
+      }],
+      calculationOrder: ['scaled'],
+    };
+    const result = evaluateCalculationDocument(scaled, {
+      createEngine: arithmeticEngine,
+      validateDocument: () => ({ valid: true }),
+      engineVersion: '0.180.0',
+      documentRevision: 'b'.repeat(64),
+      evaluationId: 'evaluation-scaled',
+    });
+    expect(result.results[0].value).toEqual({ kind: 'exactDecimal', decimal: '1.20' });
+  });
+
+  it('rejects duplicate calculation-order entries before invoking the engine', () => {
+    let engineCalls = 0;
+    const invalid = { ...doc, calculationOrder: ['s1', 's1'] };
+    expect(() => evaluateCalculationDocument(invalid, {
+      createEngine: () => {
+        engineCalls++;
+        return arithmeticEngine();
+      },
+      validateDocument: () => ({ valid: true }),
+      engineVersion: '0.180.0',
+      documentRevision: 'c'.repeat(64),
+      evaluationId: 'evaluation-duplicate-order',
+    })).toThrow(/Duplicate statement in calculationOrder/);
+    expect(engineCalls).toBe(0);
+  });
+
+  it('rejects duplicate statement IDs instead of silently shadowing a statement', () => {
+    const invalid = {
+      ...doc,
+      pages: [{
+        pageId: 'page-1',
+        statements: [
+          { kind: 'expression', statementId: 'same', expression: expression(1) },
+          { kind: 'expression', statementId: 'same', expression: expression(2) },
+        ],
+      }],
+      calculationOrder: ['same'],
+    };
+    expect(() => evaluateCalculationDocument(invalid, {
+      createEngine: arithmeticEngine,
+      validateDocument: () => ({ valid: true }),
+      engineVersion: '0.180.0',
+      documentRevision: 'd'.repeat(64),
+      evaluationId: 'evaluation-duplicate-id',
+    })).toThrow(/Duplicate statementId/);
+  });
+
   it('rejects an invalid revision digest before evaluation', () => {
     expect(() => evaluateCalculationDocument(doc, {
       createEngine: arithmeticEngine,
