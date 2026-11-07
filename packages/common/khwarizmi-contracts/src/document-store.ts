@@ -1,6 +1,6 @@
-import { mkdir, open, readFile, rename, rm } from 'node:fs/promises';
-import { dirname, join, resolve, sep } from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { mkdir, open, readFile, rename, rm } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
 
 import {
   canonicalSha256,
@@ -108,10 +108,7 @@ export class FileDocumentStore {
 
   private documentDirectory(documentId: string): string {
     assertDocumentId(documentId);
-    const path = resolve(this.root, documentId);
-    if (!path.startsWith(this.root + sep))
-      throw new TypeError('Document path escapes the store root');
-    return path;
+    return resolve(this.root, documentId);
   }
 
   private documentPath(documentId: string): string {
