@@ -6,14 +6,14 @@
 
 ## Change made
 
-The frontend native crate no longer declares `affine_common` as a dependency and no longer imports `affine_common::hashcash::Stamp`. The existing N-API surface remains unchanged:
+The frontend native crate no longer declares `affine_common` as a dependency and no longer imports `affine_common::hashcash::Stamp`. The transitive path through `affine_nbstore` is also removed: its `affine_common::napi_utils::to_napi_error` helper call is replaced with an equivalent local N-API error conversion, and the existing `napi` Cargo feature is retained as an empty compatibility feature. The existing N-API surface remains unchanged:
 
 - `verify_challenge_response(response, bits, resource)`
 - `mint_challenge_response(resource, bits)`
 
 The functions remain asynchronous N-API tasks and retain their existing argument and return types. The `hashcash` module remains publicly exported from `affine_native`, so consumers do not need an import-path change.
 
-The implementation is maintained in `packages/frontend/native/src/hashcash.rs`, in the MIT-scoped frontend native package. It uses the existing workspace SHA3 dependency and direct workspace dependencies for randomness and hex encoding. It does not import, wrap, copy, or link the EE-scoped Rust crate.
+The Hashcash implementation is maintained in `packages/frontend/native/src/hashcash.rs`, in the MIT-scoped frontend native package. The nbstore error conversion is maintained in `packages/frontend/native/nbstore/src/lib.rs`. It uses the existing workspace SHA3 dependency and direct workspace dependencies for randomness and hex encoding. It does not import, wrap, copy, or link the EE-scoped Rust crate.
 
 ## v1 wire compatibility
 
@@ -38,7 +38,7 @@ cargo tree -p affine_native -e normal
 cargo tree -p affine_native -i affine_common
 ```
 
-The first command must contain no `affine_common` node. The second command must report that no matching package is in the dependency graph (or be replaced by an equivalent machine-checked assertion in CI).
+The first command must contain no `affine_common` node, including transitive nodes reached through `affine_nbstore`. The second command must report that no matching package is in the dependency graph (or be replaced by an equivalent machine-checked assertion in CI).
 
 ## Required validation gates
 
