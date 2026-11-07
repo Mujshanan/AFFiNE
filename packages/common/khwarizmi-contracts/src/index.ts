@@ -8,3 +8,4 @@ export * from './rpc-transport.js';
 export * from './rpc-dispatcher.js';
 export * from './semantic-validator.js';
 export * from './unit-codec.js';
+export * from './unit-evaluator.js';
