@@ -1,24 +1,4 @@
 export {
-  evaluateCalculationDocument,
-  type DocumentEvaluationOptions,
-  type DocumentEvaluationResult,
-  type EvaluationDiagnostic,
-  type AssignmentDependency,
-} from './document-evaluator.js';
-export {
-  combineDimensions,
-  conversionRatio,
-  convertRationalMagnitude,
-  dimensionsCompatible,
-  loadUnitRegistry,
-  resolvePrefixedUnit,
-  resolveUnit,
-  UnitCodecFailure,
-  type ResolvedUnit,
-  type UnitDefinition,
-  type UnitRegistry,
-} from './unit-codec.js';
-export {
   type BoxedExpressionPort,
   type ComputeEngineAdapterOptions,
   type ComputeEngineEvaluation,
@@ -26,6 +6,28 @@ export {
   type ComputeEnginePort,
   evaluateMathJson,
 } from './compute-engine-adapter.js';
+export {
+  evaluateCalculationDocument,
+  type AssignmentDependency,
+  type DocumentEvaluationOptions,
+  type DocumentEvaluationResult,
+  type EvaluationDiagnostic,
+} from './document-evaluator.js';
+export {
+  type FixtureManifestEntry,
+  type FixtureRunReport,
+  type FixtureRunResult,
+  type FixtureRunnerOptions,
+  runFixtureManifest,
+} from './fixture-runner.js';
+export {
+  type JsonSchema,
+  type JsonValue,
+  type SchemaIssue,
+  type SchemaValidationResult,
+  validateJsonSchema,
+  validateSchemaBundle,
+} from './json-schema.js';
 export {
   decimalToRational,
   type ExactMathJsonNumber,
@@ -49,21 +51,6 @@ export {
   RpcTransportError,
 } from './rpc-transport.js';
 export {
-  type FixtureManifestEntry,
-  type FixtureRunReport,
-  type FixtureRunResult,
-  type FixtureRunnerOptions,
-  runFixtureManifest,
-} from './fixture-runner.js';
-export {
-  type JsonSchema,
-  type JsonValue,
-  type SchemaIssue,
-  type SchemaValidationResult,
-  validateJsonSchema,
-  validateSchemaBundle,
-} from './json-schema.js';
-export {
   type SemanticIssue,
   type SemanticValidationResult,
   validateCalculationSemantics,
@@ -73,3 +60,16 @@ export {
   validateUnitReference,
   validateUnitRegistrySemantics,
 } from './semantic-validator.js';
+export {
+  combineDimensions,
+  conversionRatio,
+  convertRationalMagnitude,
+  dimensionsCompatible,
+  loadUnitRegistry,
+  resolvePrefixedUnit,
+  resolveUnit,
+  UnitCodecFailure,
+  type ResolvedUnit,
+  type UnitDefinition,
+  type UnitRegistry,
+} from './unit-codec.js';
