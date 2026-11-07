@@ -41,7 +41,7 @@ export function canonicalizeJson(value: unknown): string {
     if (typeof item === 'boolean') return item ? 'true' : 'false';
     if (typeof item === 'string') {
       assertWellFormedUnicode(item);
-      return JSON.stringify(item);
+      return JSON.stringify(item)!;
     }
     if (typeof item === 'number') {
       if (!Number.isFinite(item))
@@ -62,24 +62,35 @@ export function canonicalizeJson(value: unknown): string {
           entries.push(serialize(item[index]));
         }
         const ownKeys = Reflect.ownKeys(item);
-        if (ownKeys.some(key => typeof key === 'symbol'))
-          throw new TypeError('Canonical JSON arrays cannot contain symbol keys');
+        if (
+          ownKeys.some(
+            key =>
+              typeof key === 'symbol' ||
+              (key !== 'length' &&
+                (!/^(0|[1-9][0-9]*)$/.test(key) || Number(key) >= item.length))
+          )
+        )
+          throw new TypeError('Canonical JSON arrays cannot contain extra properties');
         return '[' + entries.join(',') + ']';
       }
 
       const prototype = Object.getPrototypeOf(item);
       if (prototype !== Object.prototype && prototype !== null)
         throw new TypeError('Canonical JSON objects must be plain objects');
-      if (Object.getOwnPropertySymbols(item).length)
+      const ownKeys = Reflect.ownKeys(item);
+      if (ownKeys.some(key => typeof key === 'symbol'))
         throw new TypeError('Canonical JSON objects cannot contain symbol keys');
-
-      const keys = Object.keys(item).sort();
+      const keys = (ownKeys as string[]).sort();
       const properties = keys.map(key => {
         assertWellFormedUnicode(key);
         const descriptor = Object.getOwnPropertyDescriptor(item, key);
-        if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, 'value'))
-          throw new TypeError('Canonical JSON objects cannot contain accessor properties');
-        return JSON.stringify(key) + ':' + serialize(descriptor.value);
+        if (
+          !descriptor ||
+          !descriptor.enumerable ||
+          !Object.prototype.hasOwnProperty.call(descriptor, 'value')
+        )
+          throw new TypeError('Canonical JSON objects require enumerable data properties');
+        return JSON.stringify(key)! + ':' + serialize(descriptor.value);
       });
       return '{' + properties.join(',') + '}';
     } finally {
