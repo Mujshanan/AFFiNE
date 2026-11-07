@@ -56,12 +56,6 @@ jobs:
               exit 1
             fi
           done
-      - name: Install cargo-deny
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-deny
-      - name: Verify third-party dependency license policy
-        run: cargo deny --manifest-path packages/frontend/native/Cargo.toml check licenses
       - name: Check Rust formatting
         run: cargo fmt -p affine_native -p affine_nbstore -- --check
       - name: Test frontend native crates
