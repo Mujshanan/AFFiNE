@@ -5,7 +5,7 @@
     "documentId": "doc-failed",
     "semanticVersion": "1.0.0",
     "unitRegistryVersion": "si-engineering-1",
-    "symbols": [{"symbolId":"symbol-x","displayName":"x","normalizedName":"x"}],
+    "symbols": [{ "symbolId": "symbol-x", "displayName": "x", "normalizedName": "x" }],
     "pages": [
       {
         "pageId": "page-1",
@@ -33,7 +33,13 @@
                 }
               ],
               "unitAttachments": [],
-              "sourceMap": [{"path":"","nodeId":"node-root","blockId":"block-fixture"}]
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
             }
           },
           {
@@ -43,10 +49,22 @@
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
               "mathJson": ["Add", "kz_x", 1],
-              "symbolBindings": [{"engineSymbol":"kz_x","symbolId":"symbol-x"}],
-              "authoredNumbers": [{"path":"/2","lexeme":"1","representation":"exactDecimal"}],
+              "symbolBindings": [{ "engineSymbol": "kz_x", "symbolId": "symbol-x" }],
+              "authoredNumbers": [
+                {
+                  "path": "/2",
+                  "lexeme": "1",
+                  "representation": "exactDecimal"
+                }
+              ],
               "unitAttachments": [],
-              "sourceMap": [{"path":"","nodeId":"node-root","blockId":"block-fixture"}]
+              "sourceMap": [
+                {
+                  "path": "",
+                  "nodeId": "node-root",
+                  "blockId": "block-fixture"
+                }
+              ]
             }
           }
         ]
