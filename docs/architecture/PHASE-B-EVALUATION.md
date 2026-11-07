@@ -19,6 +19,8 @@
 
 The unit codec now resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. Degree/radian conversion retains a symbolic pi factor and refuses to collapse it into a rational magnitude. This codec is currently a standalone foundation and is not yet wired into evaluator preflight.
 
+The evaluation-result schema now explicitly models immutable assignment-event records. Substitution provenance includes the stable document `symbolId` and the normalized numeric value (plus unit metadata when present), rather than leaking the internal MathJSON value into a field whose contract is a numeric-value record. This keeps the runtime result shape aligned with the published v1 schema.
+
 The initial evaluator supports a linear sequence of document-level `assign` and `expression` statements. It requires the caller to supply the document validator and a fresh Compute Engine factory. It creates a new engine through the adapter for each statement evaluation, records assignment versions and event IDs, substitutes only the exact preceding assignment values, and returns normalized result records.
 
 This is a foundation slice, not a completed production evaluator.
