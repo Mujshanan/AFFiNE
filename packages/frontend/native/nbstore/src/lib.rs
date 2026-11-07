@@ -8,8 +8,6 @@ pub mod indexer_sync;
 pub mod pool;
 pub mod storage;
 
-#[cfg(not(feature = "use-as-lib"))]
-use affine_common::napi_utils::to_napi_error;
 use chrono::NaiveDateTime;
 use napi::bindgen_prelude::*;
 #[cfg(not(feature = "use-as-lib"))]
@@ -25,7 +23,7 @@ type Result<T> = napi::Result<T>;
 #[cfg(not(feature = "use-as-lib"))]
 impl From<error::Error> for napi::Error {
   fn from(err: error::Error) -> Self {
-    to_napi_error(err, napi::Status::GenericFailure)
+    napi::Error::new(napi::Status::GenericFailure, err.to_string())
   }
 }
 
