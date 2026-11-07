@@ -105,6 +105,33 @@ describe('durable authored-document storage', () => {
     ).rejects.toThrow('SNAPSHOT_DOCUMENT_REVISION_MISMATCH');
   });
 
+  it('refuses to save a snapshot with mismatched semantic identity', async () => {
+    const { store } = await createStore();
+    const revision = await store.saveDocument(document);
+    await expect(
+      store.saveEvaluationSnapshot('doc-test', {
+        ...snapshot(revision),
+        unitRegistryVersion: 'si-2',
+      })
+    ).rejects.toThrow('SNAPSHOT_SEMANTIC_IDENTITY_MISMATCH');
+  });
+
+  it('classifies malformed snapshot JSON as corrupt', async () => {
+    const { store, root } = await createStore();
+    const revision = await store.saveDocument(document);
+    await store.saveEvaluationSnapshot('doc-test', snapshot(revision));
+    await writeFile(
+      join(root, 'doc-test', 'evaluation-snapshot.json'),
+      '{invalid'
+    );
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toEqual({
+      status: 'corrupt',
+      reason: 'SNAPSHOT_JSON_INVALID',
+    });
+  });
+
   it('supports explicit snapshot invalidation', async () => {
     const { store } = await createStore();
     const revision = await store.saveDocument(document);
