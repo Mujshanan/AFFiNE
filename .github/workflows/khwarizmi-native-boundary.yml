@@ -61,7 +61,7 @@ jobs:
         with:
           tool: cargo-deny
       - name: Verify third-party dependency license policy
-        run: cargo deny --manifest-path packages/frontend/native/Cargo.toml --target x86_64-pc-windows-msvc --target aarch64-pc-windows-msvc check licenses
+        run: cargo deny --manifest-path packages/frontend/native/Cargo.toml check licenses
       - name: Check Rust formatting
         run: cargo fmt -p affine_native -p affine_nbstore -- --check
       - name: Test frontend native crates
