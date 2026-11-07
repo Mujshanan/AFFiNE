@@ -46,7 +46,10 @@
     "engine": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "version"],
+      "required": [
+        "name",
+        "version"
+      ],
       "properties": {
         "name": {
           "const": "cortexjs-compute-engine"
@@ -58,7 +61,11 @@
       }
     },
     "status": {
-      "enum": ["completed", "completedWithErrors", "cancelled"]
+      "enum": [
+        "completed",
+        "completedWithErrors",
+        "cancelled"
+      ]
     },
     "results": {
       "type": "array",
@@ -70,6 +77,12 @@
       "type": "array",
       "items": {
         "$ref": "diagnostic.schema.json"
+      }
+    },
+    "assignmentEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assignmentEvent"
       }
     }
   },
@@ -171,7 +184,11 @@
           "minLength": 1
         },
         "status": {
-          "enum": ["evaluated", "skipped", "error"]
+          "enum": [
+            "evaluated",
+            "skipped",
+            "error"
+          ]
         },
         "originalExpression": {
           "$ref": "expression.schema.json"
@@ -209,14 +226,21 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["statementId", "kind"],
+            "required": [
+              "statementId",
+              "kind"
+            ],
             "properties": {
               "statementId": {
                 "type": "string",
                 "minLength": 1
               },
               "kind": {
-                "enum": ["if-then", "if-else", "while-iteration"]
+                "enum": [
+                  "if-then",
+                  "if-else",
+                  "while-iteration"
+                ]
               },
               "iteration": {
                 "type": "integer",
@@ -229,6 +253,50 @@
           "type": "array",
           "items": {
             "$ref": "diagnostic.schema.json"
+          }
+        }
+      }
+    },
+    "assignmentEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statementId",
+        "assignmentId",
+        "symbolId",
+        "assignmentVersion",
+        "assignmentEventId",
+        "value",
+        "dependencies"
+      ],
+      "properties": {
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "$ref": "numeric-value.schema.json"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
           }
         }
       }

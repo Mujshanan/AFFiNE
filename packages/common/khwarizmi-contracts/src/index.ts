@@ -1,4 +1,24 @@
 export {
+  evaluateCalculationDocument,
+  type DocumentEvaluationOptions,
+  type DocumentEvaluationResult,
+  type EvaluationDiagnostic,
+  type AssignmentDependency,
+} from './document-evaluator.js';
+export {
+  combineDimensions,
+  conversionRatio,
+  convertRationalMagnitude,
+  dimensionsCompatible,
+  loadUnitRegistry,
+  resolvePrefixedUnit,
+  resolveUnit,
+  UnitCodecFailure,
+  type ResolvedUnit,
+  type UnitDefinition,
+  type UnitRegistry,
+} from './unit-codec.js';
+export {
   type BoxedExpressionPort,
   type ComputeEngineAdapterOptions,
   type ComputeEngineEvaluation,
