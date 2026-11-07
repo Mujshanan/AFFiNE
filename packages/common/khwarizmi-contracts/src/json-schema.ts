@@ -263,7 +263,7 @@ export function validateSchemaBundle(bundle: SchemaBundle): SchemaValidationResu
     '$schema', '$id', '$defs', '$comment', 'title', 'description',
     '$ref', 'type', 'const', 'enum', 'properties', 'required',
     'additionalProperties', 'items', 'prefixItems', 'oneOf', 'allOf',
-    'if', 'then', 'else', 'minimum', 'maximum', 'minLength',
+    'if', 'then', 'else', 'not', 'minimum', 'maximum', 'maxProperties', 'minLength',
     'maxLength', 'pattern', 'minItems', 'maxItems', 'uniqueItems'
   ]);
   const schemaChildren = (schema: Record<string, unknown>): unknown[] => {
