@@ -6,6 +6,14 @@ import {
   resolveUnit,
 } from './unit-codec.js';
 
+export type MathJsonValue =
+  | null
+  | boolean
+  | number
+  | string
+  | MathJsonValue[]
+  | { [key: string]: MathJsonValue };
+
 export type UnitEvaluationErrorCode =
   | 'DIMENSION_MISMATCH'
   | 'UNSUPPORTED_UNIT_KIND'
@@ -46,17 +54,21 @@ export interface UnitPreparationOptions {
   registry?: UnitRegistry;
   expectedRegistryVersion: string;
   unitAttachments: unknown;
+  bindings: ReadonlyMap<
+    string,
+    { symbolId: string; state: { unit?: UnitQuantity } }
+  >;
   resolveSymbolUnit: (symbolId: string) => UnitQuantity | undefined;
   targetUnit?: UnitQuantity;
 }
 
 export interface UnitPreparationResult {
-  mathJson: unknown;
+  mathJson: MathJsonValue;
   unit?: UnitQuantity;
 }
 
 interface NodeResult {
-  mathJson: any;
+  mathJson: MathJsonValue;
   unit?: UnitQuantity;
 }
 
@@ -195,6 +207,12 @@ function sameDimension(left: UnitQuantity, right: UnitQuantity): boolean {
   );
 }
 
+function factorKey(factors: UnitFactor[]): string {
+  return factors
+    .map(factor => factor.unitId + '^' + factor.exponent.numerator + '/' + factor.exponent.denominator)
+    .join('*');
+}
+
 function derivedUnit(
   left: UnitQuantity,
   right: UnitQuantity,
@@ -206,11 +224,8 @@ function derivedUnit(
     operation === 'multiply'
       ? left.symbol + '·' + right.symbol
       : left.symbol + '/' + right.symbol;
-  const factorKey = factors
-    .map(factor => factor.unitId + '^' + factor.exponent.numerator + '/' + factor.exponent.denominator)
-    .join('*');
   return {
-    unitId: 'derived:' + factorKey,
+    unitId: 'derived:' + factorKey(factors),
     registryVersion: left.registryVersion,
     symbol,
     dimension: dimensions.values,
@@ -237,7 +252,7 @@ function scaleRatio(source: UnitQuantity, target: UnitQuantity): UnitScaleValue 
   };
 }
 
-function rationalMathJson(numerator: bigint, denominator: bigint): unknown {
+function rationalMathJson(numerator: bigint, denominator: bigint): MathJsonValue {
   return [
     'Rational',
     { num: numerator.toString() },
@@ -245,32 +260,97 @@ function rationalMathJson(numerator: bigint, denominator: bigint): unknown {
   ];
 }
 
-function scaleMathJson(scale: UnitScaleValue): unknown {
-  const factors: unknown[] = [];
+function scaleMathJson(scale: UnitScaleValue): MathJsonValue {
+  const factors: MathJsonValue[] = [];
   if (scale.numerator !== 1n || scale.denominator !== 1n)
     factors.push(rationalMathJson(scale.numerator, scale.denominator));
   if (scale.piExponent !== 0)
     factors.push(['Power', 'Pi', scale.piExponent]);
   if (factors.length === 0) return 1;
-  return factors.length === 1 ? factors[0] : ['Multiply', ...factors];
+  return factors.length === 1 ? factors[0]! : ['Multiply', ...factors];
 }
 
 function applyScale(
-  mathJson: any,
+  mathJson: MathJsonValue,
   ratio: UnitScaleValue
-): any {
+): MathJsonValue {
   if (
     ratio.numerator === 1n &&
     ratio.denominator === 1n &&
     ratio.piExponent === 0
   )
     return mathJson;
-  const factors: unknown[] = [];
+  const factors: MathJsonValue[] = [];
   if (ratio.numerator !== 1n || ratio.denominator !== 1n)
     factors.push(rationalMathJson(ratio.numerator, ratio.denominator));
   if (ratio.piExponent !== 0)
     factors.push(['Power', 'Pi', ratio.piExponent]);
   return ['Multiply', mathJson, ...factors];
+}
+
+function integerLiteral(value: MathJsonValue | undefined): number | undefined {
+  if (typeof value === 'number' && Number.isSafeInteger(value)) return value;
+  if (
+    value &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    typeof value.num === 'string'
+  ) {
+    const numeric = Number(value.num);
+    return Number.isSafeInteger(numeric) ? numeric : undefined;
+  }
+  return undefined;
+}
+
+function perfectSquareRoot(value: bigint): bigint | undefined {
+  if (value < 0n) return undefined;
+  if (value < 2n) return value;
+  let low = 1n;
+  let high = value;
+  while (low <= high) {
+    const middle = (low + high) / 2n;
+    const square = middle * middle;
+    if (square === value) return middle;
+    if (square < value) low = middle + 1n;
+    else high = middle - 1n;
+  }
+  return undefined;
+}
+
+function squareRootUnit(unit: UnitQuantity): UnitQuantity {
+  const dimension: ExactRational[] = [];
+  for (const exponent of unit.dimension) {
+    dimension.push(rational(exponent.numerator, exponent.denominator * 2n));
+  }
+  const factors = unit.factors.map(factor => ({
+    unitId: factor.unitId,
+    exponent: rational(factor.exponent.numerator, factor.exponent.denominator * 2n),
+  }));
+  const numerator = perfectSquareRoot(unit.scale.numerator);
+  const denominator = perfectSquareRoot(unit.scale.denominator);
+  if (
+    numerator === undefined ||
+    denominator === undefined ||
+    unit.scale.piExponent % 2 !== 0
+  )
+    throw new UnitEvaluationFailure(
+      'UNSUPPORTED_UNIT_KIND',
+      'Square root requires exact square unit scales and even pi exponents'
+    );
+  const scale = rational(numerator, denominator);
+  return {
+    unitId: 'derived:' + factorKey(factors),
+    registryVersion: unit.registryVersion,
+    symbol: '√(' + unit.symbol + ')',
+    dimension,
+    dimensionBases: unit.dimensionBases,
+    scale: {
+      numerator: scale.numerator,
+      denominator: scale.denominator,
+      piExponent: unit.scale.piExponent / 2,
+    },
+    factors,
+  };
 }
 
 function unitRecord(unit: UnitQuantity): Record<string, unknown> {
@@ -292,26 +372,8 @@ function unitRecord(unit: UnitQuantity): Record<string, unknown> {
   };
 }
 
-function dimensionless(): UnitQuantity | undefined {
-  return undefined;
-}
-
-function integerLiteral(value: unknown): number | undefined {
-  if (typeof value === 'number' && Number.isSafeInteger(value)) return value;
-  if (
-    value &&
-    typeof value === 'object' &&
-    !Array.isArray(value) &&
-    typeof (value as Record<string, unknown>).num === 'string'
-  ) {
-    const numeric = Number((value as Record<string, string>).num);
-    return Number.isSafeInteger(numeric) ? numeric : undefined;
-  }
-  return undefined;
-}
-
 export function prepareUnitAwareMathJson(
-  mathJson: unknown,
+  mathJson: MathJsonValue,
   options: UnitPreparationOptions
 ): UnitPreparationResult {
   const registry = options.registry;
@@ -332,24 +394,25 @@ export function prepareUnitAwareMathJson(
         'A unit registry is required to resolve expression unit attachments'
       );
     const record = attachment as Record<string, string>;
-    const resolved = resolveUnit(
-      record.unitId,
-      registry,
-      options.expectedRegistryVersion
+    attachments.set(
+      record.path,
+      exactUnit(
+        resolveUnit(record.unitId, registry, options.expectedRegistryVersion)
+      )
     );
-    attachments.set(record.path, exactUnit(resolved));
   }
 
-  const infer = (node: any, path: string): NodeResult => {
+  const infer = (node: MathJsonValue, path: string): NodeResult => {
     let result: NodeResult = { mathJson: node };
 
     if (typeof node === 'string' && /^kz_[A-Za-z0-9_-]{1,80}$/.test(node)) {
-      const binding = (options as any).bindings?.get(node) as
-        | { symbolId: string; state: { unit?: UnitQuantity } }
-        | undefined;
-      if (binding) result.unit = binding.state.unit ?? options.resolveSymbolUnit(binding.symbolId);
+      const binding = options.bindings.get(node);
+      if (binding)
+        result.unit =
+          binding.state.unit ?? options.resolveSymbolUnit(binding.symbolId);
     } else if (Array.isArray(node)) {
       const operator = node[0];
+      if (typeof operator !== 'string') return result;
       const children = node.slice(1).map((child, index) =>
         infer(child, path + '/' + (index + 1))
       );
@@ -366,14 +429,17 @@ export function prepareUnitAwareMathJson(
         if (base) {
           for (let index = 1; index < children.length; index++) {
             const source = childUnits[index];
-            if (!source) continue;
-            childMath[index] = applyScale(
-              childMath[index],
-              scaleRatio(source, base)
-            );
+            if (source)
+              childMath[index] = applyScale(
+                childMath[index]!,
+                scaleRatio(source, base)
+              );
           }
         }
-        result = { mathJson: [operator, ...childMath], ...(base ? { unit: base } : {}) };
+        result = {
+          mathJson: [operator, ...childMath],
+          ...(base ? { unit: base } : {}),
+        };
       } else if (operator === 'Multiply' || operator === 'Divide') {
         let unit = childUnits[0];
         for (let index = 1; index < childUnits.length; index++) {
@@ -381,7 +447,7 @@ export function prepareUnitAwareMathJson(
           if (!unit) {
             if (operator === 'Multiply') unit = next;
             else if (next) {
-              const one = {
+              const one: UnitQuantity = {
                 unitId: 'derived:1',
                 registryVersion: next.registryVersion,
                 symbol: '1',
@@ -393,12 +459,24 @@ export function prepareUnitAwareMathJson(
               unit = derivedUnit(one, next, 'divide');
             }
           } else if (next) {
-            unit = derivedUnit(unit, next, operator === 'Multiply' ? 'multiply' : 'divide');
+            unit = derivedUnit(
+              unit,
+              next,
+              operator === 'Multiply' ? 'multiply' : 'divide'
+            );
           }
         }
-        result = { mathJson: [operator, ...childMath], ...(unit ? { unit } : {}) };
+        result = {
+          mathJson: [operator, ...childMath],
+          ...(unit ? { unit } : {}),
+        };
       } else if (operator === 'Power') {
         const base = childUnits[0];
+        if (childUnits[1])
+          throw new UnitEvaluationFailure(
+            'UNSUPPORTED_UNIT_KIND',
+            'A unitful exponent is not supported'
+          );
         const exponent = integerLiteral(node[2]);
         if (base && exponent === undefined)
           throw new UnitEvaluationFailure(
@@ -419,14 +497,13 @@ export function prepareUnitAwareMathJson(
             }))
             .filter(factor => factor.exponent.numerator !== 0n);
           const powered = powerScale(base.scale, exponent);
-          const symbol = base.symbol + '^' + exponent;
           result = {
             mathJson: [operator, ...childMath],
             unit: {
-              unitId: 'derived:' + factors.map(f => f.unitId + '^' + f.exponent.numerator + '/' + f.exponent.denominator).join('*'),
+              unitId: 'derived:' + factorKey(factors),
               registryVersion: base.registryVersion,
-              symbol,
-              dimension: dimension,
+              symbol: base.symbol + '^' + exponent,
+              dimension,
               dimensionBases: base.dimensionBases,
               scale: powered,
               factors,
@@ -435,6 +512,11 @@ export function prepareUnitAwareMathJson(
         } else {
           result = { mathJson: [operator, ...childMath] };
         }
+      } else if (operator === 'Sqrt') {
+        const base = childUnits[0];
+        result = base
+          ? { mathJson: [operator, ...childMath], unit: squareRootUnit(base) }
+          : { mathJson: [operator, ...childMath] };
       } else if (operator === 'Sin' || operator === 'Cos' || operator === 'Tan') {
         const angle = childUnits[0];
         if (angle) {
@@ -458,7 +540,10 @@ export function prepareUnitAwareMathJson(
               options.expectedRegistryVersion
             )
           );
-          childMath[0] = applyScale(childMath[0], scaleRatio(angle, radians));
+          childMath[0] = applyScale(
+            childMath[0]!,
+            scaleRatio(angle, radians)
+          );
         }
         result = { mathJson: [operator, ...childMath] };
       } else if (
@@ -480,7 +565,7 @@ export function prepareUnitAwareMathJson(
             const source = childUnits[index];
             if (source)
               childMath[index] = applyScale(
-                childMath[index],
+                childMath[index]!,
                 scaleRatio(source, base)
               );
           }
@@ -494,12 +579,15 @@ export function prepareUnitAwareMathJson(
         operator === 'Round'
       ) {
         const unit = childUnits[0];
-        result = { mathJson: [operator, ...childMath], ...(unit ? { unit } : {}) };
+        result = {
+          mathJson: [operator, ...childMath],
+          ...(unit ? { unit } : {}),
+        };
       } else {
         if (childUnits.some(Boolean))
           throw new UnitEvaluationFailure(
             'UNSUPPORTED_UNIT_KIND',
-            'This MathJSON operator has no v1 unit rule: ' + String(operator)
+            'This MathJSON operator has no v1 unit rule: ' + operator
           );
         result = { mathJson: [operator, ...childMath] };
       }
@@ -553,18 +641,13 @@ export function unitQuantityFromMetadata(
       'UNIT_REGISTRY_REQUIRED',
       'A unit registry is required to evaluate unit-bearing symbols'
     );
-  try {
-    return exactUnit(
-      resolveUnit(
-        record.unitId,
-        registry,
-        typeof record.registryVersion === 'string'
-          ? record.registryVersion
-          : expectedRegistryVersion
-      )
-    );
-  } catch (error) {
-    if (error instanceof UnitCodecFailure) throw error;
-    throw error;
-  }
+  return exactUnit(
+    resolveUnit(
+      record.unitId,
+      registry,
+      typeof record.registryVersion === 'string'
+        ? record.registryVersion
+        : expectedRegistryVersion
+    )
+  );
 }
