@@ -4,6 +4,14 @@ import {
   SUPPORTED_COMPUTE_ENGINE_VERSION,
 } from './compute-engine-adapter.js';
 import { rationalToTerminatingDecimal } from './numeric-codec.js';
+import { loadUnitRegistry, type UnitRegistry, UnitCodecFailure } from './unit-codec.js';
+import {
+  type UnitQuantity,
+  UnitEvaluationFailure,
+  prepareUnitAwareMathJson,
+  serializeUnitQuantity,
+  unitQuantityFromMetadata,
+} from './unit-evaluator.js';
 
 type RecordValue = Record<string, unknown>;
 type JsonValue =
@@ -26,6 +34,7 @@ export interface DocumentEvaluationOptions {
   precision?: number;
   createEventId?: (assignmentId: string, version: number) => string;
   maxLoopIterations?: number;
+  unitRegistry?: unknown;
 }
 
 export interface EvaluationDiagnostic {
@@ -63,7 +72,7 @@ interface AssignmentState {
   assignmentEventId: string;
   mathJsonValue: JsonValue;
   numericValue: RecordValue;
-  unit?: RecordValue;
+  unit?: UnitQuantity;
 }
 
 interface EvaluatedExpression {
@@ -72,6 +81,7 @@ interface EvaluatedExpression {
   value: RecordValue | null;
   dependencies: AssignmentDependency[];
   substitutions: RecordValue[];
+  unit?: UnitQuantity;
 }
 
 class EvaluationFailure extends Error {
@@ -115,7 +125,7 @@ function replaceTokens(
       engineSymbol: value,
       symbolId,
       value: state.numericValue,
-      ...(state.unit ? { unit: state.unit } : {}),
+      ...(state.unit ? { unit: serializeUnitQuantity(state.unit) } : {}),
       assignmentId: state.assignmentId,
       assignmentVersion: state.assignmentVersion,
       assignmentEventId: state.assignmentEventId,
@@ -322,6 +332,16 @@ export function evaluateCalculationDocument(
   if (ordered.length !== topLevel.length)
     throw new TypeError('calculationOrder must contain each top-level statement exactly once');
 
+  const unitRegistry: UnitRegistry | undefined =
+    options.unitRegistry === undefined
+      ? undefined
+      : loadUnitRegistry(options.unitRegistry);
+  if (
+    unitRegistry &&
+    unitRegistry.version !== String(document.unitRegistryVersion ?? '')
+  )
+    throw new TypeError('Loaded unit registry version does not match the document');
+
   const documentSymbols = new Map<string, RecordValue>();
   for (const symbol of Array.isArray(document.symbols) ? document.symbols : []) {
     if (isRecord(symbol) && typeof symbol.symbolId === 'string')
@@ -362,7 +382,8 @@ export function evaluateCalculationDocument(
 
   const evaluateRecord = (
     expression: RecordValue,
-    _statementId: string
+    _statementId: string,
+    targetSymbolId?: string
   ): EvaluatedExpression => {
     if (!Object.prototype.hasOwnProperty.call(expression, 'mathJson'))
       throw new EvaluationFailure('INVALID_EXPRESSION', 'Expression has no MathJSON payload');
@@ -388,7 +409,40 @@ export function evaluateCalculationDocument(
       expression.mathJson as JsonValue,
       expression.authoredNumbers
     );
-    const substituted = replaceTokens(authored, bindings, [], substitutions, dependencies);
+    const targetUnit = targetSymbolId
+      ? unitQuantityFromMetadata(
+          documentSymbols.get(targetSymbolId)?.unit,
+          unitRegistry,
+          String(document.unitRegistryVersion ?? '')
+        )
+      : undefined;
+    let prepared: ReturnType<typeof prepareUnitAwareMathJson>;
+    try {
+      prepared = prepareUnitAwareMathJson(authored, {
+        registry: unitRegistry,
+        expectedRegistryVersion: String(document.unitRegistryVersion ?? ''),
+        unitAttachments: expression.unitAttachments,
+        bindings,
+        resolveSymbolUnit: symbolId =>
+          unitQuantityFromMetadata(
+            documentSymbols.get(symbolId)?.unit,
+            unitRegistry,
+            String(document.unitRegistryVersion ?? '')
+          ),
+        targetUnit,
+      });
+    } catch (error) {
+      if (error instanceof UnitEvaluationFailure || error instanceof UnitCodecFailure)
+        throw new EvaluationFailure(error.code, error.message);
+      throw error;
+    }
+    const substituted = replaceTokens(
+      prepared.mathJson,
+      bindings,
+      [],
+      substitutions,
+      dependencies
+    );
     const evaluated = evaluateMathJson(substituted, options.createEngine, {
       precision: options.precision,
     });
@@ -399,6 +453,7 @@ export function evaluateCalculationDocument(
       value,
       dependencies: [...dependencies.values()],
       substitutions,
+      ...(prepared.unit ? { unit: prepared.unit } : {}),
     };
   };
 
@@ -417,6 +472,7 @@ export function evaluateCalculationDocument(
     dependencies: evaluated.dependencies,
     substitutions: evaluated.substitutions,
     diagnostics: evaluated.value ? [] : [{ code: 'UNSUPPORTED_RESULT_VALUE', message: 'Evaluator returned a non-scalar or unsupported numeric result' }],
+    ...(evaluated.unit ? { unit: serializeUnitQuantity(evaluated.unit) } : {}),
     ...(controlFlowPath.length ? { controlFlowPath: [...controlFlowPath] } : {}),
   });
 
@@ -460,7 +516,7 @@ export function evaluateCalculationDocument(
       assignmentEventId: id,
       mathJsonValue: evaluated.mathJson,
       numericValue: evaluated.value,
-      ...(isRecord(symbol?.unit) ? { unit: symbol.unit } : {}),
+      ...(evaluated.unit ? { unit: evaluated.unit } : {}),
     };
     if (localDeclaration && localScopes.length) {
       localScopes[localScopes.length - 1]?.set(symbolId, state);
@@ -507,7 +563,13 @@ export function evaluateCalculationDocument(
             continue;
           }
           try {
-            const evaluated = evaluateRecord(raw.expression, statementId);
+            const evaluated = evaluateRecord(
+              raw.expression,
+              statementId,
+              kind === 'assign' && typeof raw.targetSymbolId === 'string'
+                ? raw.targetSymbolId
+                : undefined
+            );
             if (kind === 'expression') {
               results.push(resultRecord(statementId, raw.expression, evaluated, controlFlowPath));
               if (!evaluated.value)
