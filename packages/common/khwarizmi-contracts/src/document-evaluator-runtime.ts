@@ -1,17 +1,19 @@
-import {
-  type ComputeEngineFactory,
-  evaluateMathJson,
-  SUPPORTED_COMPUTE_ENGINE_VERSION,
-} from './compute-engine-adapter.js';
+import * as ComputeEngineAdapter from './compute-engine-adapter.js';
 import { rationalToTerminatingDecimal } from './numeric-codec.js';
-import { loadUnitRegistry, type UnitRegistry, UnitCodecFailure } from './unit-codec.js';
-import {
-  type UnitQuantity,
+import * as UnitCodec from './unit-codec.js';
+import * as UnitEvaluator from './unit-evaluator.js';
+
+type ComputeEngineFactory = ComputeEngineAdapter.ComputeEngineFactory;
+type UnitRegistry = UnitCodec.UnitRegistry;
+type UnitQuantity = UnitEvaluator.UnitQuantity;
+const { evaluateMathJson, SUPPORTED_COMPUTE_ENGINE_VERSION } = ComputeEngineAdapter;
+const { loadUnitRegistry, UnitCodecFailure } = UnitCodec;
+const {
   UnitEvaluationFailure,
   prepareUnitAwareMathJson,
   serializeUnitQuantity,
   unitQuantityFromMetadata,
-} from './unit-evaluator.js';
+} = UnitEvaluator;
 
 type RecordValue = Record<string, unknown>;
 type JsonValue =
