@@ -48,6 +48,28 @@ describe('Khwarizmi v1 contract schemas', () => {
     expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);
   });
 
+  it('enforces RPC envelope exclusivity and empty getInfo params', () => {
+    const schemaPath = 'contracts/schemas/v1/rpc-envelope.schema.json';
+    const validInfo = {
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'host.getInfo',
+      params: {},
+    };
+    expect(validateJsonSchema(validInfo, schemaPath, schemaBundle).valid).toBe(true);
+    expect(validateJsonSchema({
+      ...validInfo,
+      params: { unexpected: true },
+    }, schemaPath, schemaBundle).valid).toBe(false);
+
+    const validResponse = { jsonrpc: '2.0', id: 1, result: { ok: true } };
+    expect(validateJsonSchema(validResponse, schemaPath, schemaBundle).valid).toBe(true);
+    expect(validateJsonSchema({
+      ...validResponse,
+      error: { code: -32603, message: 'internal error' },
+    }, schemaPath, schemaBundle).valid).toBe(false);
+  });
+
   it('validates the fixture manifest and complete file inventory', () => {
     const result = validateJsonSchema(manifest, 'contracts/fixtures/v1/manifest.schema.json', schemaBundle);
     expect(result.errors).toEqual([]);
