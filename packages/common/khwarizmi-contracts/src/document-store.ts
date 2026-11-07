@@ -175,6 +175,8 @@ export class FileDocumentStore {
       raw = await readJson(this.documentPath(documentId));
     } catch (error) {
       if (isRecord(error) && error.code === 'ENOENT') return undefined;
+      if (error instanceof SyntaxError)
+        throw new Error('AUTHORED_DOCUMENT_JSON_INVALID');
       throw error;
     }
     if (
