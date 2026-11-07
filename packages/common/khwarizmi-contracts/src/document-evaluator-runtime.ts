@@ -509,7 +509,6 @@ export function evaluateCalculationDocument(
       );
     assignmentVersions.set(symbolId, version);
     usedEventIds.add(id);
-    const symbol = documentSymbols.get(symbolId);
     const state: AssignmentState = {
       assignmentId,
       assignmentVersion: version,
@@ -539,7 +538,6 @@ export function evaluateCalculationDocument(
       evaluated,
       controlFlowPath
     );
-    if (isRecord(symbol?.unit)) result.unit = symbol.unit;
     results.push(result);
     void localDeclaration;
   };
