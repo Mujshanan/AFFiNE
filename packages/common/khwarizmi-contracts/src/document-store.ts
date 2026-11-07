@@ -289,7 +289,7 @@ export class FileDocumentStore {
       typeof document.semanticVersion !== 'string' ||
       typeof document.unitRegistryVersion !== 'string'
     )
-      return { status: 'stale', snapshot, identity: snapshot };
+      return { status: 'corrupt', reason: 'AUTHORED_DOCUMENT_IDENTITY_INVALID' };
     const documentIdentity: AuthoredDocumentIdentity = {
       documentId,
       documentRevision: authored.documentRevision,
