@@ -31,7 +31,7 @@ function engine(): ComputeEnginePort {
     typeof value === 'boolean' || value === 'True' || value === 'False'\n      ? (value === true || value === 'True' ? 'True' : 'False')\n      : { num: String(value) };
   return {
     precision: 34,
-    box(mathJsonInput: never) {
+    box(mathJsonInput: unknown) {
       return {
         evaluate() {
           const value = evaluate(mathJsonInput);
