@@ -34,3 +34,12 @@ This helper is the receiver-side integrity gate; it does not itself authenticate
 ## Durability and platform boundary
 
 This adapter provides atomic-file replacement semantics using Node's filesystem APIs and is intended for the Node/Electron host. It does not yet provide cross-process locking, multi-writer conflict resolution, a transactional BlockSuite binding, filesystem-level backup/restore, or a native Windows named-pipe host. Those remain separate integration gates and must be tested on Windows x64 and ARM64 before production release.
+
+
+## Failure handling audit
+
+The adapter now captures a canonical JSON copy before asynchronous digest calculation, so mutation of the caller-owned object cannot make the stored payload diverge from the digest for that save. Snapshot loading validates the runtime identity shape before reading nested engine fields. Malformed snapshot identity, malformed authored JSON/envelopes, authored digest failures, and missing authored semantic/unit identity are reported as corrupt rather than being mistaken for a stale evaluation.
+
+Filesystem errors other than recognized corruption (for example, permission errors and I/O failures) continue to propagate to the host. A missing authored document makes an otherwise digest-valid snapshot stale. A changed authored revision or engine version also makes the snapshot stale; it is never returned as current.
+
+The adapter still does not provide cross-process locking, multi-writer conflict resolution, orphan-temporary-file scavenging after power loss, directory-entry fsync guarantees, or transactional coordination with BlockSuite. Atomic rename protects readers from observing a partially written target file, but these omitted guarantees must be addressed and tested in the production host before claiming full crash durability. Concurrent writers are therefore not a supported consistency model in this version.
