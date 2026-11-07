@@ -30,13 +30,13 @@ The little-endian prefix and fixed 16 MiB cap are normative v1 wire rules and MU
 ## 3. JSON-RPC rules
 
 - JSON-RPC version field MUST be `"2.0"`.
-- Requests MUST have a non-empty string or integer ID; notifications are limited to explicitly documented lifecycle events.
+- Requests MUST have a non-empty string or non-negative safe-integer ID; v1 currently defines only the `$/cancelRequest` notification. Other notification-only methods are not dispatched.
 - Responses MUST echo the request ID.
 - Unknown methods return `-32601`.
 - Invalid request/envelope returns `-32600`.
 - Invalid JSON returns `-32700`.
 - Invalid method parameters return `-32602`.
-- Internal errors use a reserved Khwarizmi error range and structured `data`.
+- Internal errors use `-32603`; application-defined server errors MUST use the reserved `-32000..-32099` range and may include structured `data`.
 - Batch requests are rejected.
 - A response is returned exactly once for each request with an ID unless the connection fails.
 
@@ -68,7 +68,8 @@ Transport/process failure is not an evaluation status; it is an RPC/transport er
 - A cancellation notification for an unknown/completed ID is ignored.
 - A cancelled request must not publish a completed result snapshot.
 - Requests are isolated; no shared mutable document evaluation context between requests.
-- Duplicate in-flight request IDs are rejected.
+- Duplicate in-flight request IDs are rejected with `-32600`; the concurrency-limit response is `-32002`; a closed host returns `-32000`.
+- A cancelled in-flight request completes with cancellation error `-32800`; the cancellation notification itself has no response.
 - Default host safeguards: 30 seconds for validation, 120 seconds for evaluation, and at most eight concurrent requests per host instance. The in-process dispatcher enforces the concurrency bound and cancellation lifecycle; validation/evaluation timeouts remain a process-host responsibility. Callers may cancel earlier; these limits are not a guarantee that all evaluations finish within the timeout.
 - Timeout and concurrency behavior MUST be deterministic, documented, and covered by conformance fixtures.
 
