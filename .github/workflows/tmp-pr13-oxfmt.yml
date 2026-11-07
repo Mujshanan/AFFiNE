@@ -6,7 +6,7 @@ on:
       - khwarizmi/ee-free-native-boundary
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   format:
@@ -63,3 +63,24 @@ jobs:
             docs/architecture/RPC-V1.md
             docs/audits/EE-FREE-NATIVE-BOUNDARY.md
             docs/index.html
+
+      - name: Commit formatting-only changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            docs/BASELINE.md \
+            docs/architecture/CALCULATION-SEMANTICS.md \
+            docs/architecture/CONFORMANCE.md \
+            docs/architecture/DECISIONS.md \
+            docs/architecture/DOCUMENT-MODEL.md \
+            docs/architecture/PR-3-DECISION-RESOLUTION.md \
+            docs/architecture/RPC-V1.md \
+            docs/audits/EE-FREE-NATIVE-BOUNDARY.md \
+            docs/index.html
+          if git diff --cached --quiet; then
+            echo "No formatting changes to commit."
+            exit 0
+          fi
+          git commit -m "style: apply pinned Oxfmt to PR 13 files"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
