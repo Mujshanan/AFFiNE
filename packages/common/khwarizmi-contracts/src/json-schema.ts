@@ -508,6 +508,8 @@ export function validateSchemaBundle(
     'pattern',
     'minItems',
     'maxItems',
+    'maxProperties',
+    'not',
     'uniqueItems',
   ]);
   const schemaChildren = (schema: Record<string, unknown>): unknown[] => {
