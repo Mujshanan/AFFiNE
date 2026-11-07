@@ -41,7 +41,10 @@ export function canonicalizeJson(value: unknown): string {
     if (typeof item === 'boolean') return item ? 'true' : 'false';
     if (typeof item === 'string') {
       assertWellFormedUnicode(item);
-      return JSON.stringify(item)!;
+      const serialized = JSON.stringify(item);
+      if (serialized === undefined)
+        throw new TypeError('Canonical JSON string could not be serialized');
+      return serialized;
     }
     if (typeof item === 'number') {
       if (!Number.isFinite(item))
@@ -88,7 +91,10 @@ export function canonicalizeJson(value: unknown): string {
           throw new TypeError('Canonical JSON objects require enumerable properties');
         if (!Object.prototype.hasOwnProperty.call(descriptor, 'value'))
           throw new TypeError('Canonical JSON objects cannot contain accessor properties');
-        return JSON.stringify(key)! + ':' + serialize(descriptor.value);
+        const serializedKey = JSON.stringify(key);
+        if (serializedKey === undefined)
+          throw new TypeError('Canonical JSON object key could not be serialized');
+        return serializedKey + ':' + serialize(descriptor.value);
       });
       return '{' + properties.join(',') + '}';
     } finally {
