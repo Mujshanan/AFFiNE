@@ -77,19 +77,19 @@ function fakeEngine(): ComputeEnginePort {
     switch (value[0]) {
       case 'Rational':
       case 'Divide':
-        return args[0] / args[1];
+        return (args[0] ?? 0) / (args[1] ?? 1);
       case 'Add':
         return args.reduce((a: number, b: number) => a + b, 0);
       case 'Multiply':
         return args.reduce((a: number, b: number) => a * b, 1);
       case 'Power':
-        return Math.pow(args[0], args[1]);
+        return Math.pow(args[0] ?? 0, args[1] ?? 0);
       case 'Sin':
-        return Math.sin(args[0]);
+        return Math.sin(args[0] ?? 0);
       case 'Cos':
-        return Math.cos(args[0]);
+        return Math.cos(args[0] ?? 0);
       case 'Tan':
-        return Math.tan(args[0]);
+        return Math.tan(args[0] ?? 0);
       default:
         throw new Error('Unsupported test operator: ' + value[0]);
     }
