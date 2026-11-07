@@ -17,6 +17,8 @@
 
 ## Current implementation slice
 
+The evaluator now rejects duplicate statement IDs and duplicate entries in `calculationOrder` before execution, requires `calculationOrder` to be an array, emits a result record for malformed expressions, and enforces non-empty unique assignment-event IDs. Tests cover duplicate ordering/IDs and verify that an authored decimal such as `1.20` is passed to the engine as an exact lexeme while the normalized result remains consistent with the v1 numeric-value schema. These checks harden the linear evaluator but do not close the control-flow, unit-preflight, persistence, digest, or host-integration gates.
+
 The unit codec now resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. Degree/radian conversion retains a symbolic pi factor and refuses to collapse it into a rational magnitude. This codec is currently a standalone foundation and is not yet wired into evaluator preflight.
 
 The evaluation-result schema now explicitly models immutable assignment-event records. Substitution provenance includes the stable document `symbolId` and the normalized numeric value (plus unit metadata when present), rather than leaking the internal MathJSON value into a field whose contract is a numeric-value record. This keeps the runtime result shape aligned with the published v1 schema.
