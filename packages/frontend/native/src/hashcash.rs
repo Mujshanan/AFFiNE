@@ -111,7 +111,7 @@ impl Stamp {
 
     let prefix = format!("{}:{}:{}:{}:{}:{}", STAMP_VERSION, claim, timestamp, resource, "", salt);
     // Minting uses ceil(claim / 4), matching the historical v1 producer.
-    let required_zero_nibbles = ((claim + 3) / 4) as usize;
+    let required_zero_nibbles = claim.div_ceil(4) as usize;
     let target = "0".repeat(required_zero_nibbles);
     let mut counter = 0_u64;
 
