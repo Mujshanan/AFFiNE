@@ -47,7 +47,7 @@ cargo tree -p affine_native -e all
 cargo tree -p affine_nbstore -e all
 ```
 
-Neither graph may contain `affine_common`. The dedicated CI checks this assertion and scans all tracked files under `packages/frontend/native` for EE crate/source references. The repository's `deny.toml` is the third-party license allowlist. The dedicated CI runs cargo-deny with `packages/frontend/native/Cargo.toml` as its graph root and both Windows targets, so it checks the frontend native package and its transitive dependencies without treating unrelated backend-only AGPL dependencies as part of this boundary.
+Neither graph may contain `affine_common`. The dedicated CI checks this assertion and scans all tracked files under `packages/frontend/native` for EE crate/source references. The repository's `deny.toml` is the third-party license allowlist. The dedicated CI runs cargo-deny with `packages/frontend/native/Cargo.toml` as its graph root. The repository `deny.toml` target matrix now includes both `x86_64-pc-windows-msvc` and `aarch64-pc-windows-msvc`, so the audit checks the frontend native package and its transitive dependencies for both mandatory Windows architectures without treating unrelated backend-only AGPL dependencies as part of this boundary.
 
 The native-only CI run on commit `987297d83bcf3db953b0330af85fa910a1dcaf50` passed the direct-import scan, all-edge `affine_native` dependency graph, Rust formatting, both native test suites, and Clippy with warnings denied. The expanded two-package graph and cargo-deny license check were added afterward and require a fresh CI pass.
 
@@ -73,7 +73,7 @@ This is static artifact inspection, not a runtime load test on Windows. The inhe
 - [x] All-edge dependency graph check for `affine_native` on the initial dedicated CI run.
 - [x] Windows x64 and ARM64 native build jobs.
 - [x] Downloaded Windows artifact integrity, PE architecture, and embedded N-API identifier inspection.
-- [ ] Fresh CI pass for the expanded `affine_native` + `affine_nbstore` graph checks and the frontend-rooted Windows x64/ARM64 cargo-deny license audit.
+- [ ] Fresh CI pass for the expanded `affine_native` + `affine_nbstore` graph checks and the frontend-rooted cargo-deny license audit across the configured target matrix, including Windows x64/ARM64.
 - [ ] Final inherited Build & Test run must finish; the inspected run had a repository-wide formatting failure in eight pre-existing files outside this PR's six-file change set (`docs/BASELINE.md`, architecture docs, and `docs/index.html`). Several E2E jobs were still running when inspected.
 - [ ] Runtime loading of both Windows binaries and invocation of the two Hashcash N-API functions on Windows.
 - [ ] Full Windows desktop installer install/launch/uninstall smoke tests remain a separate repository-baseline/release-readiness gate.
