@@ -530,6 +530,7 @@ export function evaluateCalculationDocument(
       assignmentVersion: version,
       assignmentEventId: id,
       value: evaluated.value,
+      ...(evaluated.unit ? { unit: serializeUnitQuantity(evaluated.unit) } : {}),
       dependencies: evaluated.dependencies,
     });
     const result = resultRecord(
