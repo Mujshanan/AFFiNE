@@ -170,6 +170,17 @@ export class FileDocumentStore {
     if (!authored) throw new Error('AUTHORED_DOCUMENT_NOT_FOUND');
     if (authored.documentRevision !== snapshot.documentRevision)
       throw new Error('SNAPSHOT_DOCUMENT_REVISION_MISMATCH');
+    const authoredDocument = authored.document as Record<string, unknown>;
+    if (
+      authoredDocument.semanticVersion !== snapshot.semanticVersion ||
+      authoredDocument.unitRegistryVersion !== snapshot.unitRegistryVersion
+    )
+      throw new Error('SNAPSHOT_SEMANTIC_IDENTITY_MISMATCH');
+    if (
+      this.options.expectedEngineVersion !== undefined &&
+      snapshot.engine.version !== this.options.expectedEngineVersion
+    )
+      throw new Error('SNAPSHOT_ENGINE_VERSION_MISMATCH');
 
     const digest = await canonicalSha256(snapshot);
     const envelope: EvaluationSnapshotEnvelope<TSnapshot> = {
