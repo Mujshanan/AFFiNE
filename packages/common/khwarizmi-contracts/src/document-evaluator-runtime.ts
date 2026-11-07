@@ -356,7 +356,7 @@ export function evaluateCalculationDocument(
 
   const evaluateRecord = (
     expression: RecordValue,
-    statementId: string
+    _statementId: string
   ): EvaluatedExpression => {
     if (!Object.prototype.hasOwnProperty.call(expression, 'mathJson'))
       throw new EvaluationFailure('INVALID_EXPRESSION', 'Expression has no MathJSON payload');
