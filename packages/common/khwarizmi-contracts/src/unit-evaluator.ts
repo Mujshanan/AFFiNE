@@ -1,10 +1,11 @@
-import { rational, type ExactRational } from './numeric-codec.js';
-import {
-  type ResolvedUnit,
-  type UnitRegistry,
-  UnitCodecFailure,
-  resolveUnit,
-} from './unit-codec.js';
+import * as NumericCodec from './numeric-codec.js';
+import * as UnitCodec from './unit-codec.js';
+
+type ExactRational = NumericCodec.ExactRational;
+type ResolvedUnit = UnitCodec.ResolvedUnit;
+type UnitRegistry = UnitCodec.UnitRegistry;
+const { rational } = NumericCodec;
+const { UnitCodecFailure, resolveUnit } = UnitCodec;
 
 export type MathJsonValue =
   | null
@@ -207,6 +208,16 @@ function sameDimension(left: UnitQuantity, right: UnitQuantity): boolean {
   );
 }
 
+function requiredAt<T>(values: readonly T[], index: number, label: string): T {
+  const value = values[index];
+  if (value === undefined)
+    throw new UnitEvaluationFailure(
+      'UNSUPPORTED_UNIT_KIND',
+      'Missing ' + label + ' at index ' + index
+    );
+  return value;
+}
+
 function factorKey(factors: UnitFactor[]): string {
   return factors
     .map(factor => factor.unitId + '^' + factor.exponent.numerator + '/' + factor.exponent.denominator)
@@ -267,7 +278,9 @@ function scaleMathJson(scale: UnitScaleValue): MathJsonValue {
   if (scale.piExponent !== 0)
     factors.push(['Power', 'Pi', scale.piExponent]);
   if (factors.length === 0) return 1;
-  return factors.length === 1 ? factors[0]! : ['Multiply', ...factors];
+  return factors.length === 1
+    ? requiredAt(factors, 0, 'unit scale factor')
+    : ['Multiply', ...factors];
 }
 
 function applyScale(
@@ -436,7 +449,7 @@ export function prepareUnitAwareMathJson(
             const source = childUnits[index];
             if (source)
               childMath[index] = applyScale(
-                childMath[index]!,
+                requiredAt(childMath, index, 'MathJSON operand'),
                 scaleRatio(source, base)
               );
           }
@@ -490,13 +503,20 @@ export function prepareUnitAwareMathJson(
           );
         if (base && exponent !== undefined) {
           const dimensionEntries = base.dimensionBases
-            .map((dimensionBase, index) => ({
-              base: dimensionBase,
-              exponent: rational(
-                base.dimension[index]!.numerator * BigInt(exponent),
-                base.dimension[index]!.denominator
-              ),
-            }))
+            .map((dimensionBase, index) => {
+              const dimensionExponent = requiredAt(
+                base.dimension,
+                index,
+                'unit dimension exponent'
+              );
+              return {
+                base: dimensionBase,
+                exponent: rational(
+                  dimensionExponent.numerator * BigInt(exponent),
+                  dimensionExponent.denominator
+                ),
+              };
+            })
             .filter(entry => entry.exponent.numerator !== 0n);
           const dimension = dimensionEntries.map(entry => entry.exponent);
           const dimensionBases = dimensionEntries.map(entry => entry.base);
@@ -554,7 +574,7 @@ export function prepareUnitAwareMathJson(
             )
           );
           childMath[0] = applyScale(
-            childMath[0]!,
+            requiredAt(childMath, 0, 'trigonometric argument'),
             scaleRatio(angle, radians)
           );
         }
@@ -571,7 +591,7 @@ export function prepareUnitAwareMathJson(
             const source = childUnits[index];
             if (source)
               childMath[index] = applyScale(
-                childMath[index]!,
+                requiredAt(childMath, index, 'comparison operand'),
                 scaleRatio(source, base)
               );
           }
