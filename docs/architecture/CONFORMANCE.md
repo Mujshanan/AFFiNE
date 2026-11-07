@@ -125,8 +125,9 @@ The phase is complete only when all of the following pass:
 - error codes and diagnostics are stable and location-aware;
 - evaluator dimensional preflight and unit-aware arithmetic/conversion are integrated;
 - canonical document persistence/reload and durable stale-snapshot handling pass;
-- the RPC dispatcher/fake-host integration test passes, including correlation, cancellation, concurrency, digest verification, and shutdown;
-- Windows pipe security and lifecycle tests are demonstrated against the packaged runtime;
+- the in-process RPC dispatcher tests pass, including correlation, cancellation, concurrency limits, error mapping, and shutdown;
+- RPC framing is connected to the Electron/native process host and Windows pipe security/lifecycle tests are demonstrated against the packaged runtime;
+- receiver-side digest verification is connected to RPC document intake;
 - BlockSuite adapter conformance proves visual movement cannot change calculation semantics;
 - CI runs the contract suite on every relevant change.
 
@@ -140,4 +141,4 @@ The schemas and fixtures are language-neutral. A validator must load fixture fil
 
 ## 11. Remaining implementation conformance
 
-This document distinguishes completed contract-unit coverage from production integration. The current dedicated CI suite passes schema, semantic, numeric/unit-codec, evaluator/control-flow, canonical-digest, and RPC framing/cancellation-registry tests. The evaluator receives a Compute Engine factory from its host; the contract package does not embed or silently install a second engine. The fixture manifest and fixture runner exist, but the following exit gates remain open: evaluator-level dimensional arithmetic/conversion; durable document and evaluation-snapshot persistence/reload; RPC request dispatch and host/process lifecycle; receiver-side digest verification; Windows named-pipe security; and the BlockSuite command/transaction adapter with save/reload and visual-reordering conformance. These are tracked as integration milestones, not treated as already implemented.
+This document distinguishes completed contract-unit coverage from production integration. The current dedicated CI suite passes schema, semantic, numeric/unit-codec, evaluator/control-flow, canonical-digest, and RPC framing/cancellation-registry tests. The evaluator receives a Compute Engine factory from its host; the contract package does not embed or silently install a second engine. The fixture manifest and fixture runner exist, but the following exit gates remain open: evaluator-level dimensional arithmetic/conversion; durable document and evaluation-snapshot persistence/reload; Electron/native RPC process lifecycle and receiver-side digest verification; Windows named-pipe security; and the BlockSuite command/transaction adapter with save/reload and visual-reordering conformance. These are tracked as integration milestones, not treated as already implemented.
