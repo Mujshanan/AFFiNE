@@ -193,6 +193,36 @@ describe('durable authored-document storage', () => {
     );
   });
 
+  it('classifies a digest-valid authored document with missing identity as corrupt', async () => {
+    const { store, root } = await createStore();
+    const revision = await store.saveDocument(document);
+    await store.saveEvaluationSnapshot('doc-test', snapshot(revision));
+    const malformedDocument = {
+      format: document.format,
+      schemaVersion: document.schemaVersion,
+      documentId: document.documentId,
+      symbols: [],
+      pages: [],
+      calculationOrder: [],
+    };
+    const envelope = {
+      format: 'khwarizmi.authored-document',
+      schemaVersion: 1,
+      digest: await canonicalSha256(malformedDocument),
+      document: malformedDocument,
+    };
+    await writeFile(
+      join(root, 'doc-test', 'authored-document.json'),
+      JSON.stringify(envelope)
+    );
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toEqual({
+      status: 'corrupt',
+      reason: 'AUTHORED_DOCUMENT_IDENTITY_INVALID',
+    });
+  });
+
   it('supports explicit snapshot invalidation', async () => {
     const { store } = await createStore();
     const revision = await store.saveDocument(document);
