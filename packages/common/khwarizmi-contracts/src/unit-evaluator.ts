@@ -89,16 +89,25 @@ function exactUnit(unit: ResolvedUnit): UnitQuantity {
   };
 }
 
-function rationalMultiply(left: ExactRational, right: ExactRational): ExactRational {
+function rationalMultiply(
+  left: ExactRational,
+  right: ExactRational
+): ExactRational {
   return rational(
     left.numerator * right.numerator,
     left.denominator * right.denominator
   );
 }
 
-function rationalDivide(left: ExactRational, right: ExactRational): ExactRational {
+function rationalDivide(
+  left: ExactRational,
+  right: ExactRational
+): ExactRational {
   if (right.numerator === 0n)
-    throw new UnitEvaluationFailure('UNSUPPORTED_UNIT_KIND', 'Unit scale division by zero');
+    throw new UnitEvaluationFailure(
+      'UNSUPPORTED_UNIT_KIND',
+      'Unit scale division by zero'
+    );
   return rational(
     left.numerator * right.denominator,
     left.denominator * right.numerator
@@ -182,10 +191,7 @@ function combineDimensions(
     const previous = values.get(base) ?? rational(0n, 1n);
     const exponent = right.dimension[index];
     if (exponent)
-      values.set(
-        base,
-        rationalAdd(previous, exponent, operation === 'divide')
-      );
+      values.set(base, rationalAdd(previous, exponent, operation === 'divide'));
   });
   const entries = [...values.entries()]
     .filter(([, exponent]) => exponent.numerator !== 0n)
@@ -202,8 +208,10 @@ function sameDimension(left: UnitQuantity, right: UnitQuantity): boolean {
     left.dimensionBases.every(
       (base, index) =>
         base === right.dimensionBases[index] &&
-        left.dimension[index]?.numerator === right.dimension[index]?.numerator &&
-        left.dimension[index]?.denominator === right.dimension[index]?.denominator
+        left.dimension[index]?.numerator ===
+          right.dimension[index]?.numerator &&
+        left.dimension[index]?.denominator ===
+          right.dimension[index]?.denominator
     )
   );
 }
@@ -220,7 +228,14 @@ function requiredAt<T>(values: readonly T[], index: number, label: string): T {
 
 function factorKey(factors: UnitFactor[]): string {
   return factors
-    .map(factor => factor.unitId + '^' + factor.exponent.numerator + '/' + factor.exponent.denominator)
+    .map(
+      factor =>
+        factor.unitId +
+        '^' +
+        factor.exponent.numerator +
+        '/' +
+        factor.exponent.denominator
+    )
     .join('*');
 }
 
@@ -246,7 +261,10 @@ function derivedUnit(
   };
 }
 
-function scaleRatio(source: UnitQuantity, target: UnitQuantity): UnitScaleValue {
+function scaleRatio(
+  source: UnitQuantity,
+  target: UnitQuantity
+): UnitScaleValue {
   if (!sameDimension(source, target))
     throw new UnitEvaluationFailure(
       'DIMENSION_MISMATCH',
@@ -263,7 +281,10 @@ function scaleRatio(source: UnitQuantity, target: UnitQuantity): UnitScaleValue 
   };
 }
 
-function rationalMathJson(numerator: bigint, denominator: bigint): MathJsonValue {
+function rationalMathJson(
+  numerator: bigint,
+  denominator: bigint
+): MathJsonValue {
   return [
     'Rational',
     { num: numerator.toString() },
@@ -275,8 +296,7 @@ function scaleMathJson(scale: UnitScaleValue): MathJsonValue {
   const factors: MathJsonValue[] = [];
   if (scale.numerator !== 1n || scale.denominator !== 1n)
     factors.push(rationalMathJson(scale.numerator, scale.denominator));
-  if (scale.piExponent !== 0)
-    factors.push(['Power', 'Pi', scale.piExponent]);
+  if (scale.piExponent !== 0) factors.push(['Power', 'Pi', scale.piExponent]);
   if (factors.length === 0) return 1;
   return factors.length === 1
     ? requiredAt(factors, 0, 'unit scale factor')
@@ -296,8 +316,7 @@ function applyScale(
   const factors: MathJsonValue[] = [];
   if (ratio.numerator !== 1n || ratio.denominator !== 1n)
     factors.push(rationalMathJson(ratio.numerator, ratio.denominator));
-  if (ratio.piExponent !== 0)
-    factors.push(['Power', 'Pi', ratio.piExponent]);
+  if (ratio.piExponent !== 0) factors.push(['Power', 'Pi', ratio.piExponent]);
   return ['Multiply', mathJson, ...factors];
 }
 
@@ -337,7 +356,10 @@ function squareRootUnit(unit: UnitQuantity): UnitQuantity {
   }
   const factors = unit.factors.map(factor => ({
     unitId: factor.unitId,
-    exponent: rational(factor.exponent.numerator, factor.exponent.denominator * 2n),
+    exponent: rational(
+      factor.exponent.numerator,
+      factor.exponent.denominator * 2n
+    ),
   }));
   const numerator = perfectSquareRoot(unit.scale.numerator);
   const denominator = perfectSquareRoot(unit.scale.denominator);
@@ -431,9 +453,9 @@ export function prepareUnitAwareMathJson(
     } else if (Array.isArray(node)) {
       const operator = node[0];
       if (typeof operator !== 'string') return result;
-      const children = node.slice(1).map((child, index) =>
-        infer(child, path + '/' + (index + 1))
-      );
+      const children = node
+        .slice(1)
+        .map((child, index) => infer(child, path + '/' + (index + 1)));
       const childMath = children.map(child => child.mathJson);
       const childUnits = children.map(child => child.unit);
 
@@ -550,7 +572,11 @@ export function prepareUnitAwareMathJson(
         result = base
           ? { mathJson: [operator, ...childMath], unit: squareRootUnit(base) }
           : { mathJson: [operator, ...childMath] };
-      } else if (operator === 'Sin' || operator === 'Cos' || operator === 'Tan') {
+      } else if (
+        operator === 'Sin' ||
+        operator === 'Cos' ||
+        operator === 'Tan'
+      ) {
         const angle = childUnits[0];
         if (angle) {
           if (!registry)
@@ -596,7 +622,10 @@ export function prepareUnitAwareMathJson(
               );
           }
         }
-        result = { mathJson: [operator, ...childMath], ...(base ? { unit: base } : {}) };
+        result = {
+          mathJson: [operator, ...childMath],
+          ...(base ? { unit: base } : {}),
+        };
       } else if (
         operator === 'Equal' ||
         operator === 'NotEqual' ||
@@ -674,7 +703,9 @@ export function prepareUnitAwareMathJson(
   };
 }
 
-export function serializeUnitQuantity(unit: UnitQuantity): Record<string, unknown> {
+export function serializeUnitQuantity(
+  unit: UnitQuantity
+): Record<string, unknown> {
   return unitRecord(unit);
 }
 

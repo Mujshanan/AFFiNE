@@ -61,4 +61,3 @@ These are separate release-blocking integration milestones. This PR completes th
 - canonical digests and snapshot freshness reject stale evaluation results;
 - RPC correlation, duplicate IDs, concurrency, cancellation, shutdown, and error mapping pass;
 - serialized authored documents and snapshots round-trip without changing exact numeric values.
-

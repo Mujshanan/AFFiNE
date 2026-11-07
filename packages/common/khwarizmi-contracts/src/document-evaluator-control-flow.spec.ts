@@ -29,7 +29,9 @@ function engine(): ComputeEnginePort {
   };
   const mathJson = (value: any): unknown =>
     typeof value === 'boolean' || value === 'True' || value === 'False'
-      ? (value === true || value === 'True' ? 'True' : 'False')
+      ? value === true || value === 'True'
+        ? 'True'
+        : 'False'
       : { num: String(value) };
   return {
     precision: 34,
@@ -89,35 +91,51 @@ describe('document evaluator lexical control flow', () => {
       semanticVersion: '1.0.0',
       unitRegistryVersion: 'si-engineering-1',
       symbols: [{ symbolId: 'x', displayName: 'x', normalizedName: 'x' }],
-      pages: [{
-        pageId: 'page-1',
-        statements: [
-          {
-            kind: 'if',
-            statementId: 'if-1',
-            condition: condition('True'),
-            [['th', 'en'].join('')]: [{
-              kind: 'assign',
-              statementId: 'then-x',
-              assignmentId: 'assignment-then-x',
-              targetSymbolId: 'x',
-              expression: expression(5, [], [{ path: '', lexeme: '5', representation: 'exactDecimal' }]),
-            }],
-            else: [{
-              kind: 'assign',
-              statementId: 'else-x',
-              assignmentId: 'assignment-else-x',
-              targetSymbolId: 'x',
-              expression: expression(7, [], [{ path: '', lexeme: '7', representation: 'exactDecimal' }]),
-            }],
-          },
-          {
-            kind: 'expression',
-            statementId: 'read-x',
-            expression: expression('kz_x', [{ engineSymbol: 'kz_x', symbolId: 'x' }]),
-          },
-        ],
-      }],
+      pages: [
+        {
+          pageId: 'page-1',
+          statements: [
+            {
+              kind: 'if',
+              statementId: 'if-1',
+              condition: condition('True'),
+              [['th', 'en'].join('')]: [
+                {
+                  kind: 'assign',
+                  statementId: 'then-x',
+                  assignmentId: 'assignment-then-x',
+                  targetSymbolId: 'x',
+                  expression: expression(
+                    5,
+                    [],
+                    [{ path: '', lexeme: '5', representation: 'exactDecimal' }]
+                  ),
+                },
+              ],
+              else: [
+                {
+                  kind: 'assign',
+                  statementId: 'else-x',
+                  assignmentId: 'assignment-else-x',
+                  targetSymbolId: 'x',
+                  expression: expression(
+                    7,
+                    [],
+                    [{ path: '', lexeme: '7', representation: 'exactDecimal' }]
+                  ),
+                },
+              ],
+            },
+            {
+              kind: 'expression',
+              statementId: 'read-x',
+              expression: expression('kz_x', [
+                { engineSymbol: 'kz_x', symbolId: 'x' },
+              ]),
+            },
+          ],
+        },
+      ],
       calculationOrder: ['if-1', 'read-x'],
     };
 
@@ -126,10 +144,14 @@ describe('document evaluator lexical control flow', () => {
     expect(result.assignmentEvents.map(event => event.assignmentId)).toEqual([
       'assignment-then-x',
     ]);
-    expect(result.results.at(-1)?.value).toEqual({ kind: 'exactDecimal', decimal: '5' });
-    expect(result.results.find(item => item.statementId === 'then-x')?.controlFlowPath).toEqual([
-      { statementId: 'if-1', kind: 'if-then' },
-    ]);
+    expect(result.results.at(-1)?.value).toEqual({
+      kind: 'exactDecimal',
+      decimal: '5',
+    });
+    expect(
+      result.results.find(item => item.statementId === 'then-x')
+        ?.controlFlowPath
+    ).toEqual([{ statementId: 'if-1', kind: 'if-then' }]);
   });
 
   it('supports nested local capture without leaking locals outside their block', () => {
@@ -140,47 +162,61 @@ describe('document evaluator lexical control flow', () => {
       semanticVersion: '1.0.0',
       unitRegistryVersion: 'si-engineering-1',
       symbols: [],
-      pages: [{
-        pageId: 'page-1',
-        statements: [
-          {
-            kind: 'if',
-            statementId: 'outer-if',
-            condition: condition('True'),
-            [['th', 'en'].join('')]: [
-              {
-                kind: 'declareLocal',
-                statementId: 'local-declare',
-                localSymbolId: 'local-a',
-                displayName: 'a',
-                initializer: expression(4, [], [{ path: '', lexeme: '4', representation: 'exactDecimal' }]),
-              },
-              {
-                kind: 'if',
-                statementId: 'inner-if',
-                condition: condition('True'),
-                [['th', 'en'].join('')]: [{
-                  kind: 'expression',
-                  statementId: 'inner-read',
-                  expression: expression('kz_a', [{ engineSymbol: 'kz_a', symbolId: 'local-a' }]),
-                }],
-                else: [],
-              },
-            ],
-            else: [],
-          },
-          {
-            kind: 'expression',
-            statementId: 'after-if',
-            expression: expression('kz_a', [{ engineSymbol: 'kz_a', symbolId: 'local-a' }]),
-          },
-        ],
-      }],
+      pages: [
+        {
+          pageId: 'page-1',
+          statements: [
+            {
+              kind: 'if',
+              statementId: 'outer-if',
+              condition: condition('True'),
+              [['th', 'en'].join('')]: [
+                {
+                  kind: 'declareLocal',
+                  statementId: 'local-declare',
+                  localSymbolId: 'local-a',
+                  displayName: 'a',
+                  initializer: expression(
+                    4,
+                    [],
+                    [{ path: '', lexeme: '4', representation: 'exactDecimal' }]
+                  ),
+                },
+                {
+                  kind: 'if',
+                  statementId: 'inner-if',
+                  condition: condition('True'),
+                  [['th', 'en'].join('')]: [
+                    {
+                      kind: 'expression',
+                      statementId: 'inner-read',
+                      expression: expression('kz_a', [
+                        { engineSymbol: 'kz_a', symbolId: 'local-a' },
+                      ]),
+                    },
+                  ],
+                  else: [],
+                },
+              ],
+              else: [],
+            },
+            {
+              kind: 'expression',
+              statementId: 'after-if',
+              expression: expression('kz_a', [
+                { engineSymbol: 'kz_a', symbolId: 'local-a' },
+              ]),
+            },
+          ],
+        },
+      ],
       calculationOrder: ['outer-if', 'after-if'],
     };
 
     const result = evaluateCalculationDocument(document, options('local-test'));
-    const inner = result.results.find(item => item.statementId === 'inner-read');
+    const inner = result.results.find(
+      item => item.statementId === 'inner-read'
+    );
     const leaked = result.results.find(item => item.statementId === 'after-if');
     expect(inner?.value).toEqual({ kind: 'exactDecimal', decimal: '4' });
     expect(inner?.controlFlowPath).toEqual([
@@ -188,7 +224,9 @@ describe('document evaluator lexical control flow', () => {
       { statementId: 'inner-if', kind: 'if-then' },
     ]);
     expect(leaked?.status).toBe('error');
-    expect(result.diagnostics.some(item => item.code === 'UNRESOLVED_SYMBOL')).toBe(true);
+    expect(
+      result.diagnostics.some(item => item.code === 'UNRESOLVED_SYMBOL')
+    ).toBe(true);
   });
 
   it('tracks sequential reassignment inside a while loop', () => {
@@ -199,46 +237,70 @@ describe('document evaluator lexical control flow', () => {
       semanticVersion: '1.0.0',
       unitRegistryVersion: 'si-engineering-1',
       symbols: [{ symbolId: 'i', displayName: 'i', normalizedName: 'i' }],
-      pages: [{
-        pageId: 'page-1',
-        statements: [
-          {
-            kind: 'assign',
-            statementId: 'i-init',
-            assignmentId: 'assignment-i-init',
-            targetSymbolId: 'i',
-            expression: expression(0, [], [{ path: '', lexeme: '0', representation: 'exactDecimal' }]),
-          },
-          {
-            kind: 'while',
-            statementId: 'loop',
-            condition: condition(['Less', 'kz_i', 3], [{ engineSymbol: 'kz_i', symbolId: 'i' }]),
-            body: [{
+      pages: [
+        {
+          pageId: 'page-1',
+          statements: [
+            {
               kind: 'assign',
-              statementId: 'i-step',
-              assignmentId: 'assignment-i-step',
+              statementId: 'i-init',
+              assignmentId: 'assignment-i-init',
               targetSymbolId: 'i',
               expression: expression(
-                ['Add', 'kz_i', 1],
-                [{ engineSymbol: 'kz_i', symbolId: 'i' }],
-                [{ path: '/2', lexeme: '1', representation: 'exactDecimal' }]
+                0,
+                [],
+                [{ path: '', lexeme: '0', representation: 'exactDecimal' }]
               ),
-            }],
-          },
-          {
-            kind: 'expression',
-            statementId: 'i-read',
-            expression: expression('kz_i', [{ engineSymbol: 'kz_i', symbolId: 'i' }]),
-          },
-        ],
-      }],
+            },
+            {
+              kind: 'while',
+              statementId: 'loop',
+              condition: condition(
+                ['Less', 'kz_i', 3],
+                [{ engineSymbol: 'kz_i', symbolId: 'i' }]
+              ),
+              body: [
+                {
+                  kind: 'assign',
+                  statementId: 'i-step',
+                  assignmentId: 'assignment-i-step',
+                  targetSymbolId: 'i',
+                  expression: expression(
+                    ['Add', 'kz_i', 1],
+                    [{ engineSymbol: 'kz_i', symbolId: 'i' }],
+                    [
+                      {
+                        path: '/2',
+                        lexeme: '1',
+                        representation: 'exactDecimal',
+                      },
+                    ]
+                  ),
+                },
+              ],
+            },
+            {
+              kind: 'expression',
+              statementId: 'i-read',
+              expression: expression('kz_i', [
+                { engineSymbol: 'kz_i', symbolId: 'i' },
+              ]),
+            },
+          ],
+        },
+      ],
       calculationOrder: ['i-init', 'loop', 'i-read'],
     };
 
     const result = evaluateCalculationDocument(document, options('loop-test'));
     expect(result.status).toBe('completed');
-    expect(result.assignmentEvents.map(event => event.assignmentVersion)).toEqual([1, 2, 3, 4]);
-    expect(result.results.at(-1)?.value).toEqual({ kind: 'exactDecimal', decimal: '3' });
+    expect(
+      result.assignmentEvents.map(event => event.assignmentVersion)
+    ).toEqual([1, 2, 3, 4]);
+    expect(result.results.at(-1)?.value).toEqual({
+      kind: 'exactDecimal',
+      decimal: '3',
+    });
   });
 
   it('rejects a Compute Engine version outside the pinned v1 contract', () => {
@@ -268,19 +330,29 @@ describe('document evaluator lexical control flow', () => {
       semanticVersion: '1.0.0',
       unitRegistryVersion: 'si-engineering-1',
       symbols: [],
-      pages: [{
-        pageId: 'page-1',
-        statements: [{
-          kind: 'while',
-          statementId: 'loop',
-          condition: condition('True'),
-          body: [{
-            kind: 'expression',
-            statementId: 'loop-expression',
-            expression: expression(1, [], [{ path: '', lexeme: '1', representation: 'exactDecimal' }]),
-          }],
-        }],
-      }],
+      pages: [
+        {
+          pageId: 'page-1',
+          statements: [
+            {
+              kind: 'while',
+              statementId: 'loop',
+              condition: condition('True'),
+              body: [
+                {
+                  kind: 'expression',
+                  statementId: 'loop-expression',
+                  expression: expression(
+                    1,
+                    [],
+                    [{ path: '', lexeme: '1', representation: 'exactDecimal' }]
+                  ),
+                },
+              ],
+            },
+          ],
+        },
+      ],
       calculationOrder: ['loop'],
     };
 
@@ -290,6 +362,8 @@ describe('document evaluator lexical control flow', () => {
     });
     expect(result.status).toBe('completedWithErrors');
     expect(result.results).toHaveLength(3);
-    expect(result.diagnostics.map(item => item.code)).toContain('RESOURCE_LIMIT_EXCEEDED');
+    expect(result.diagnostics.map(item => item.code)).toContain(
+      'RESOURCE_LIMIT_EXCEEDED'
+    );
   });
 });
