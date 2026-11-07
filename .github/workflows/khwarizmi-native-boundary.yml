@@ -52,3 +52,7 @@ jobs:
             echo 'affine_common is present in the affine_native resolved dependency graph.'
             exit 1
           fi
+      - name: Check Rust formatting
+        run: cargo fmt -p affine_native -p affine_nbstore -- --check
+      - name: Test frontend native crates
+        run: cargo test -p affine_native -p affine_nbstore
