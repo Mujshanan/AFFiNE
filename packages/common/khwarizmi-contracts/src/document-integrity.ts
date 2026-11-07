@@ -131,12 +131,15 @@ export async function verifyCanonicalSha256(
 
 export function isEvaluationSnapshotCurrent(
   snapshot: EvaluationSnapshotIdentity,
-  document: AuthoredDocumentIdentity
+  document: AuthoredDocumentIdentity,
+  expectedEngineVersion?: string
 ): boolean {
   return (
     snapshot.documentId === document.documentId &&
     snapshot.documentRevision === document.documentRevision &&
     snapshot.semanticVersion === document.semanticVersion &&
-    snapshot.unitRegistryVersion === document.unitRegistryVersion
+    snapshot.unitRegistryVersion === document.unitRegistryVersion &&
+    (expectedEngineVersion === undefined ||
+      snapshot.engine.version === expectedEngineVersion)
   );
 }
