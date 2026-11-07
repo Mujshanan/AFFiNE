@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { FileDocumentStore, verifyDocumentIntake } from './document-store.js';
+import { canonicalSha256 } from './document-integrity.js';
 
 const directories: string[] = [];
 
@@ -141,6 +142,55 @@ describe('durable authored-document storage', () => {
       status: 'corrupt',
       reason: 'SNAPSHOT_JSON_INVALID',
     });
+  });
+
+  it('classifies a digest-valid snapshot with malformed identity as corrupt', async () => {
+    const { store, root } = await createStore();
+    const revision = await store.saveDocument(document);
+    const malformed = { ...snapshot(revision), engine: null };
+    const envelope = {
+      format: 'khwarizmi.evaluation-snapshot',
+      schemaVersion: 1,
+      digest: await canonicalSha256(malformed),
+      snapshot: malformed,
+    };
+    await writeFile(
+      join(root, 'doc-test', 'evaluation-snapshot.json'),
+      JSON.stringify(envelope)
+    );
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toEqual({
+      status: 'corrupt',
+      reason: 'SNAPSHOT_IDENTITY_INVALID',
+    });
+  });
+
+  it('classifies an invalid authored document as corrupt when loading its snapshot', async () => {
+    const { store, root } = await createStore();
+    const revision = await store.saveDocument(document);
+    await store.saveEvaluationSnapshot('doc-test', snapshot(revision));
+    await writeFile(
+      join(root, 'doc-test', 'authored-document.json'),
+      '{invalid'
+    );
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toEqual({
+      status: 'corrupt',
+      reason: 'AUTHORED_DOCUMENT_INVALID',
+    });
+  });
+
+  it('rejects invalid authored JSON instead of treating it as a missing document', async () => {
+    const { store, root } = await createStore();
+    await writeFile(
+      join(root, 'doc-test', 'authored-document.json'),
+      '{invalid'
+    );
+    await expect(store.loadDocument('doc-test')).rejects.toThrow(
+      'AUTHORED_DOCUMENT_JSON_INVALID'
+    );
   });
 
   it('supports explicit snapshot invalidation', async () => {
