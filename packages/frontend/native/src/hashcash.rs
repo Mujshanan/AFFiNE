@@ -9,6 +9,7 @@ use sha3::{Digest, Sha3_256};
 
 const SALT_LENGTH: usize = 16;
 const MAX_CLAIM_BITS: u32 = 256;
+const MAX_MINT_BITS: u32 = 24;
 const STAMP_VERSION: &str = "1";
 const STAMP_LIFETIME_MINUTES: i64 = 5;
 
@@ -54,7 +55,7 @@ impl Stamp {
       return None;
     }
     let claim = fields[1].parse::<u32>().ok()?;
-    if claim == 0 || claim > MAX_CLAIM_BITS {
+    if claim == 0 || claim > MAX_MINT_BITS {
       return None;
     }
     // Validate the timestamp during parsing, not only during verification.
@@ -104,7 +105,7 @@ impl Stamp {
     let claim = requested_bits.unwrap_or(20);
     if claim == 0 || claim > MAX_CLAIM_BITS {
       return Err(napi::Error::from_reason(
-        "Hashcash bits must be between 1 and 256",
+        "Hashcash mint difficulty must be between 1 and 24 bits",
       ));
     }
 
@@ -234,6 +235,12 @@ mod tests {
       .unwrap();
     assert!(!stamp.verify(8, "resource-b"));
     assert!(!stamp.verify(9, "resource-a"));
+  }
+
+  #[test]
+  fn mint_rejects_unbounded_proof_work() {
+    assert!(Stamp::mint("resource".into(), Some(25)).is_err());
+    assert!(Stamp::mint("resource".into(), Some(0)).is_err());
   }
 
   #[test]
