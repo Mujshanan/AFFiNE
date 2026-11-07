@@ -106,7 +106,7 @@ export function validateJsonSchema(
     '$schema', '$id', '$defs', '$comment', 'title', 'description',
     '$ref', 'type', 'const', 'enum', 'properties', 'required',
     'additionalProperties', 'items', 'prefixItems', 'oneOf', 'allOf',
-    'if', 'then', 'else', 'minimum', 'maximum', 'minLength',
+    'if', 'then', 'else', 'not', 'minimum', 'maximum', 'maxProperties', 'minLength',
     'maxLength', 'pattern', 'minItems', 'maxItems', 'uniqueItems'
   ]);
 
@@ -172,6 +172,12 @@ export function validateJsonSchema(
       });
       if (matches !== 1) add('oneOf', 'Value must match exactly one oneOf branch; matched ' + matches);
     }
+    if (schema.not !== undefined) {
+      const before = errors.length;
+      const matchesNotSchema = visit(instance, schema.not as JsonSchema, currentSchemaPath + '/not', instancePath, depth + 1);
+      errors.splice(before);
+      if (matchesNotSchema) add('not', 'Value must not match the not schema');
+    }
     if (schema.if !== undefined) {
       const before = errors.length;
       const conditionMatches = visit(instance, schema.if as JsonSchema, currentSchemaPath + '/if', instancePath, depth + 1);
@@ -220,6 +226,9 @@ export function validateJsonSchema(
     }
 
     if (isObject(instance)) {
+      if (typeof schema.maxProperties === 'number' && Object.keys(instance).length > schema.maxProperties) {
+        add('maxProperties', 'Object has more properties than maxProperties');
+      }
       if (Array.isArray(schema.required)) {
         for (const key of schema.required) {
           if (typeof key === 'string' && !Object.prototype.hasOwnProperty.call(instance, key)) add('required', 'Missing required property: ' + key);
@@ -254,7 +263,7 @@ export function validateSchemaBundle(bundle: SchemaBundle): SchemaValidationResu
     '$schema', '$id', '$defs', '$comment', 'title', 'description',
     '$ref', 'type', 'const', 'enum', 'properties', 'required',
     'additionalProperties', 'items', 'prefixItems', 'oneOf', 'allOf',
-    'if', 'then', 'else', 'minimum', 'maximum', 'minLength',
+    'if', 'then', 'else', 'not', 'minimum', 'maximum', 'maxProperties', 'minLength',
     'maxLength', 'pattern', 'minItems', 'maxItems', 'uniqueItems'
   ]);
   const schemaChildren = (schema: Record<string, unknown>): unknown[] => {
@@ -263,7 +272,7 @@ export function validateSchemaBundle(bundle: SchemaBundle): SchemaValidationResu
       const map = schema[key];
       if (isObject(map)) children.push(...Object.values(map));
     }
-    for (const key of ['items', 'additionalProperties', 'if', 'then', 'else']) {
+    for (const key of ['items', 'additionalProperties', 'if', 'then', 'else', 'not']) {
       if (schema[key] !== undefined && typeof schema[key] !== 'boolean') children.push(schema[key]);
     }
     for (const key of ['prefixItems', 'oneOf', 'allOf']) {
