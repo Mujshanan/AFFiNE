@@ -1,5 +1,6 @@
 export * from './compute-engine-adapter.js';
 export * from './document-evaluator.js';
+export * from './document-integrity.js';
 export * from './fixture-runner.js';
 export * from './json-schema.js';
 export * from './numeric-codec.js';
