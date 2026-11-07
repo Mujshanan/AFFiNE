@@ -186,8 +186,7 @@ export class FileDocumentStore {
   }
 
   async loadEvaluationSnapshot<TSnapshot extends EvaluationSnapshotIdentity>(
-    documentId: string,
-    documentIdentity: AuthoredDocumentIdentity
+    documentId: string
   ): Promise<SnapshotLoadResult<TSnapshot>> {
     let raw: unknown;
     try {
@@ -218,6 +217,21 @@ export class FileDocumentStore {
     if (snapshot.documentId !== documentId)
       return { status: 'corrupt', reason: 'SNAPSHOT_DOCUMENT_ID_MISMATCH' };
 
+    const authored = await this.loadDocument<Record<string, unknown>>(documentId);
+    if (!authored)
+      return { status: 'stale', snapshot, identity: snapshot };
+    const document = authored.document;
+    if (
+      typeof document.semanticVersion !== 'string' ||
+      typeof document.unitRegistryVersion !== 'string'
+    )
+      return { status: 'stale', snapshot, identity: snapshot };
+    const documentIdentity: AuthoredDocumentIdentity = {
+      documentId,
+      documentRevision: authored.documentRevision,
+      semanticVersion: document.semanticVersion,
+      unitRegistryVersion: document.unitRegistryVersion,
+    };
     const current = isEvaluationSnapshotCurrent(
       snapshot,
       documentIdentity,
