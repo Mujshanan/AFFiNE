@@ -1,3 +1,5 @@
+export const SUPPORTED_COMPUTE_ENGINE_VERSION = '0.180.0' as const;
+
 export interface BoxedExpressionPort {
   evaluate(): BoxedExpressionPort;
   toMathJson(options: { digits: 'max' }): unknown;
