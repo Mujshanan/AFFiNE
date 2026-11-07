@@ -68,7 +68,7 @@ function isSnapshotIdentity(value: unknown): value is EvaluationSnapshotIdentity
     /^[a-f0-9]{64}$/.test(value.documentRevision) &&
     typeof value.semanticVersion === 'string' &&
     typeof value.unitRegistryVersion === 'string' &&
-    value.engine.name === 'cortexjs-compute-engine' &&
+    typeof value.engine.name === 'string' &&
     typeof value.engine.version === 'string' &&
     value.engine.version.length > 0
   );
@@ -203,6 +203,8 @@ export class FileDocumentStore {
     ) as TSnapshot;
     if (!isSnapshotIdentity(persistedSnapshot))
       throw new Error('SNAPSHOT_IDENTITY_INVALID');
+    if (persistedSnapshot.engine.name !== 'cortexjs-compute-engine')
+      throw new Error('SNAPSHOT_ENGINE_NAME_MISMATCH');
     if (persistedSnapshot.documentId !== documentId)
       throw new Error('SNAPSHOT_DOCUMENT_ID_MISMATCH');
     const authored = await this.loadDocument<Record<string, unknown>>(documentId);
@@ -264,11 +266,13 @@ export class FileDocumentStore {
 
     if (!isSnapshotIdentity(raw.snapshot))
       return { status: 'corrupt', reason: 'SNAPSHOT_IDENTITY_INVALID' };
+    if (raw.snapshot.engine.name !== 'cortexjs-compute-engine')
+      return { status: 'corrupt', reason: 'SNAPSHOT_ENGINE_NAME_INVALID' };
     const snapshot = raw.snapshot as TSnapshot;
     if (snapshot.documentId !== documentId)
       return { status: 'corrupt', reason: 'SNAPSHOT_DOCUMENT_ID_MISMATCH' };
 
-    let authored: Awaited<ReturnType<FileDocumentStore['loadDocument<Record<string, unknown>>']>>;
+    let authored: { document: Record<string, unknown>; documentRevision: string } | undefined;
     try {
       authored = await this.loadDocument<Record<string, unknown>>(documentId);
     } catch (error) {
