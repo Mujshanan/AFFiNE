@@ -36,7 +36,7 @@ export interface VerifiedDocumentIntake<TDocument = unknown> {
 
 /**
  * Verify a document received over RPC before it is passed to schema validation
- * or evaluation. The expected digest must come from the authenticated envelope.
+ * or evaluation. The expected digest must come from the enclosing RPC request envelope.
  */
 export async function verifyDocumentIntake<TDocument>(
   document: TDocument,
