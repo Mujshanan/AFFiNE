@@ -57,7 +57,7 @@ const registry = {
 };
 
 function fakeEngine(): ComputeEnginePort {
-  const evaluate = (value: any): any => {
+  const evaluate = (value: unknown): unknown => {
     if (typeof value === 'number' || typeof value === 'boolean') return value;
     if (typeof value === 'string') {
       if (value === 'Pi') return Math.PI;
@@ -65,10 +65,15 @@ function fakeEngine(): ComputeEnginePort {
       if (value === 'False') return false;
       throw new Error('Unknown test symbol: ' + value);
     }
-    if (value && typeof value === 'object' && typeof value.num === 'string')
-      return Number(value.num);
+    if (
+      value &&
+      typeof value === 'object' &&
+      !Array.isArray(value) &&
+      typeof (value as Record<string, unknown>).num === 'string'
+    )
+      return Number((value as Record<string, string>).num);
     if (!Array.isArray(value)) return value;
-    const args = value.slice(1).map(evaluate);
+    const args = value.slice(1).map(evaluate) as number[];
     switch (value[0]) {
       case 'Rational':
       case 'Divide':
@@ -89,7 +94,7 @@ function fakeEngine(): ComputeEnginePort {
         throw new Error('Unsupported test operator: ' + value[0]);
     }
   };
-  const mathJson = (value: any): unknown => {
+  const mathJson = (value: unknown): unknown => {
     if (typeof value === 'boolean') return value ? 'True' : 'False';
     if (typeof value === 'number' && Math.abs(value - 0.5) < 1e-12)
       return ['Rational', { num: '1' }, { num: '2' }];
