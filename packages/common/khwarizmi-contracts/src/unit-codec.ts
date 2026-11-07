@@ -1,4 +1,4 @@
-import { rational, unitScaleRatio, type ExactRational, type ExactScale, type ScaleRatio } from './numeric-codec.js';
+import { type ExactRational, type ExactScale, type ScaleRatio, rational, unitScaleRatio } from './numeric-codec.js';
 
 export interface UnitDimensionTerm {
   base: string;
