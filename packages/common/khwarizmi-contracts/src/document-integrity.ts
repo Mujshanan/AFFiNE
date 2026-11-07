@@ -84,12 +84,10 @@ export function canonicalizeJson(value: unknown): string {
       const properties = keys.map(key => {
         assertWellFormedUnicode(key);
         const descriptor = Object.getOwnPropertyDescriptor(item, key);
-        if (
-          !descriptor ||
-          !descriptor.enumerable ||
-          !Object.prototype.hasOwnProperty.call(descriptor, 'value')
-        )
-          throw new TypeError('Canonical JSON objects require enumerable data properties');
+        if (!descriptor || !descriptor.enumerable)
+          throw new TypeError('Canonical JSON objects require enumerable properties');
+        if (!Object.prototype.hasOwnProperty.call(descriptor, 'value'))
+          throw new TypeError('Canonical JSON objects cannot contain accessor properties');
         return JSON.stringify(key)! + ':' + serialize(descriptor.value);
       });
       return '{' + properties.join(',') + '}';
