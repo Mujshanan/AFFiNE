@@ -1,4 +1,25 @@
 export {
+  type BoxedExpressionPort,
+  type ComputeEngineAdapterOptions,
+  type ComputeEngineEvaluation,
+  type ComputeEngineFactory,
+  type ComputeEnginePort,
+  evaluateMathJson,
+} from './compute-engine-adapter.js';
+export {
+  decimalToRational,
+  type ExactMathJsonNumber,
+  type ExactMathJsonRational,
+  type ExactRational,
+  type ExactScale,
+  gcd,
+  rational,
+  rationalToMathJson,
+  rationalToTerminatingDecimal,
+  type ScaleRatio,
+  unitScaleRatio,
+} from './numeric-codec.js';
+export {
   decodeRpcPayload,
   encodeRpcFrame,
   RequestCancellationRegistry,
