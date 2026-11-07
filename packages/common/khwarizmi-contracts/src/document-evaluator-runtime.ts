@@ -428,6 +428,12 @@ export function evaluateCalculationDocument(
         statementId: String(statement.statementId),
         symbolId,
       });
+      results.push(resultRecord(
+        String(statement.statementId),
+        isRecord(statement.expression) ? statement.expression : (statement.initializer as RecordValue),
+        evaluated,
+        controlFlowPath
+      ));
       return;
     }
     const version = (assignmentVersions.get(symbolId) ?? 0) + 1;
@@ -463,12 +469,14 @@ export function evaluateCalculationDocument(
       value: evaluated.value,
       dependencies: evaluated.dependencies,
     });
-    results.push(resultRecord(
+    const result = resultRecord(
       String(statement.statementId),
       isRecord(statement.expression) ? statement.expression : (statement.initializer as RecordValue),
       evaluated,
       controlFlowPath
-    ));
+    );
+    if (isRecord(symbol?.unit)) result.unit = symbol.unit;
+    results.push(result);
     void localDeclaration;
   };
 
@@ -586,14 +594,6 @@ export function evaluateCalculationDocument(
           }
           let iteration = 0;
           while (true) {
-            if (totalLoopIterations >= maxLoopIterations) {
-              diagnostics.push({
-                code: 'RESOURCE_LIMIT_EXCEEDED',
-                message: 'Maximum total while-loop iterations exceeded',
-                statementId,
-              });
-              break;
-            }
             try {
               const condition = evaluateRecord(raw.condition, statementId);
               const truth = condition.mathJson === true || condition.mathJson === 'True';
@@ -601,6 +601,14 @@ export function evaluateCalculationDocument(
               if (!truth && !falsity)
                 throw new EvaluationFailure('INVALID_CONDITION_RESULT', 'While condition did not evaluate to a boolean');
               if (falsity) break;
+              if (totalLoopIterations >= maxLoopIterations) {
+                diagnostics.push({
+                  code: 'RESOURCE_LIMIT_EXCEEDED',
+                  message: 'Maximum total while-loop iterations exceeded',
+                  statementId,
+                });
+                break;
+              }
               totalLoopIterations++;
               executeStatements(
                 raw.body,
