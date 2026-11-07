@@ -238,6 +238,7 @@ mod tests {
     assert!(Stamp::parse("1:8:20261107080000:test::salt").is_none());
     assert!(Stamp::parse("2:8:20261107080000:test::salt:0").is_none());
     assert!(Stamp::parse("1:0:20261107080000:test::salt:0").is_none());
+    assert!(Stamp::parse("1:25:20261107080000:test::salt:0").is_some());
     assert!(Stamp::parse("1:257:20261107080000:test::salt:0").is_none());
     assert!(Stamp::parse("1:8:not-a-date:test::salt:0").is_none());
   }
