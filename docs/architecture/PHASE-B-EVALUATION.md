@@ -1,6 +1,6 @@
 # Phase B — End-to-end worksheet evaluation
 
-**Status:** In progress  
+**Status:** In progress; linear evaluation and lexical control-flow runtime implemented, integration gates remain  
 **Milestone branch:** `khwarizmi/document-evaluation-v1`  
 **Scope:** Integrate the validated document contract with the Compute Engine adapter and prove versioned sequential assignment behavior before introducing editor integration.
 
@@ -17,9 +17,9 @@
 
 ## Current implementation slice
 
-The evaluator now rejects duplicate statement IDs and duplicate entries in `calculationOrder` before execution, requires `calculationOrder` to be an array, emits a result record for malformed expressions, and enforces non-empty unique assignment-event IDs. Tests cover duplicate ordering/IDs and verify that an authored decimal such as `1.20` is passed to the engine as an exact lexeme while the normalized result remains consistent with the v1 numeric-value schema. These checks harden the linear evaluator but do not close the control-flow, unit-preflight, persistence, digest, or host-integration gates.
+The evaluator rejects duplicate statement IDs and duplicate entries in `calculationOrder` before execution, requires `calculationOrder` to be an array, preserves authored decimal lexemes, and enforces non-empty unique assignment-event IDs. The runtime now executes selected `if` branches and bounded `while` loops, creates lexical scopes for control-flow bodies, permits nested blocks to capture enclosing locals, prevents local leakage after block exit, tracks sequential reassignment versions, and records a control-flow path on executed result records. The loop budget is deterministic and bounded by a configurable maximum of 10,000 total iterations per evaluation. Dedicated regression tests cover branch selection, nested local capture, local-scope exit, loop reassignment, and resource-limit diagnostics.
 
-The unit codec now resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. Degree/radian conversion retains a symbolic pi factor and refuses to collapse it into a rational magnitude. This codec is currently a standalone foundation and is not yet wired into evaluator preflight.
+The unit codec resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. Degree/radian conversion retains a symbolic pi factor and refuses to collapse it into a rational magnitude. This codec remains a standalone foundation; evaluator-level dimensional preflight and unit-aware arithmetic/conversion are not yet wired into the runtime.
 
 The evaluation-result schema now explicitly models immutable assignment-event records. Substitution provenance includes the stable document `symbolId` and the normalized numeric value (plus unit metadata when present), rather than leaking the internal MathJSON value into a field whose contract is a numeric-value record. This keeps the runtime result shape aligned with the published v1 schema.
 
@@ -29,15 +29,15 @@ This is a foundation slice, not a completed production evaluator.
 
 ## Explicitly not claimed as complete
 
-- `if` / `while` execution and lexical local-variable scopes;
+- evaluator-level unit dimensional preflight and unit-aware arithmetic/conversion;
 - unit dimensional arithmetic and conversion;
 - persistence, document reopen, and stale-snapshot detection;
-- RFC 8785 document digest verification;
+- RPC receiver-side RFC 8785 document digest verification (canonical JSON and SHA-256 utilities are implemented and tested);
 - RPC host integration, cancellation, and concurrency;
 - editor binding and visual movement/reordering tests;
 - Windows host process and named-pipe security.
 
-Unsupported control-flow statements are reported as errors rather than silently skipped. Unit metadata is carried from the target symbol but this slice does not yet enforce dimensional rules. These remaining items are release-blocking for the full Phase B exit criteria.
+Unsupported statement kinds are reported as errors rather than silently skipped. Unit metadata is carried from target symbols and substitutions, but dimensional arithmetic is not yet enforced. Canonical JSON and SHA-256 digest utilities are implemented; binding digest verification to RPC document intake and persistent snapshot storage remains outstanding. These remaining items are release-blocking for the full Phase B exit criteria.
 
 ## Required conformance tests
 
