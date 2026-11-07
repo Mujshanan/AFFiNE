@@ -1,6 +1,6 @@
 # Khwarizmi architecture contracts
 
-**Status:** v1 semantic and wire contracts, validators, numeric/unit codecs, evaluator foundation, and transport tests implemented; production host and editor integration remain  
+**Status:** v1 semantic and wire contracts, validators, numeric/unit codecs, control-flow/unit-aware evaluator, canonical digests, and in-process RPC dispatcher implemented; production persistence, process host, and editor integration remain  
 **Scope:** document model, worksheet geometry, mathematical semantics, evaluation, quantities/units, and calculation-host RPC.
 
 These documents define the contracts that application/editor and calculation-host implementations must obey. They do not claim that the corresponding runtime features already exist.
@@ -34,9 +34,9 @@ The words **MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT**, and **MAY** are no
 
 1. **Implemented:** TypeScript schema and semantic validators, fixture runner, and deterministic diagnostic tests.
 2. **Implemented:** Compute Engine adapter boundary, exact numeric codec, and exact unit registry codec.
-3. **Implemented:** deterministic evaluator foundation, lexical control flow, canonical digest utilities, and a bounded cancellable RPC dispatcher with framing/cancellation-registry tests.
+3. **Implemented:** deterministic evaluator with lexical control flow and unit-aware arithmetic, canonical digest utilities, and a bounded cancellable RPC dispatcher with framing/cancellation-registry tests.
 4. **Implemented:** dedicated CI coverage for the contract suite.
-5. **Remaining:** evaluator-level unit arithmetic, durable persistence/snapshot lifecycle, Electron/native RPC process binding and Windows pipe security, and BlockSuite adapter conformance.
+5. **Remaining:** durable persistence/snapshot lifecycle, receiver-side digest verification, Electron/native RPC process binding and Windows pipe security, and BlockSuite adapter conformance.
 6. Broad worksheet UI follows the host/editor integration gates; it must not bypass the canonical Khwarizmi document model.
 
 MathLive is the authoring/rendering surface. MathJSON is the canonical expression tree consumed by CortexJS Compute Engine. Khwarizmi wraps it with stable symbol bindings, authored numeric lexemes, source maps, assignment history, and semantic metadata. The wrapper—not raw engine state—is the persisted contract.
