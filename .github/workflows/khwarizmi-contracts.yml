@@ -1,0 +1,39 @@
+name: Khwarizmi Contract Conformance
+
+on:
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'packages/common/khwarizmi-contracts/**'
+      - 'docs/architecture/**'
+      - '.github/workflows/khwarizmi-contracts.yml'
+  push:
+    branches:
+      - 'khwarizmi/compute-engine-adapter'
+      - 'khwarizmi/document-evaluation-v1'
+    paths:
+      - 'contracts/**'
+      - 'packages/common/khwarizmi-contracts/**'
+      - 'docs/architecture/**'
+      - '.github/workflows/khwarizmi-contracts.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: khwarizmi-contracts-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contracts:
+    name: Schema, semantic, numeric, evaluator and RPC tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node.js and workspace dependencies
+        uses: ./.github/actions/setup-node
+        with:
+          electron-install: false
+          full-cache: true
+      - name: Run Khwarizmi contract suite
+        run: yarn workspace @khwarizmi/contracts test:fixtures

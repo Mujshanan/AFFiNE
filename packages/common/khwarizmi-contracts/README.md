@@ -10,12 +10,13 @@ This workspace package provides the first executable TypeScript validation layer
 - `validateUnitRegistrySemantics` checks unit/prefix identity, exact positive scales, and canonical dimension vectors.
 - `validateUnitReference` distinguishes unknown units from the v1-rejected affine temperature units.
 - `validateDiagnosticRegistrySemantics` and `validateDiagnosticCodeMembership` enforce the stable diagnostic registry.
+- `rpc-transport.ts` implements bounded little-endian frame encoding/stream decoding and request-ID cancellation tracking.
 
 ## Deliberate boundary
 
 The schema evaluator is a fail-closed interpreter for the exact JSON Schema vocabulary used by the checked-in contracts; it is **not** advertised as a general-purpose implementation of every JSON Schema 2020-12 keyword. Adding a new keyword to a contract schema requires adding its semantics and tests before that schema change is accepted. This avoids silently ignoring constraints.
 
-The package does not yet evaluate mathematical expressions, run the Compute Engine adapter, verify RFC 8785 document digests, implement RPC framing, or prove Windows host isolation. Those remain separate conformance workstreams.
+The package now includes a host-injected Compute Engine adapter boundary and BigInt-based numeric/unit-scale codecs. The calculation host must pin `@cortex-js/compute-engine@0.180.0` and supply a request-scoped engine factory. This package still does not own worksheet evaluation order, assignment history, RFC 8785 document digests, process supervision, or Windows host isolation.
 
 ## Test coverage
 
