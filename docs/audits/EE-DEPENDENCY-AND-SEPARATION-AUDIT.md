@@ -5,6 +5,13 @@
 **Prepared:** 2026-11-07  
 **Status:** static repository/import audit; implementation separation not yet performed.
 
+
+## Project scope and compatibility policy
+
+This repository is currently a **structural engineering package development and testing effort within the AFFiNE-derived repository**. It is not being treated as a standalone project, independent application, or separate distribution target at this stage. AFFiNE remains the host application and BlockSuite remains the selected editor foundation; Khwarizmi engineering capabilities are developed and validated as an integrated package layer in this repository.
+
+The native-boundary implementation must follow the decision **API-compatible, implementation-independent**: preserve the existing AFFiNE-facing integration contracts and expected behaviour where they are needed by the host, while removing dependencies on AFFiNE Enterprise Edition source implementations. Compatibility is required at the API/integration boundary; copying, wrapping, relocating, or retaining a dependency on EE implementation source is not an acceptable substitute. This boundary is an internal separation measure and does not change the project's current integrated test-project scope.
+
 ## Executive conclusion
 
 The Khwarizmi calculation-contract work in PR #9 and PR #10 is currently separated from the AFFiNE EE source directories. However, the inherited AFFiNE desktop/native foundation is **not yet EE-independent**: the frontend native crate imports `affine_common::hashcash::Stamp` from `packages/common/native`, which the repository root licence expressly places under the AFFiNE EE licence. The Electron helper process imports `@affine/native`, and the Electron package declares `@affine/native` as a development/build dependency. The native package is built through NAPI-RS from the frontend native crate.
