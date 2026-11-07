@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { rational } from './numeric-codec.js';
 import {
   combineDimensions,
   conversionRatio,
@@ -8,7 +9,6 @@ import {
   resolvePrefixedUnit,
   resolveUnit,
 } from './unit-codec.js';
-import { rational } from './numeric-codec.js';
 
 const registry = {
   format: 'khwarizmi.unit-registry' as const,
