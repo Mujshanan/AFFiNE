@@ -56,3 +56,5 @@ jobs:
         run: cargo fmt -p affine_native -p affine_nbstore -- --check
       - name: Test frontend native crates
         run: cargo test -p affine_native -p affine_nbstore
+      - name: Lint frontend native crates
+        run: cargo clippy -p affine_native -p affine_nbstore --all-targets -- -D warnings
