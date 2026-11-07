@@ -1,41 +1,41 @@
-# Khwarizmi Studio — Package Integration Testbed
+# Khwarizmi Studio — Structural Engineering Package Test Project
 
 <p align="center"><img src="assets/khwarizmi-logo.svg" alt="Khwarizmi Studio logo" width="112" /></p>
 
-**A development test project for evaluating, integrating, and validating application packages and technical foundations.**
+**An experimental structural engineering package test project within an AFFiNE-derived application repository.**
 
 > [!IMPORTANT]
-> **This repository is an experimental development and package-integration testbed. It is not a finished application, a production-ready product, or a software release intended for end users.** Its name and engineering-oriented experiments describe the direction of investigation, not a promise that a usable engineering application is available.
+> **For now, this repository is a structural engineering package development and testing effort inside the existing AFFiNE-derived repository. It is not a standalone project, an independent application, a finished product, or a production-ready engineering tool.** The immediate goal is to test how structural-engineering functionality and package integrations can work within the inherited AFFiNE/BlockSuite application foundation. A standalone product is not the current project scope.
 
 ## Purpose
 
-This repository is used to:
+This repository is used to develop and test a structural engineering package within an AFFiNE-derived application. Work includes:
 
-- Establish and test an AFFiNE-derived application baseline.
-- Evaluate the integration and behaviour of AFFiNE and BlockSuite packages.
-- Prototype package boundaries, editor extensions, and application-level integrations.
-- Develop and test Khwarizmi-specific document, worksheet, and calculation contracts.
-- Record architecture decisions and validate technical approaches before considering product implementation.
+- Establishing and validating the inherited AFFiNE/BlockSuite application baseline.
+- Testing structural-engineering document, worksheet, calculation, table, diagram, and drawing workflows.
+- Evaluating package integration and editor extensions needed by engineering use cases.
+- Developing Khwarizmi-specific document, worksheet, and calculation contracts as an experimental layer within this repository.
+- Recording architecture decisions and validating technical approaches against the existing application foundation.
 
-The immediate objective is to learn which inherited packages and foundations are suitable, identify constraints, and keep experimental work reproducible. Features and prototypes in this repository may be incomplete, temporary, or subject to replacement.
+The immediate objective is to validate structural-engineering package capabilities within the current AFFiNE-based repository. The project remains an integration and testing effort: it does not currently establish a separate application, standalone repository, or independent distribution target. Features and prototypes may be incomplete, temporary, or subject to replacement.
 
 ## What this repository is — and is not
 
 | This repository is | This repository is not |
 |---|---|
-| A package and integration test project | A finished engineering application |
-| An experimental development workspace | A production-ready product |
+| A structural engineering package development and test project | A standalone project or independent application |
+| An experimental engineering package within the AFFiNE-derived repository | A finished or production-ready product |
 | A place for architecture prototypes and validation | A verified structural design or code-compliance tool |
-| An AFFiNE/BlockSuite evaluation baseline | An official AFFiNE or BlockSuite distribution |
+| A structural-engineering test layer using AFFiNE/BlockSuite foundations | An official AFFiNE or BlockSuite distribution |
 | A record of technical decisions and experiments | A supported end-user release |
 
 Do not use builds, calculations, prototypes, or other outputs from this repository for real project design decisions. No engineering capability should be considered verified until its scope, assumptions, tests, and independent validation evidence are explicitly documented.
 
 ## Upstream foundations
 
-This test project is based on the [AFFiNE](https://github.com/toeverything/AFFiNE) repository and uses [BlockSuite](https://github.com/toeverything/BlockSuite) as an editor foundation.
+This structural engineering package test project remains part of the AFFiNE-derived repository. It is based on the [AFFiNE](https://github.com/toeverything/AFFiNE) application and uses [BlockSuite](https://github.com/toeverything/BlockSuite) as its editor foundation. AFFiNE/BlockSuite are the current host and foundation; Khwarizmi is the engineering-focused package and experimental layer being developed and tested within that host.
 
-The repository may contain substantial upstream code, packages, build tooling, assets, and documentation. The purpose of retaining this baseline is to evaluate and adapt the existing package ecosystem rather than imply that all inherited code is part of a completed Khwarizmi product.
+The repository may contain substantial upstream code, packages, build tooling, assets, and documentation. The purpose of retaining this baseline is to develop and test structural-engineering functionality in the existing application context. Do not interpret Khwarizmi as a separate standalone application at this stage.
 
 AFFiNE and BlockSuite are separate upstream projects. This repository is not an official distribution of either project, and their names and trademarks remain with their respective owners.
 
@@ -50,13 +50,13 @@ The experiments may include engineering-oriented foundations such as:
 - Tables, diagrams, and engineering drawing concepts.
 - Interfaces between the editor and a separate calculation host.
 
-These are areas of investigation, not a statement that the corresponding features are implemented or ready for use. The intended architecture is to keep engineering document semantics and calculation behaviour under Khwarizmi's control, independently of the inherited application foundation.
+These are areas of investigation, not a statement that the corresponding features are implemented or ready for use. They are being developed as an engineering package layer within the AFFiNE-derived repository. Khwarizmi-specific document semantics and calculation behaviour should remain clearly separated from AFFiNE/BlockSuite internals where practical, while still integrating with the existing host application. This separation is an internal architecture boundary, not a declaration that the project is currently standalone.
 
 ## Development status
 
 Work is organized through the [Development Plan](./DEVELOPMENT_PLAN.md) and the architecture records in [docs/architecture](./docs/architecture/README.md).
 
-The current focus is repository baseline validation, package and licence auditing, architecture contracts, and controlled experiments. A successful build or passing package test does not establish that this repository is suitable for production distribution.
+The current focus is validating the structural-engineering package inside the AFFiNE-derived repository: baseline and licence auditing, architecture contracts, and controlled package/workflow experiments. A successful build or passing package test does not establish that this repository is a standalone application or suitable for production engineering use or distribution.
 
 ## Licensing and third-party notices
 
