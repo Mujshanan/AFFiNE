@@ -28,7 +28,9 @@ function engine(): ComputeEnginePort {
     }
   };
   const mathJson = (value: any): unknown =>
-    typeof value === 'boolean' || value === 'True' || value === 'False'\n      ? (value === true || value === 'True' ? 'True' : 'False')\n      : { num: String(value) };
+    typeof value === 'boolean' || value === 'True' || value === 'False'
+      ? (value === true || value === 'True' ? 'True' : 'False')
+      : { num: String(value) };
   return {
     precision: 34,
     box(mathJsonInput: unknown) {
