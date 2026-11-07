@@ -311,7 +311,9 @@ export function evaluateCalculationDocument(
       throw new TypeError('calculationOrder contains a missing or nested statement ID: ' + id);
     return id;
   });
-  if (new Set(ordered).size !== ordered.length || ordered.length !== topLevel.length)
+  if (new Set(ordered).size !== ordered.length)
+    throw new TypeError('Duplicate statement in calculationOrder');
+  if (ordered.length !== topLevel.length)
     throw new TypeError('calculationOrder must contain each top-level statement exactly once');
 
   const documentSymbols = new Map<string, RecordValue>();
