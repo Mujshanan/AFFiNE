@@ -241,6 +241,25 @@ describe('document evaluator lexical control flow', () => {
     expect(result.results.at(-1)?.value).toEqual({ kind: 'exactDecimal', decimal: '3' });
   });
 
+  it('rejects a Compute Engine version outside the pinned v1 contract', () => {
+    const document = {
+      format: 'khwarizmi.calculation-document',
+      schemaVersion: 1,
+      documentId: 'engine-version-document',
+      semanticVersion: '1.0.0',
+      unitRegistryVersion: 'si-engineering-1',
+      symbols: [],
+      pages: [],
+      calculationOrder: [],
+    };
+    expect(() =>
+      evaluateCalculationDocument(document, {
+        ...options('engine-version-test'),
+        engineVersion: '0.181.0',
+      })
+    ).toThrow(/must pin @cortex-js\/compute-engine to 0.180.0/);
+  });
+
   it('enforces a deterministic total loop-iteration budget', () => {
     const document = {
       format: 'khwarizmi.calculation-document',
