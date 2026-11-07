@@ -170,6 +170,33 @@ describe('document evaluation vertical slice', () => {
     })).toThrow(/Duplicate statementId/);
   });
 
+  it('treats __proto__ as MathJSON data without mutating object prototypes', () => {
+    const maliciousMathJson = JSON.parse('{"__proto__":{"polluted":true}}') as unknown;
+    const input = {
+      ...doc,
+      pages: [{
+        pageId: 'page-1',
+        statements: [{
+          kind: 'expression',
+          statementId: 'prototype-key',
+          expression: expression(maliciousMathJson),
+        }],
+      }],
+      calculationOrder: ['prototype-key'],
+    };
+    const result = evaluateCalculationDocument(input, {
+      createEngine: arithmeticEngine,
+      validateDocument: () => ({ valid: true }),
+      engineVersion: '0.180.0',
+      documentRevision: 'e'.repeat(64),
+      evaluationId: 'evaluation-prototype-key',
+    });
+    const substituted = result.results[0].substitutedMathJson as Record<string, unknown>;
+    expect(Object.hasOwn(substituted, '__proto__')).toBe(true);
+    expect(Object.getPrototypeOf(substituted)).toBe(Object.prototype);
+    expect(Object.prototype).not.toHaveProperty('polluted');
+  });
+
   it('rejects an invalid revision digest before evaluation', () => {
     expect(() => evaluateCalculationDocument(doc, {
       createEngine: arithmeticEngine,
