@@ -116,6 +116,17 @@ describe('durable authored-document storage', () => {
     ).rejects.toThrow('SNAPSHOT_SEMANTIC_IDENTITY_MISMATCH');
   });
 
+  it('refuses to persist snapshots from an unsupported engine', async () => {
+    const { store } = await createStore();
+    const revision = await store.saveDocument(document);
+    await expect(
+      store.saveEvaluationSnapshot('doc-test', {
+        ...snapshot(revision),
+        engine: { name: 'untrusted-engine', version: '0.180.0' },
+      })
+    ).rejects.toThrow('SNAPSHOT_ENGINE_NAME_MISMATCH');
+  });
+
   it('classifies malformed snapshot JSON as corrupt', async () => {
     const { store, root } = await createStore();
     const revision = await store.saveDocument(document);
