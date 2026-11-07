@@ -46,10 +46,7 @@
     "engine": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name",
-        "version"
-      ],
+      "required": ["name", "version"],
       "properties": {
         "name": {
           "const": "cortexjs-compute-engine"
@@ -61,11 +58,7 @@
       }
     },
     "status": {
-      "enum": [
-        "completed",
-        "completedWithErrors",
-        "cancelled"
-      ]
+      "enum": ["completed", "completedWithErrors", "cancelled"]
     },
     "results": {
       "type": "array",
@@ -178,11 +171,7 @@
           "minLength": 1
         },
         "status": {
-          "enum": [
-            "evaluated",
-            "skipped",
-            "error"
-          ]
+          "enum": ["evaluated", "skipped", "error"]
         },
         "originalExpression": {
           "$ref": "expression.schema.json"
@@ -220,21 +209,14 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "statementId",
-              "kind"
-            ],
+            "required": ["statementId", "kind"],
             "properties": {
               "statementId": {
                 "type": "string",
                 "minLength": 1
               },
               "kind": {
-                "enum": [
-                  "if-then",
-                  "if-else",
-                  "while-iteration"
-                ]
+                "enum": ["if-then", "if-else", "while-iteration"]
               },
               "iteration": {
                 "type": "integer",

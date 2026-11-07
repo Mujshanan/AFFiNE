@@ -108,9 +108,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "outer-if"
-    ]
+    "calculationOrder": ["outer-if"]
   },
   "expected": {
     "status": "completed",

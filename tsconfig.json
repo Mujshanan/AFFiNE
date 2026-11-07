@@ -131,6 +131,7 @@
     { "path": "./packages/common/error" },
     { "path": "./packages/common/graphql" },
     { "path": "./packages/common/infra" },
+    { "path": "./packages/common/khwarizmi-contracts" },
     { "path": "./packages/common/nbstore" },
     { "path": "./packages/common/reader" },
     { "path": "./packages/common/realtime" },

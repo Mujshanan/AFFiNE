@@ -4,11 +4,7 @@
   "title": "Khwarizmi Fixture Manifest v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "format",
-    "version",
-    "fixtures"
-  ],
+  "required": ["format", "version", "fixtures"],
   "properties": {
     "format": {
       "const": "khwarizmi.contract-fixtures"
@@ -21,26 +17,14 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "id",
-          "kind",
-          "path",
-          "stage",
-          "expectedOutcome"
-        ],
+        "required": ["id", "kind", "path", "stage", "expectedOutcome"],
         "properties": {
           "id": {
             "type": "string",
             "pattern": "^[a-z0-9]+(\\.[a-z0-9-]+)+$"
           },
           "kind": {
-            "enum": [
-              "expression",
-              "semantics",
-              "numeric",
-              "units",
-              "rpc"
-            ]
+            "enum": ["expression", "semantics", "numeric", "units", "rpc"]
           },
           "path": {
             "type": "string",

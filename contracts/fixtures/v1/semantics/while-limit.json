@@ -59,15 +59,11 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "loop"
-    ]
+    "calculationOrder": ["loop"]
   },
   "expected": {
     "status": "completedWithErrors",
-    "diagnostics": [
-      "RESOURCE_LIMIT_EXCEEDED"
-    ],
+    "diagnostics": ["RESOURCE_LIMIT_EXCEEDED"],
     "iterationCount": 10000
   }
 }

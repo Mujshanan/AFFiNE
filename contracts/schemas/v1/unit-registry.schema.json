@@ -28,12 +28,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "unitId",
-          "symbol",
-          "scale",
-          "dimension"
-        ],
+        "required": ["unitId", "symbol", "scale", "dimension"],
         "properties": {
           "unitId": {
             "type": "string",
@@ -54,17 +49,10 @@
           "scale": {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "kind",
-              "numerator",
-              "denominator"
-            ],
+            "required": ["kind", "numerator", "denominator"],
             "properties": {
               "kind": {
-                "enum": [
-                  "exact-rational",
-                  "piRational"
-                ]
+                "enum": ["exact-rational", "piRational"]
               },
               "numerator": {
                 "type": "string",
@@ -81,11 +69,7 @@
             "items": {
               "type": "object",
               "additionalProperties": false,
-              "required": [
-                "base",
-                "numerator",
-                "denominator"
-              ],
+              "required": ["base", "numerator", "denominator"],
               "properties": {
                 "base": {
                   "type": "string",

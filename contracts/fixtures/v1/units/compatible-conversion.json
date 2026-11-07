@@ -105,11 +105,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Add",
-                "kz_m",
-                "kz_mm"
-              ],
+              "mathJson": ["Add", "kz_m", "kz_mm"],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_m",
@@ -134,11 +130,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "m-set",
-      "mm-set",
-      "sum"
-    ]
+    "calculationOrder": ["m-set", "mm-set", "sum"]
   },
   "expected": {
     "status": "completed",

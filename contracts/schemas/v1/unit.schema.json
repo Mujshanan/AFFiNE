@@ -4,11 +4,7 @@
   "title": "Khwarizmi Unit Quantity Metadata v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "unitId",
-    "registryVersion",
-    "dimension"
-  ],
+  "required": ["unitId", "registryVersion", "dimension"],
   "properties": {
     "unitId": {
       "type": "string",
@@ -27,11 +23,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "base",
-          "numerator",
-          "denominator"
-        ],
+        "required": ["base", "numerator", "denominator"],
         "properties": {
           "base": {
             "type": "string",
@@ -53,11 +45,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "unitId",
-          "numerator",
-          "denominator"
-        ],
+        "required": ["unitId", "numerator", "denominator"],
         "properties": {
           "unitId": {
             "type": "string",

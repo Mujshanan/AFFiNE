@@ -51,11 +51,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Add",
-                "kz_x",
-                3
-              ],
+              "mathJson": ["Add", "kz_x", 3],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_x",
@@ -106,11 +102,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "s1",
-      "s2",
-      "s3"
-    ]
+    "calculationOrder": ["s1", "s2", "s3"]
   },
   "expected": {
     "status": "completed",

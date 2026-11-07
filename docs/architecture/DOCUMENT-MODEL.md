@@ -17,6 +17,7 @@
 ## 2. Document envelope
 
 The native format is a JSON document (proposed extension: `.mpad.json`). The envelope contains:
+
 - `format`: stable format identifier, `khwarizmi.document`;
 - `schemaVersion`: integer schema version;
 - `documentId`: stable UUID;
@@ -35,6 +36,7 @@ Each page has a stable `pageId`, a physical width and height, orientation, margi
 **Accepted canonical geometry:** integer micrometres (`um`) for page dimensions, margins, and region geometry. Use a page-local top-left origin; +X points right and +Y points down. Support named standard page presets and custom dimensions. Convert to CSS pixels only at the rendering boundary using the configured display scale. Zoom and device-pixel ratio never change persisted physical layout.
 
 A region has:
+
 - stable `regionId`;
 - `kind` (flow, grid, column, or positioned);
 - physical bounds `x, y, width, height`;
@@ -76,6 +78,7 @@ Page order, region order, and block order are explicit. Executable statements al
 ## 7. BlockSuite adapter boundary
 
 BlockSuite may represent and edit visual blocks, selection, and ordering. An adapter maps BlockSuite transactions into Khwarizmi document commands. The adapter MUST:
+
 - validate incoming commands against the Khwarizmi schema;
 - preserve stable IDs;
 - avoid storing calculation truth only in editor-specific properties;

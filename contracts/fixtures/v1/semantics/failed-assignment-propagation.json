@@ -24,11 +24,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Divide",
-                1,
-                0
-              ],
+              "mathJson": ["Divide", 1, 0],
               "symbolBindings": [],
               "authoredNumbers": [
                 {
@@ -58,11 +54,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Add",
-                "kz_x",
-                1
-              ],
+              "mathJson": ["Add", "kz_x", 1],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_x",
@@ -89,17 +81,11 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "bad",
-      "read"
-    ]
+    "calculationOrder": ["bad", "read"]
   },
   "expected": {
     "status": "completedWithErrors",
-    "diagnostics": [
-      "DIVISION_BY_ZERO",
-      "DEPENDENCY_FAILED"
-    ],
+    "diagnostics": ["DIVISION_BY_ZERO", "DEPENDENCY_FAILED"],
     "failedAssignmentPublishesVersion": false
   }
 }

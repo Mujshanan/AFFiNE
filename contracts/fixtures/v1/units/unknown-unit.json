@@ -34,8 +34,6 @@
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "UNKNOWN_UNIT"
-    ]
+    "diagnostics": ["UNKNOWN_UNIT"]
   }
 }

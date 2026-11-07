@@ -3,8 +3,6 @@
   "operation": "add-absolute-temperatures",
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "UNSUPPORTED_UNIT_KIND"
-    ]
+    "diagnostics": ["UNSUPPORTED_UNIT_KIND"]
   }
 }

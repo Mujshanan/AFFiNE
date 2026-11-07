@@ -43,14 +43,10 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "read-x"
-    ]
+    "calculationOrder": ["read-x"]
   },
   "expected": {
     "status": "completedWithErrors",
-    "diagnostics": [
-      "UNRESOLVED_SYMBOL"
-    ]
+    "diagnostics": ["UNRESOLVED_SYMBOL"]
   }
 }

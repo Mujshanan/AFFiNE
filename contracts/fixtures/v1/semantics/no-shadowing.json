@@ -68,14 +68,10 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "if-1"
-    ]
+    "calculationOrder": ["if-1"]
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "SHADOWED_LOCAL"
-    ]
+    "diagnostics": ["SHADOWED_LOCAL"]
   }
 }

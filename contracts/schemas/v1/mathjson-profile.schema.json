@@ -13,9 +13,7 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "num"
-          ],
+          "required": ["num"],
           "properties": {
             "num": {
               "type": "string",
@@ -35,9 +33,7 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "num"
-          ],
+          "required": ["num"],
           "properties": {
             "num": {
               "type": "string",
@@ -50,9 +46,7 @@
     "numberObject": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "num"
-      ],
+      "required": ["num"],
       "properties": {
         "num": {
           "type": "string",
@@ -73,7 +67,8 @@
           "$ref": "#/$defs/positiveIntegerAtom"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "scalar": {
       "oneOf": [
@@ -87,10 +82,7 @@
         },
         {
           "type": "string",
-          "enum": [
-            "Pi",
-            "ExponentialE"
-          ]
+          "enum": ["Pi", "ExponentialE"]
         },
         {
           "type": "string",
@@ -136,17 +128,14 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 2
     },
     "binary": {
       "type": "array",
       "prefixItems": [
         {
-          "enum": [
-            "Subtract",
-            "Divide",
-            "Power"
-          ]
+          "enum": ["Subtract", "Divide", "Power"]
         },
         {
           "$ref": "#/$defs/scalar"
@@ -155,17 +144,15 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "nary": {
       "type": "array",
       "minItems": 3,
       "prefixItems": [
         {
-          "enum": [
-            "Add",
-            "Multiply"
-          ]
+          "enum": ["Add", "Multiply"]
         },
         {
           "$ref": "#/$defs/scalar"
@@ -198,16 +185,14 @@
           "$ref": "#/$defs/scalar"
         }
       ],
-      "items": false
+      "items": false,
+      "minItems": 3
     },
     "condition": {
       "oneOf": [
         {
           "type": "string",
-          "enum": [
-            "True",
-            "False"
-          ]
+          "enum": ["True", "False"]
         },
         {
           "$ref": "#/$defs/comparison"
@@ -216,10 +201,7 @@
           "type": "array",
           "prefixItems": [
             {
-              "enum": [
-                "And",
-                "Or"
-              ]
+              "enum": ["And", "Or"]
             },
             {
               "$ref": "#/$defs/condition"
@@ -230,7 +212,8 @@
           ],
           "items": {
             "$ref": "#/$defs/condition"
-          }
+          },
+          "minItems": 3
         },
         {
           "type": "array",
@@ -242,7 +225,8 @@
               "$ref": "#/$defs/condition"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 2
         }
       ]
     },
@@ -258,7 +242,8 @@
               "$ref": "#/$defs/scalar"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 2
         },
         {
           "prefixItems": [
@@ -272,7 +257,8 @@
               "$ref": "#/$defs/scalar"
             }
           ],
-          "items": false
+          "items": false,
+          "minItems": 3
         }
       ]
     }

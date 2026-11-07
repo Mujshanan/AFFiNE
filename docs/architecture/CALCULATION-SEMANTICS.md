@@ -32,6 +32,7 @@ MathLive provides visual editing and LaTeX input/output. Its MathJSON export is 
 ## 4. Evaluation order and dependency tracking
 
 The evaluator MUST:
+
 1. validate document, AST, and control-flow schemas;
 2. build the document namespace and lexical scope environments;
 3. validate declarations, duplicate names, and forbidden shadowing;
@@ -49,6 +50,7 @@ Independent calculations may be scheduled in parallel only when doing so preserv
 ## 5. Substitution and traceability
 
 A calculation result MUST retain:
+
 - original Khwarizmi expression record, including MathJSON, authored numeric lexemes, and source map;
 - resolved symbol values and units;
 - substitution representation suitable for human review;
@@ -84,6 +86,7 @@ Python numerical services are deferred from v1. TypeScript owns worksheet semant
 ## 8. Error model
 
 At minimum distinguish:
+
 - schema/AST invalid;
 - duplicate symbol;
 - unresolved symbol;
@@ -114,15 +117,15 @@ The following sections close the semantic definitions for v1. Executable validat
 
 The machine-readable MathJSON profile is `contracts/schemas/v1/mathjson-profile.schema.json`. It is a closed allowlist, not an extensible function registry. V1 built-ins are:
 
-| Function | Arity | Domain / result |
-|---|---:|---|
-| `Sqrt`, `Abs`, `Exp`, `Ln`, `Lg` | 1 | Real scalar; domain errors are diagnosed |
-| `Log` | 1 or 2 | Base-10 logarithm by default; optional explicit base |
-| `Sin`, `Cos`, `Tan` | 1 | Angle input only |
-| `Arcsin`, `Arccos`, `Arctan` | 1 | Dimensionless input; angle output |
-| `+`, `-`, `*`, `/`, `^` | 2 (unary sign 1) | Scalar arithmetic |
-| comparisons | 2 | Compatible scalar dimensions |
-| `and`, `or`, `not` | 2+, 1 | Boolean conditions |
+| Function                         |            Arity | Domain / result                                      |
+| -------------------------------- | ---------------: | ---------------------------------------------------- |
+| `Sqrt`, `Abs`, `Exp`, `Ln`, `Lg` |                1 | Real scalar; domain errors are diagnosed             |
+| `Log`                            |           1 or 2 | Base-10 logarithm by default; optional explicit base |
+| `Sin`, `Cos`, `Tan`              |                1 | Angle input only                                     |
+| `Arcsin`, `Arccos`, `Arctan`     |                1 | Dimensionless input; angle output                    |
+| `+`, `-`, `*`, `/`, `^`          | 2 (unary sign 1) | Scalar arithmetic                                    |
+| comparisons                      |                2 | Compatible scalar dimensions                         |
+| `and`, `or`, `not`               |            2+, 1 | Boolean conditions                                   |
 
 MathJSON boolean conditions use the standard symbols `True` and `False`; JSON booleans are not evaluator condition atoms. Unary plus is normalized away. No function aliases, user-defined functions, lambdas, symbolic integration/differentiation, complex arithmetic, or implicit vectorization are in v1. The parser MUST canonicalize aliases before producing MathJSON. A function name that is not in this table is `UNSUPPORTED_FUNCTION`; wrong arity is `INVALID_FUNCTION_ARITY`.
 
@@ -148,11 +151,11 @@ The normative code inventory is `contracts/schemas/v1/diagnostic-codes.json`. Di
 
 ## 14. Contract completion boundary
 
-The semantic rules, JSON Schemas, diagnostic inventory, unit registry, and language-neutral seed fixtures are now published under `contracts/schemas/v1` and `contracts/fixtures/v1`. JSON Schema validation is necessary but not sufficient: semantic validation must check binding uniqueness, complete calculation order, declaration visibility, no-shadowing, exact assignment-version resolution, MathJSON path provenance, dimensional compatibility, unit-registry membership, and resource limits. Executable TypeScript validators and CI conformance tests are a separate implementation phase; they are not part of this contract-definition deliverable.
+The semantic rules, JSON Schemas, diagnostic inventory, unit registry, and language-neutral seed fixtures are now published under `contracts/schemas/v1` and `contracts/fixtures/v1`. JSON Schema validation is necessary but not sufficient: semantic validation must check binding uniqueness, complete calculation order, declaration visibility, no-shadowing, exact assignment-version resolution, MathJSON path provenance, dimensional compatibility, unit-registry membership, and resource limits. The initial TypeScript schema/semantic validator package is implemented at `packages/common/khwarizmi-contracts`; it validates the schema vocabulary used by the current bundle, document identities/scopes/bindings, dependency graph cycles, and unit registry/reference invariants. The checked-in fixture suite now exercises these structural and semantic checks. Mathematical evaluation, exact assignment-version resolution against runtime events, dimensional evaluation, RPC digest/framing, Windows process isolation, and CI enforcement remain separate conformance work.
 
 ## 15. Additional normative execution details
 
-A document symbol's `normalizedName` is Unicode NFC followed by locale-independent Unicode case folding; trimming is not performed implicitly. Empty names are invalid. Two active symbols with the same normalized name produce `DUPLICATE_SYMBOL_NAME`. Renaming changes display metadata only and preserves `symbolId`.
+A document symbol's `normalizedName` is Unicode NFC followed by locale-independent Unicode default lowercase mapping; trimming is not performed implicitly. Empty names are invalid. Two active symbols with the same normalized name produce `DUPLICATE_SYMBOL_NAME`. Renaming changes display metadata only and preserves `symbolId`.
 
 The initializer of a `declareLocal` statement is evaluated in the environment immediately before the declaration. The new local becomes visible only after its initializer succeeds. A failed initializer does not create a binding. A local assignment may update only an already-visible local or document symbol; it never creates a new binding. The declaration's lexical block is the visibility boundary. An `if` branch has its own child scope; an inner block can capture a visible outer local. A local declared in one branch is invisible in the other branch and after the `if`. A `while` body receives a fresh child scope per iteration.
 
