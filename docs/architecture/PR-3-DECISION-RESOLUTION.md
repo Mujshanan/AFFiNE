@@ -20,6 +20,7 @@ Do not mark a schema stable while an approval-required decision affecting it rem
 **Accepted decision:** Use integer micrometres as the canonical persisted unit for page dimensions, margins, and region coordinates. Use a top-left page-local origin; positive x points right and positive y points down. Convert to CSS pixels only at the rendering boundary.
 
 Proposed v1 model:
+
 - Positive integer width and height, plus integer margins and region geometry.
 - A small stable set of named page presets and support for custom dimensions.
 - Orientation is derived from dimensions or validated against them; contradictory values are invalid.
@@ -42,6 +43,7 @@ If scalar-only is approved, reserved vector/matrix constructs must be rejected w
 ### A3 — Numeric literal and evaluation policy (F2)
 
 **Recommendation:**
+
 - Preserve authored decimal literals exactly as decimal strings in the canonical AST.
 - Represent rational literals explicitly with numerator and denominator, not ambiguous strings.
 - Do not serialize approximate binary floating-point values as ordinary JSON numbers where exact round-trip matters.
@@ -61,6 +63,7 @@ No universal engineering tolerance is proposed. Tolerances must be explicit per 
 **Accepted decision:** Khwarizmi v1 supports sequential reassignment of document-level variables. A variable has a stable identity; each assignment to it is a separately tracked event/version owned by the calculation engine. Evaluation is ordered: each expression reads the latest preceding assignment that is visible in its scope.
 
 **Document-level namespace**
+
 - One shared document-level namespace applies across all pages and sections.
 - A document-level variable keeps the same identity when reassigned.
 - Each assignment records its source location/order, authored expression, evaluated value, dependencies, and evaluation status.
@@ -68,6 +71,7 @@ No universal engineering tolerance is proposed. Tolerances must be explicit per 
 - Duplicate document-level variable declarations are naming conflicts, not separate variables with the same name.
 
 **Local variables and control-flow blocks**
+
 - Local variables are supported inside `if` and `while` blocks.
 - Use lexical block scope, including access to permitted enclosing local scopes from nested blocks.
 - Local variables may be reassigned within their scope.
@@ -76,6 +80,7 @@ No universal engineering tolerance is proposed. Tolerances must be explicit per 
 - The engine records conditional branch selection, loop iteration order, and every assignment/evaluation performed within executed blocks.
 
 **Required semantic invariants**
+
 - Variable identity is distinct from assignment identity/version.
 - References resolve to a statically determined variable identity and then to the latest preceding visible assignment at evaluation time.
 - Reassignment invalidates/recomputes affected subsequent evaluations while retaining prior evaluation history.
@@ -102,6 +107,7 @@ Do not derive executable meaning from LaTeX, editor strings, or display formatti
 **Accepted decision:** Khwarizmi TypeScript Core owns a versioned built-in unit registry. External libraries such as Pint may assist implementation but are not normative authorities.
 
 Proposed v1 boundaries:
+
 - Scalar quantities with explicit units and normalized dimensions.
 - Canonical dimension vectors with rational exponents.
 - Addition/subtraction require compatible dimensions; multiplication/division combine dimensions.
@@ -130,6 +136,7 @@ Proposed behavior: bounded request timeout and concurrency; reject duplicate in-
 **Accepted decision:** Treat named pipes as a local IPC boundary, not as proof of process identity. A same-user DACL alone does not prove that the connecting process is the intended Khwarizmi host.
 
 Proposed security properties:
+
 - Electron main creates or securely controls the pipe instance.
 - Per-instance unpredictable pipe name; restrictive DACL; reject remote clients.
 - Verify launched process identity/ownership before trusting the connection.
@@ -162,6 +169,7 @@ The digest excludes derived evaluation snapshots and view-only state. Evaluation
 ### T2 — Schema compatibility and extensions (F8)
 
 Define explicit compatibility rules:
+
 - format identifies the Khwarizmi document format.
 - schemaVersion is a major integer core-contract version.
 - Unknown major versions are rejected.
@@ -191,6 +199,7 @@ Define asset identity/hash, media type, byte length, embedded versus external re
 ### T6 — Conformance tiers (F11)
 
 Report four separate levels:
+
 1. Schema conformance.
 2. TypeScript semantic conformance.
 3. Independent interoperability using a second implementation and the same language-neutral fixtures.
@@ -200,19 +209,19 @@ Report four separate levels:
 
 ## 4. F1–F11 traceability
 
-| Finding | Resolution | Owner | Required evidence |
-|---|---|---|---|
-| F1 Revision identity | T1 | Team | Revision and snapshot invalidation fixtures |
-| F2 Numeric representation | A3 | Owner + team | Decimal, rational, and approximation fixtures |
-| F3 Variable semantics | A4 | Owner + team | Sequential reassignment, stable identity, lexical local scope, shadowing rejection, control-flow and history fixtures |
-| F4 Expression grammar | A5 | Owner + team | Precedence and unsupported syntax fixtures |
-| F5 Unit semantics | A6 | Owner + team | Dimension, conversion, angle, and unsupported-unit fixtures |
-| F6 Geometry/layout | A1 + T4 | Owner + team | Geometry/layout schemas and fixtures |
-| F7 Blocks/assets | T3 | Team | Block schemas and asset boundary fixtures |
-| F8 Versioning/extensions | T2 | Team | Unknown-version, extension, and migration fixtures |
-| F9 Cancellation/concurrency | A7 + T5 | Owner + team | Duplicate ID, timeout, cancellation race, notification fixtures |
-| F10 Integrity/security | A7 + A8 + T5 | Owner + team | Digest tests; Windows security tests separately |
-| F11 Conformance scope | A9 + T6 | Owner + team | Tiered CI and explicit deferral status |
+| Finding                     | Resolution   | Owner        | Required evidence                                                                                                     |
+| --------------------------- | ------------ | ------------ | --------------------------------------------------------------------------------------------------------------------- |
+| F1 Revision identity        | T1           | Team         | Revision and snapshot invalidation fixtures                                                                           |
+| F2 Numeric representation   | A3           | Owner + team | Decimal, rational, and approximation fixtures                                                                         |
+| F3 Variable semantics       | A4           | Owner + team | Sequential reassignment, stable identity, lexical local scope, shadowing rejection, control-flow and history fixtures |
+| F4 Expression grammar       | A5           | Owner + team | Precedence and unsupported syntax fixtures                                                                            |
+| F5 Unit semantics           | A6           | Owner + team | Dimension, conversion, angle, and unsupported-unit fixtures                                                           |
+| F6 Geometry/layout          | A1 + T4      | Owner + team | Geometry/layout schemas and fixtures                                                                                  |
+| F7 Blocks/assets            | T3           | Team         | Block schemas and asset boundary fixtures                                                                             |
+| F8 Versioning/extensions    | T2           | Team         | Unknown-version, extension, and migration fixtures                                                                    |
+| F9 Cancellation/concurrency | A7 + T5      | Owner + team | Duplicate ID, timeout, cancellation race, notification fixtures                                                       |
+| F10 Integrity/security      | A7 + A8 + T5 | Owner + team | Digest tests; Windows security tests separately                                                                       |
+| F11 Conformance scope       | A9 + T6      | Owner + team | Tiered CI and explicit deferral status                                                                                |
 
 ## 5. ADR alignment
 
@@ -221,6 +230,7 @@ PR #2's `docs/architecture/DECISIONS.md` now records ADR-010 through ADR-018 as 
 ## 6. PR #3 implementation gates
 
 Do not mark a schema stable until:
+
 - every approval-required decision affecting it is accepted or explicitly deferred;
 - deferred constructs have stable rejection codes;
 - implementation-team choices are recorded;

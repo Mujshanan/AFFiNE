@@ -1,94 +1,592 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10131d">
-  <meta name="description" content="Khwarizmi Studio is an open-source, AFFiNE-based visual workspace for traceable engineering calculations and technical documentation.">
-  <title>Khwarizmi Studio — Engineering calculations, made explainable</title>
-  <link rel="icon" type="image/svg+xml" href="../assets/khwarizmi-logo.svg">
-  <style>
-    :root{color-scheme:dark;--bg:#10131d;--panel:#171c29;--panel2:#1c2332;--text:#f3f2ee;--muted:#a7afc0;--line:#30394b;--gold:#e7b95d;--red:#d66a5e;--mint:#9bc8b5;--max:1120px}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#27253a 0,transparent 42%),var(--bg);color:var(--text);font:16px/1.65 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
-    a{color:inherit}a:focus-visible{outline:2px solid var(--gold);outline-offset:4px}.wrap{width:min(var(--max),calc(100% - 44px));margin:auto}
-    header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:700;letter-spacing:.01em}.brand img{width:42px;height:42px}.nav{display:flex;gap:26px;align-items:center}.nav a{font-size:14px;color:var(--muted);text-decoration:none}.nav a:hover{color:var(--text)}
-    .hero{padding:92px 0 76px;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}.eyebrow{color:var(--gold);font-size:12px;font-weight:750;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,70px);line-height:1.04;letter-spacing:-.055em;margin:18px 0 22px;max-width:720px}.hero h1 span{color:var(--gold)}.lead{font-size:19px;line-height:1.65;color:#c3cad6;max-width:650px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;border-radius:9px;text-decoration:none;font-weight:700;font-size:14px;border:1px solid var(--line)}.btn.primary{background:var(--gold);border-color:var(--gold);color:#191817}.btn.secondary{background:#ffffff08}.btn:hover{transform:translateY(-1px)}.hero-art{position:relative}.hero-art img{width:100%;display:block;border:1px solid #ffffff20;border-radius:18px;box-shadow:0 30px 90px #0008}
-    .notice{border:1px solid #d6a64b55;background:#e7b95d12;border-radius:10px;padding:13px 16px;color:#e7d8b8;font-size:13px;margin-top:26px}.notice strong{color:var(--gold)}
-    section{padding:66px 0;border-top:1px solid #ffffff12}.section-head{max-width:690px;margin-bottom:30px}.section-head h2{font-size:clamp(28px,4vw,40px);line-height:1.15;letter-spacing:-.035em;margin:9px 0 12px}.section-head p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:13px;padding:24px}.number{font-size:12px;color:var(--gold);font-weight:800;letter-spacing:.12em}.card h3{font-size:19px;margin:10px 0 8px}.card p{color:var(--muted);font-size:14px;margin:0}.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.principle{padding:17px 18px;border-left:2px solid var(--gold);background:#ffffff06}.principle strong{display:block;margin-bottom:4px}.principle span{color:var(--muted);font-size:14px}
-    .roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.phase{border:1px solid var(--line);border-radius:11px;padding:18px;background:#ffffff05}.phase small{color:var(--gold);font-weight:750;letter-spacing:.1em;text-transform:uppercase}.phase h3{margin:7px 0;font-size:16px}.phase p{margin:0;color:var(--muted);font-size:13px}
-    .foundation{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;background:linear-gradient(120deg,#1e2935,#1b1c2b);border:1px solid var(--line);border-radius:15px;padding:28px}.foundation p{margin:8px 0 0;color:var(--muted);max-width:750px;font-size:14px}.foundation .mark{font-size:14px;color:var(--mint);white-space:nowrap}
-    footer{padding:34px 0 44px;color:var(--muted);font-size:13px}.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.foot a{color:var(--text);text-decoration:none}
-    @media(max-width:800px){.hero{grid-template-columns:1fr;padding:66px 0 54px;gap:34px}.grid,.roadmap{grid-template-columns:1fr}.hero-art{max-width:620px}.foundation{grid-template-columns:1fr}.foundation .mark{white-space:normal}}
-    @media(max-width:560px){.wrap{width:min(100% - 30px,var(--max))}header{height:auto;padding:16px 0;align-items:flex-start}.nav{gap:12px;flex-wrap:wrap;justify-content:flex-end}.nav a{font-size:12px}.brand{font-size:14px}.brand img{width:34px;height:34px}.hero h1{font-size:43px}.lead{font-size:17px}.principles{grid-template-columns:1fr}section{padding:50px 0}}
-  </style>
-</head>
-<body>
-  <header class="wrap">
-    <a class="brand" href="#top"><img src="../assets/khwarizmi-logo.svg" alt=""><span>Khwarizmi Studio</span></a>
-    <nav class="nav" aria-label="Main navigation">
-      <a href="#vision">Vision</a><a href="#principles">Principles</a><a href="#roadmap">Roadmap</a><a href="https://github.com/Mujshanan/Khwarizmi-Studio">GitHub ↗</a>
-    </nav>
-  </header>
-  <main id="top">
-    <div class="wrap hero">
-      <div>
-        <div class="eyebrow">Open source · Engineering workspace</div>
-        <h1>Engineering calculations, <span>made explainable.</span></h1>
-        <p class="lead">A visual workspace for building, understanding, and communicating engineering calculations—from the assumptions and inputs to every substitution, intermediate step, and final result.</p>
-        <div class="actions">
-          <a class="btn primary" href="https://github.com/Mujshanan/Khwarizmi-Studio">Explore the repository ↗</a>
-          <a class="btn secondary" href="../DEVELOPMENT_PLAN.md">View development plan</a>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10131d" />
+    <meta
+      name="description"
+      content="Khwarizmi Studio is an open-source, AFFiNE-based visual workspace for traceable engineering calculations and technical documentation."
+    />
+    <title>Khwarizmi Studio — Engineering calculations, made explainable</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/khwarizmi-logo.svg" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #10131d;
+        --panel: #171c29;
+        --panel2: #1c2332;
+        --text: #f3f2ee;
+        --muted: #a7afc0;
+        --line: #30394b;
+        --gold: #e7b95d;
+        --red: #d66a5e;
+        --mint: #9bc8b5;
+        --max: 1120px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(ellipse at 80% 0%, #27253a 0, transparent 42%),
+          var(--bg);
+        color: var(--text);
+        font:
+          16px/1.65 Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+      }
+      a {
+        color: inherit;
+      }
+      a:focus-visible {
+        outline: 2px solid var(--gold);
+        outline-offset: 4px;
+      }
+      .wrap {
+        width: min(var(--max), calc(100% - 44px));
+        margin: auto;
+      }
+      header {
+        height: 82px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid #ffffff12;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+      .brand img {
+        width: 42px;
+        height: 42px;
+      }
+      .nav {
+        display: flex;
+        gap: 26px;
+        align-items: center;
+      }
+      .nav a {
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .nav a:hover {
+        color: var(--text);
+      }
+      .hero {
+        padding: 92px 0 76px;
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 56px;
+        align-items: center;
+      }
+      .eyebrow {
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-size: clamp(42px, 6vw, 70px);
+        line-height: 1.04;
+        letter-spacing: -0.055em;
+        margin: 18px 0 22px;
+        max-width: 720px;
+      }
+      .hero h1 span {
+        color: var(--gold);
+      }
+      .lead {
+        font-size: 19px;
+        line-height: 1.65;
+        color: #c3cad6;
+        max-width: 650px;
+      }
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+        border: 1px solid var(--line);
+      }
+      .btn.primary {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: #191817;
+      }
+      .btn.secondary {
+        background: #ffffff08;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .hero-art {
+        position: relative;
+      }
+      .hero-art img {
+        width: 100%;
+        display: block;
+        border: 1px solid #ffffff20;
+        border-radius: 18px;
+        box-shadow: 0 30px 90px #0008;
+      }
+      .notice {
+        border: 1px solid #d6a64b55;
+        background: #e7b95d12;
+        border-radius: 10px;
+        padding: 13px 16px;
+        color: #e7d8b8;
+        font-size: 13px;
+        margin-top: 26px;
+      }
+      .notice strong {
+        color: var(--gold);
+      }
+      section {
+        padding: 66px 0;
+        border-top: 1px solid #ffffff12;
+      }
+      .section-head {
+        max-width: 690px;
+        margin-bottom: 30px;
+      }
+      .section-head h2 {
+        font-size: clamp(28px, 4vw, 40px);
+        line-height: 1.15;
+        letter-spacing: -0.035em;
+        margin: 9px 0 12px;
+      }
+      .section-head p {
+        color: var(--muted);
+        margin: 0;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+      .card {
+        background: linear-gradient(145deg, var(--panel2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 13px;
+        padding: 24px;
+      }
+      .number {
+        font-size: 12px;
+        color: var(--gold);
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+      .card h3 {
+        font-size: 19px;
+        margin: 10px 0 8px;
+      }
+      .card p {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0;
+      }
+      .principles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .principle {
+        padding: 17px 18px;
+        border-left: 2px solid var(--gold);
+        background: #ffffff06;
+      }
+      .principle strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .principle span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .phase {
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 18px;
+        background: #ffffff05;
+      }
+      .phase small {
+        color: var(--gold);
+        font-weight: 750;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .phase h3 {
+        margin: 7px 0;
+        font-size: 16px;
+      }
+      .phase p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .foundation {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 30px;
+        align-items: center;
+        background: linear-gradient(120deg, #1e2935, #1b1c2b);
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 28px;
+      }
+      .foundation p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        max-width: 750px;
+        font-size: 14px;
+      }
+      .foundation .mark {
+        font-size: 14px;
+        color: var(--mint);
+        white-space: nowrap;
+      }
+      footer {
+        padding: 34px 0 44px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .foot a {
+        color: var(--text);
+        text-decoration: none;
+      }
+      @media (max-width: 800px) {
+        .hero {
+          grid-template-columns: 1fr;
+          padding: 66px 0 54px;
+          gap: 34px;
+        }
+        .grid,
+        .roadmap {
+          grid-template-columns: 1fr;
+        }
+        .hero-art {
+          max-width: 620px;
+        }
+        .foundation {
+          grid-template-columns: 1fr;
+        }
+        .foundation .mark {
+          white-space: normal;
+        }
+      }
+      @media (max-width: 560px) {
+        .wrap {
+          width: min(100% - 30px, var(--max));
+        }
+        header {
+          height: auto;
+          padding: 16px 0;
+          align-items: flex-start;
+        }
+        .nav {
+          gap: 12px;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+        .nav a {
+          font-size: 12px;
+        }
+        .brand {
+          font-size: 14px;
+        }
+        .brand img {
+          width: 34px;
+          height: 34px;
+        }
+        .hero h1 {
+          font-size: 43px;
+        }
+        .lead {
+          font-size: 17px;
+        }
+        .principles {
+          grid-template-columns: 1fr;
+        }
+        section {
+          padding: 50px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="wrap">
+      <a class="brand" href="#top"
+        ><img src="../assets/khwarizmi-logo.svg" alt="" /><span
+          >Khwarizmi Studio</span
+        ></a
+      >
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#vision">Vision</a><a href="#principles">Principles</a
+        ><a href="#roadmap">Roadmap</a
+        ><a href="https://github.com/Mujshanan/Khwarizmi-Studio">GitHub ↗</a>
+      </nav>
+    </header>
+    <main id="top">
+      <div class="wrap hero">
+        <div>
+          <div class="eyebrow">Open source · Engineering workspace</div>
+          <h1>Engineering calculations, <span>made explainable.</span></h1>
+          <p class="lead">
+            A visual workspace for building, understanding, and communicating
+            engineering calculations—from the assumptions and inputs to every
+            substitution, intermediate step, and final result.
+          </p>
+          <div class="actions">
+            <a
+              class="btn primary"
+              href="https://github.com/Mujshanan/Khwarizmi-Studio"
+              >Explore the repository ↗</a
+            >
+            <a class="btn secondary" href="../DEVELOPMENT_PLAN.md"
+              >View development plan</a
+            >
+          </div>
+          <div class="notice">
+            <strong>Early development:</strong> Khwarizmi Studio is an
+            engineering-focused project based on AFFiNE. The capabilities
+            described here represent the product direction, not a claim that
+            they are already implemented.
+          </div>
         </div>
-        <div class="notice"><strong>Early development:</strong> Khwarizmi Studio is an engineering-focused project based on AFFiNE. The capabilities described here represent the product direction, not a claim that they are already implemented.</div>
-      </div>
-      <div class="hero-art"><img src="../assets/khwarizmi-social-preview.svg" alt="Khwarizmi Studio visual identity and engineering worksheet concept"></div>
-    </div>
-
-    <section id="vision">
-      <div class="wrap">
-        <div class="section-head"><div class="eyebrow">The product vision</div><h2>One workspace. The whole calculation.</h2><p>Engineering work should communicate not only the answer, but how that answer was reached—and give another engineer enough context to review it.</p></div>
-        <div class="grid">
-          <article class="card"><div class="number">01 / CALCULATE</div><h3>Calculation worksheets</h3><p>Define variables, parameters, and units. Write equations, evaluate them in sequence, and keep intermediate values available for reuse.</p></article>
-          <article class="card"><div class="number">02 / COMPOSE</div><h3>Visual, flexible layout</h3><p>Bring equations, explanations, input data, tables, and diagrams together. Arrange content in sections and columns to suit the engineering task.</p></article>
-          <article class="card"><div class="number">03 / COMMUNICATE</div><h3>Reviewable documentation</h3><p>Connect assumptions, inputs, substitutions, checks, and conclusions in a durable document designed for technical review and eventual PDF delivery.</p></article>
+        <div class="hero-art">
+          <img
+            src="../assets/khwarizmi-social-preview.svg"
+            alt="Khwarizmi Studio visual identity and engineering worksheet concept"
+          />
         </div>
       </div>
-    </section>
 
-    <section id="principles">
-      <div class="wrap">
-        <div class="section-head"><div class="eyebrow">Guiding principles</div><h2>Show the work. Keep it reviewable.</h2><p>The project is being shaped around the needs of engineers who prepare and check real technical calculations.</p></div>
-        <div class="principles">
-          <div class="principle"><strong>Show every meaningful step</strong><span>Display substitutions and intermediate results, not just a final number.</span></div>
-          <div class="principle"><strong>Keep the context together</strong><span>Place equations, assumptions, explanatory text, tables, and diagrams in one document.</span></div>
-          <div class="principle"><strong>Treat units as first-class</strong><span>Quantities, conversions, and dimensional consistency belong in the calculation model.</span></div>
-          <div class="principle"><strong>Separate presentation and computation</strong><span>Keep the worksheet experience distinct from the calculation engine that evaluates it.</span></div>
+      <section id="vision">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow">The product vision</div>
+            <h2>One workspace. The whole calculation.</h2>
+            <p>
+              Engineering work should communicate not only the answer, but how
+              that answer was reached—and give another engineer enough context
+              to review it.
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <div class="number">01 / CALCULATE</div>
+              <h3>Calculation worksheets</h3>
+              <p>
+                Define variables, parameters, and units. Write equations,
+                evaluate them in sequence, and keep intermediate values
+                available for reuse.
+              </p>
+            </article>
+            <article class="card">
+              <div class="number">02 / COMPOSE</div>
+              <h3>Visual, flexible layout</h3>
+              <p>
+                Bring equations, explanations, input data, tables, and diagrams
+                together. Arrange content in sections and columns to suit the
+                engineering task.
+              </p>
+            </article>
+            <article class="card">
+              <div class="number">03 / COMMUNICATE</div>
+              <h3>Reviewable documentation</h3>
+              <p>
+                Connect assumptions, inputs, substitutions, checks, and
+                conclusions in a durable document designed for technical review
+                and eventual PDF delivery.
+              </p>
+            </article>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="roadmap">
-      <div class="wrap">
-        <div class="section-head"><div class="eyebrow">Development roadmap</div><h2>Built in deliberate stages.</h2><p>Architecture and verification come before broad feature implementation. Follow the linked plan for detailed tasks and exit criteria.</p></div>
-        <div class="roadmap">
-          <article class="phase"><small>Phase 0</small><h3>Repository foundation</h3><p>Establish the AFFiNE-derived baseline, provenance, licensing, and reproducible builds.</p></article>
-          <article class="phase"><small>Phase 1</small><h3>Architecture contracts</h3><p>Specify the document model, calculation semantics, units, host boundary, and RPC contract.</p></article>
-          <article class="phase"><small>Phase 2</small><h3>Worksheet experience</h3><p>Build page-oriented editing, flexible composition, content blocks, and persistence.</p></article>
-          <article class="phase"><small>Phase 3</small><h3>Calculation and traceability</h3><p>Evaluate expressions and expose dependencies, substitutions, reusable results, and errors.</p></article>
-          <article class="phase"><small>Phase 4</small><h3>Engineering verification</h3><p>Develop representative examples, documented scopes, benchmark cases, and independent checks.</p></article>
-          <article class="phase"><small>Phase 5</small><h3>Output and release</h3><p>Deliver paginated documents, PDF export, installation checks, and release guidance.</p></article>
+      <section id="principles">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow">Guiding principles</div>
+            <h2>Show the work. Keep it reviewable.</h2>
+            <p>
+              The project is being shaped around the needs of engineers who
+              prepare and check real technical calculations.
+            </p>
+          </div>
+          <div class="principles">
+            <div class="principle">
+              <strong>Show every meaningful step</strong
+              ><span
+                >Display substitutions and intermediate results, not just a
+                final number.</span
+              >
+            </div>
+            <div class="principle">
+              <strong>Keep the context together</strong
+              ><span
+                >Place equations, assumptions, explanatory text, tables, and
+                diagrams in one document.</span
+              >
+            </div>
+            <div class="principle">
+              <strong>Treat units as first-class</strong
+              ><span
+                >Quantities, conversions, and dimensional consistency belong in
+                the calculation model.</span
+              >
+            </div>
+            <div class="principle">
+              <strong>Separate presentation and computation</strong
+              ><span
+                >Keep the worksheet experience distinct from the calculation
+                engine that evaluates it.</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="actions"><a class="btn secondary" href="../DEVELOPMENT_PLAN.md">Read the full development plan ↗</a></div>
-      </div>
-    </section>
+      </section>
 
-    <section>
-      <div class="wrap foundation">
-        <div><div class="eyebrow">Built on open source</div><h2 style="margin:8px 0 0;font-size:25px">An engineering-focused adaptation based on AFFiNE.</h2><p>Khwarizmi reuses <a href="https://github.com/toeverything/AFFiNE">AFFiNE</a> as its inherited application foundation and <a href="https://github.com/toeverything/BlockSuite">BlockSuite</a> as its editor foundation. The engineering worksheet model and calculation behavior are intended to become project-owned layers. Upstream licenses and notices are preserved.</p></div>
-        <div class="mark">AFFiNE foundation<br>BlockSuite editor</div>
+      <section id="roadmap">
+        <div class="wrap">
+          <div class="section-head">
+            <div class="eyebrow">Development roadmap</div>
+            <h2>Built in deliberate stages.</h2>
+            <p>
+              Architecture and verification come before broad feature
+              implementation. Follow the linked plan for detailed tasks and exit
+              criteria.
+            </p>
+          </div>
+          <div class="roadmap">
+            <article class="phase">
+              <small>Phase 0</small>
+              <h3>Repository foundation</h3>
+              <p>
+                Establish the AFFiNE-derived baseline, provenance, licensing,
+                and reproducible builds.
+              </p>
+            </article>
+            <article class="phase">
+              <small>Phase 1</small>
+              <h3>Architecture contracts</h3>
+              <p>
+                Specify the document model, calculation semantics, units, host
+                boundary, and RPC contract.
+              </p>
+            </article>
+            <article class="phase">
+              <small>Phase 2</small>
+              <h3>Worksheet experience</h3>
+              <p>
+                Build page-oriented editing, flexible composition, content
+                blocks, and persistence.
+              </p>
+            </article>
+            <article class="phase">
+              <small>Phase 3</small>
+              <h3>Calculation and traceability</h3>
+              <p>
+                Evaluate expressions and expose dependencies, substitutions,
+                reusable results, and errors.
+              </p>
+            </article>
+            <article class="phase">
+              <small>Phase 4</small>
+              <h3>Engineering verification</h3>
+              <p>
+                Develop representative examples, documented scopes, benchmark
+                cases, and independent checks.
+              </p>
+            </article>
+            <article class="phase">
+              <small>Phase 5</small>
+              <h3>Output and release</h3>
+              <p>
+                Deliver paginated documents, PDF export, installation checks,
+                and release guidance.
+              </p>
+            </article>
+          </div>
+          <div class="actions">
+            <a class="btn secondary" href="../DEVELOPMENT_PLAN.md"
+              >Read the full development plan ↗</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap foundation">
+          <div>
+            <div class="eyebrow">Built on open source</div>
+            <h2 style="margin: 8px 0 0; font-size: 25px">
+              An engineering-focused adaptation based on AFFiNE.
+            </h2>
+            <p>
+              Khwarizmi reuses
+              <a href="https://github.com/toeverything/AFFiNE">AFFiNE</a> as its
+              inherited application foundation and
+              <a href="https://github.com/toeverything/BlockSuite"
+                >BlockSuite</a
+              >
+              as its editor foundation. The engineering worksheet model and
+              calculation behavior are intended to become project-owned layers.
+              Upstream licenses and notices are preserved.
+            </p>
+          </div>
+          <div class="mark">AFFiNE foundation<br />BlockSuite editor</div>
+        </div>
+      </section>
+    </main>
+    <footer class="wrap">
+      <div class="foot">
+        <span
+          >© Khwarizmi Studio · Open-source project in early development</span
+        ><span
+          ><a href="https://github.com/Mujshanan/Khwarizmi-Studio">GitHub</a> ·
+          <a href="https://github.com/Mujshanan/Khwarizmi-Studio/issues"
+            >Issues & discussions</a
+          ></span
+        >
       </div>
-    </section>
-  </main>
-  <footer class="wrap"><div class="foot"><span>© Khwarizmi Studio · Open-source project in early development</span><span><a href="https://github.com/Mujshanan/Khwarizmi-Studio">GitHub</a> · <a href="https://github.com/Mujshanan/Khwarizmi-Studio/issues">Issues & discussions</a></span></div></footer>
-</body>
+    </footer>
+  </body>
 </html>

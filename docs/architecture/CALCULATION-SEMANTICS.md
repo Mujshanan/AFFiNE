@@ -44,6 +44,7 @@ MathLive may provide visual math editing and LaTeX/MathJSON interchange. Import 
 ## 4. Evaluation order and dependency tracking
 
 The evaluator MUST:
+
 1. validate document, AST, and control-flow schemas;
 2. build the document namespace and lexical scope environments;
 3. validate declarations, duplicate names, and forbidden shadowing;
@@ -61,6 +62,7 @@ Independent calculations may be scheduled in parallel only when doing so preserv
 ## 5. Substitution and traceability
 
 A calculation result MUST retain:
+
 - source expression AST and a display-safe expression representation;
 - resolved symbol values and units;
 - substitution representation suitable for human review;
@@ -96,6 +98,7 @@ Python numerical services are deferred from v1. TypeScript owns numeric evaluati
 ## 8. Error model
 
 At minimum distinguish:
+
 - schema/AST invalid;
 - duplicate symbol;
 - unresolved symbol;

@@ -123,6 +123,7 @@ Every fixture has a stable ID, contract version, input payload, expected outcome
 ## 9. Exit criteria
 
 The phase is complete only when:
+
 - the schema and wire contracts have no unresolved normative ambiguity;
 - fixture manifest and all required fixtures exist;
 - the TypeScript validators and semantic contract tests pass;

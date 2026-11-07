@@ -13,15 +13,15 @@ The root package identifies itself as `@affine/monorepo` version `0.27.5`, with 
 
 ## Reproducible toolchain (observed)
 
-| Tool | Repository pin / requirement |
-|---|---|
-| Node.js | `.nvmrc` = 22.23.4; package engine `>=22.12.0 <23.0.0` |
-| Package manager | Yarn 4.18.0 via Corepack / checked-in Yarn release |
-| Rust | `rust-toolchain.toml` (rustup-managed; verify exact components on setup) |
-| JS runtime | Node.js; workspaces use Yarn node-modules linker |
-| Native build | Rust + NAPI bindings |
-| Desktop | Electron / Electron Forge + custom NSIS packaging |
-| Tests | Vitest, Playwright, BlockSuite integration/E2E suites |
+| Tool            | Repository pin / requirement                                             |
+| --------------- | ------------------------------------------------------------------------ |
+| Node.js         | `.nvmrc` = 22.23.4; package engine `>=22.12.0 <23.0.0`                   |
+| Package manager | Yarn 4.18.0 via Corepack / checked-in Yarn release                       |
+| Rust            | `rust-toolchain.toml` (rustup-managed; verify exact components on setup) |
+| JS runtime      | Node.js; workspaces use Yarn node-modules linker                         |
+| Native build    | Rust + NAPI bindings                                                     |
+| Desktop         | Electron / Electron Forge + custom NSIS packaging                        |
+| Tests           | Vitest, Playwright, BlockSuite integration/E2E suites                    |
 
 The root `postinstall` invokes `yarn affine init` and Husky. `.yarnrc.yml` has `enableScripts: false`; build prerequisites and explicit native build commands matter. Do not assume a plain package install is sufficient.
 
@@ -42,18 +42,18 @@ Upstream build instructions in `docs/BUILDING.md` are explicitly marked as poten
 
 ## Verification ledger
 
-| Item | State | Evidence / remaining work |
-|---|---|---|
-| AFFiNE origin and baseline ref | Identified | Fork baseline commit above |
-| BlockSuite foundation | Identified | Inherited workspace and editor packages |
-| Node/Yarn versions | Recorded | `.nvmrc`, root `package.json`, `.yarnrc.yml` |
-| Rust toolchain | Partially recorded | Pin file exists; verify exact installed components |
-| License provenance | Partial | Root license identifies MIT portions and separate backend/native licensing; inventory all package-level licenses and notices |
-| Clean install | Not verified here | Run on clean Windows checkout |
-| Unmodified app launch | Not verified here | Run and record screenshot/log/commit |
-| Windows ZIP/Squirrel/NSIS package generation | Builds | PR #1 workflow reached all three package build steps |
-| Packaged-app smoke tests | Re-test in progress | The Squirrel bootstrapper may exit after handing off to the installed app. PR #1 smoke test now checks for the actual packaged executable process at its installed path; fresh Windows run pending |
-| Release artifacts | Not verified | Upload step skipped after smoke-test failure |
+| Item                                         | State               | Evidence / remaining work                                                                                                                                                                          |
+| -------------------------------------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AFFiNE origin and baseline ref               | Identified          | Fork baseline commit above                                                                                                                                                                         |
+| BlockSuite foundation                        | Identified          | Inherited workspace and editor packages                                                                                                                                                            |
+| Node/Yarn versions                           | Recorded            | `.nvmrc`, root `package.json`, `.yarnrc.yml`                                                                                                                                                       |
+| Rust toolchain                               | Partially recorded  | Pin file exists; verify exact installed components                                                                                                                                                 |
+| License provenance                           | Partial             | Root license identifies MIT portions and separate backend/native licensing; inventory all package-level licenses and notices                                                                       |
+| Clean install                                | Not verified here   | Run on clean Windows checkout                                                                                                                                                                      |
+| Unmodified app launch                        | Not verified here   | Run and record screenshot/log/commit                                                                                                                                                               |
+| Windows ZIP/Squirrel/NSIS package generation | Builds              | PR #1 workflow reached all three package build steps                                                                                                                                               |
+| Packaged-app smoke tests                     | Re-test in progress | The Squirrel bootstrapper may exit after handing off to the installed app. PR #1 smoke test now checks for the actual packaged executable process at its installed path; fresh Windows run pending |
+| Release artifacts                            | Not verified        | Upload step skipped after smoke-test failure                                                                                                                                                       |
 
 ## Packaging gate: PR #1
 
@@ -62,16 +62,18 @@ PR #1 remains draft and unmerged. Latest checked head before the smoke-test corr
 The previous Windows workflow successfully built ZIP, Squirrel, and NSIS packages. Its smoke test treated the Squirrel bootstrapper's successful exit (code 0) as an application failure. The corrected smoke test now observes a process whose executable path matches the packaged application and verifies that it remains available for a startup observation window. A fresh run must pass before this gate is closed.
 
 The latest general Build & Test run before the final formatting fix failed on:
+
 - inherited i18n code generation reporting generated changes were not submitted;
 - Oxfmt formatting in two PR #1-modified Electron files (now corrected on the PR branch; a fresh run is required);
 - one BlockSuite cross-browser shard, where the browser connection closed during the test.
-Several other E2E shards, native builds, Electron renderer build, and static analysis jobs passed. These failures are recorded separately from the Windows package-specific validation.
+  Several other E2E shards, native builds, Electron renderer build, and static analysis jobs passed. These failures are recorded separately from the Windows package-specific validation.
 
 PR #1's stated purpose is Windows x64 release packaging. It intentionally leaves general cross-platform validation workflows intact. Separate packaging-specific success from unrelated upstream CI failures, but do not ignore failures without documenting whether they are required checks.
 
 ## License and upstream inventory
 
 The root `LICENSE` explains that:
+
 - much of the repository is MIT-licensed under `LICENSE-MIT`;
 - `packages/backend` and `packages/common/native`, where present, have separate licensing terms;
 - third-party components retain their upstream licenses.
@@ -81,6 +83,7 @@ No top-level `NOTICE` or `COPYING` file was found during this audit. This is not
 ## Baseline exit criteria
 
 The baseline is complete only when:
+
 - a clean Windows checkout can install, build, launch, and run the inherited desktop app;
 - the exact toolchain and commands are recorded and repeatable;
 - Windows package smoke tests verify actual installed/launchable outputs;

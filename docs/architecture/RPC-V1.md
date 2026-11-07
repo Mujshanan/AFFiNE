@@ -42,18 +42,19 @@ The little-endian prefix and fixed 16 MiB cap are normative v1 wire rules and MU
 
 ## 4. Initial methods
 
-| Method | Direction | Purpose |
-|---|---|---|
-| `host.getInfo` | request | protocol, host, semantic, and capability versions |
-| `document.validate` | request | validate document/schema/AST and return diagnostics |
-| `document.evaluate` | request | evaluate a document revision and return result records/traces |
-| `$/cancelRequest` | notification | cancel an in-flight request by its JSON-RPC ID |
+| Method              | Direction    | Purpose                                                       |
+| ------------------- | ------------ | ------------------------------------------------------------- |
+| `host.getInfo`      | request      | protocol, host, semantic, and capability versions             |
+| `document.validate` | request      | validate document/schema/AST and return diagnostics           |
+| `document.evaluate` | request      | evaluate a document revision and return result records/traces |
+| `$/cancelRequest`   | notification | cancel an in-flight request by its JSON-RPC ID                |
 
 Method parameter and result objects MUST be schema-versioned and validated. Do not accept arbitrary code, filesystem paths, import expressions, or Python snippets as RPC parameters.
 
 ## 5. Evaluation result statuses
 
 Document evaluation returns one of:
+
 - `completed`: all requested calculations completed without error diagnostics;
 - `completedWithErrors`: evaluation completed but one or more nodes contain errors;
 - `cancelled`: caller cancellation was acknowledged and no further work for that request should be committed.

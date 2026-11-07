@@ -55,9 +55,9 @@ The native-only CI run on commit `987297d83bcf3db953b0330af85fa910a1dcaf50` pass
 
 The inherited Build & Test run `42351961628` completed both mandatory Windows native build jobs successfully:
 
-| Target | Artifact | SHA-256 of downloaded ZIP | PE machine |
-|---|---|---|---|
-| Windows x64 | `affine.win32-x64-msvc.node` | `824bcfc3d2392032a2743929384436dee077b485908ac66a548cd652dad80a30` | `0x8664` (AMD64) |
+| Target        | Artifact                       | SHA-256 of downloaded ZIP                                          | PE machine       |
+| ------------- | ------------------------------ | ------------------------------------------------------------------ | ---------------- |
+| Windows x64   | `affine.win32-x64-msvc.node`   | `824bcfc3d2392032a2743929384436dee077b485908ac66a548cd652dad80a30` | `0x8664` (AMD64) |
 | Windows ARM64 | `affine.win32-arm64-msvc.node` | `4ed7d075f452db5dfd8c6abfa18d569a38688c15717c758adaf9952372a927d4` | `0xAA64` (ARM64) |
 
 Both downloaded ZIP hashes match the SHA-256 artifact digests reported by GitHub Actions. Each archive contains the expected single `.node` binary, with a valid PE signature and the expected machine architecture. Both binaries contain the N-API registration identifiers `verify_challenge_response` and `mint_challenge_response`.
