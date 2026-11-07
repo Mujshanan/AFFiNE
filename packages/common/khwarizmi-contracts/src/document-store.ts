@@ -176,6 +176,8 @@ export class FileDocumentStore {
       authoredDocument.unitRegistryVersion !== snapshot.unitRegistryVersion
     )
       throw new Error('SNAPSHOT_SEMANTIC_IDENTITY_MISMATCH');
+    if (snapshot.engine.name !== 'cortexjs-compute-engine')
+      throw new Error('SNAPSHOT_ENGINE_NAME_MISMATCH');
     if (
       this.options.expectedEngineVersion !== undefined &&
       snapshot.engine.version !== this.options.expectedEngineVersion
