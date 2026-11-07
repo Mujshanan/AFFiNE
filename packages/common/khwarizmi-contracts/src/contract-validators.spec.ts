@@ -51,6 +51,19 @@ describe('Khwarizmi v1 contract schemas', () => {
     expect(validateSchemaBundle(schemaBundle).errors).toEqual([]);
   });
 
+  it('enforces maxProperties and the negative not applicator', () => {
+    const bundle = {
+      'test.schema.json': {
+        type: 'object',
+        maxProperties: 1,
+        not: { required: ['forbidden'] },
+      },
+    };
+    expect(validateJsonSchema({ allowed: true }, 'test.schema.json', bundle).valid).toBe(true);
+    expect(validateJsonSchema({ allowed: true, extra: true }, 'test.schema.json', bundle).valid).toBe(false);
+    expect(validateJsonSchema({ forbidden: true }, 'test.schema.json', bundle).valid).toBe(false);
+  });
+
   it('validates the fixture manifest and complete file inventory', () => {
     const result = validateJsonSchema(
       manifest,
