@@ -5,7 +5,13 @@
     "documentId": "doc-failed",
     "semanticVersion": "1.0.0",
     "unitRegistryVersion": "si-engineering-1",
-    "symbols": [{ "symbolId": "symbol-x", "displayName": "x", "normalizedName": "x" }],
+    "symbols": [
+      {
+        "symbolId": "symbol-x",
+        "displayName": "x",
+        "normalizedName": "x"
+      }
+    ],
     "pages": [
       {
         "pageId": "page-1",
@@ -49,7 +55,12 @@
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
               "mathJson": ["Add", "kz_x", 1],
-              "symbolBindings": [{ "engineSymbol": "kz_x", "symbolId": "symbol-x" }],
+              "symbolBindings": [
+                {
+                  "engineSymbol": "kz_x",
+                  "symbolId": "symbol-x"
+                }
+              ],
               "authoredNumbers": [
                 {
                   "path": "/2",
