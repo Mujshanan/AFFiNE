@@ -31,13 +31,7 @@ impl Stamp {
   fn format(&self) -> String {
     format!(
       "{}:{}:{}:{}:{}:{}:{}",
-      STAMP_VERSION,
-      self.claim,
-      self.timestamp,
-      self.resource,
-      self.extension,
-      self.salt,
-      self.counter
+      STAMP_VERSION, self.claim, self.timestamp, self.resource, self.extension, self.salt, self.counter
     )
   }
 
@@ -74,9 +68,7 @@ impl Stamp {
     NaiveDateTime::parse_from_str(&self.timestamp, "%Y%m%d%H%M%S")
       .ok()
       .map(|value| DateTime::<Utc>::from_naive_utc_and_offset(value, Utc))
-      .and_then(|created| {
-        created.checked_add_signed(Duration::minutes(STAMP_LIFETIME_MINUTES))
-      })
+      .and_then(|created| created.checked_add_signed(Duration::minutes(STAMP_LIFETIME_MINUTES)))
       .is_some_and(|expires| Utc::now() <= expires)
   }
 
@@ -117,10 +109,7 @@ impl Stamp {
       .map(char::from)
       .collect::<String>();
 
-    let prefix = format!(
-      "{}:{}:{}:{}:{}:{}",
-      STAMP_VERSION, claim, timestamp, resource, "", salt
-    );
+    let prefix = format!("{}:{}:{}:{}:{}:{}", STAMP_VERSION, claim, timestamp, resource, "", salt);
     // Minting uses ceil(claim / 4), matching the historical v1 producer.
     let required_zero_nibbles = ((claim + 3) / 4) as usize;
     let target = "0".repeat(required_zero_nibbles);
@@ -132,9 +121,9 @@ impl Stamp {
       if digest.starts_with(&target) {
         return Ok(candidate);
       }
-      counter = counter.checked_add(1).ok_or_else(|| {
-        napi::Error::from_reason("Hashcash counter exhausted")
-      })?;
+      counter = counter
+        .checked_add(1)
+        .ok_or_else(|| napi::Error::from_reason("Hashcash counter exhausted"))?;
     }
   }
 }
@@ -151,8 +140,7 @@ impl Task for AsyncVerifyChallengeResponse {
   type JsValue = bool;
 
   fn compute(&mut self) -> Result<Self::Output> {
-    Ok(Stamp::parse(&self.response)
-      .is_some_and(|stamp| stamp.verify(self.bits, &self.resource)))
+    Ok(Stamp::parse(&self.response).is_some_and(|stamp| stamp.verify(self.bits, &self.resource)))
   }
 
   fn resolve(&mut self, _: Env, output: bool) -> Result<Self::JsValue> {
@@ -193,10 +181,7 @@ impl Task for AsyncMintChallengeResponse {
 }
 
 #[napi]
-pub fn mint_challenge_response(
-  resource: String,
-  bits: Option<u32>,
-) -> AsyncTask<AsyncMintChallengeResponse> {
+pub fn mint_challenge_response(resource: String, bits: Option<u32>) -> AsyncTask<AsyncMintChallengeResponse> {
   AsyncTask::new(AsyncMintChallengeResponse { bits, resource })
 }
 
@@ -231,18 +216,14 @@ mod tests {
 
   #[test]
   fn verification_rejects_wrong_resource_and_higher_requested_work() {
-    let stamp = Stamp::parse(&Stamp::mint("resource-a".into(), Some(8)).unwrap())
-      .unwrap();
+    let stamp = Stamp::parse(&Stamp::mint("resource-a".into(), Some(8)).unwrap()).unwrap();
     assert!(!stamp.verify(8, "resource-b"));
     assert!(!stamp.verify(9, "resource-a"));
   }
 
   #[test]
   fn verifies_a_fixed_v1_wire_compatibility_vector() {
-    let stamp = Stamp::parse(
-      "1:8:20261107080000:test-resource::ABCDEFGHIJKLMNOP:13e",
-    )
-    .unwrap();
+    let stamp = Stamp::parse("1:8:20261107080000:test-resource::ABCDEFGHIJKLMNOP:13e").unwrap();
     assert!(stamp.has_legacy_v1_work());
   }
 
@@ -263,8 +244,7 @@ mod tests {
 
   #[test]
   fn verification_rejects_expired_stamps() {
-    let mut stamp = Stamp::parse(&Stamp::mint("resource".into(), Some(8)).unwrap())
-      .unwrap();
+    let mut stamp = Stamp::parse(&Stamp::mint("resource".into(), Some(8)).unwrap()).unwrap();
     stamp.timestamp = "20000101000000".into();
     assert!(!stamp.verify(8, "resource"));
   }
