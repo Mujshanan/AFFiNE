@@ -63,7 +63,8 @@ describe('RFC 8785 document integrity', () => {
       semanticVersion: '1.0.0',
       unitRegistryVersion: 'si-1',
     };
-    expect(isEvaluationSnapshotCurrent(snapshot, current)).toBe(true);
+    expect(isEvaluationSnapshotCurrent(snapshot, current, '0.180.0')).toBe(true);
+    expect(isEvaluationSnapshotCurrent(snapshot, current, '0.181.0')).toBe(false);
     expect(
       isEvaluationSnapshotCurrent(snapshot, {
         ...current,
