@@ -1,4 +1,11 @@
 export {
+  type FixtureManifestEntry,
+  type FixtureRunReport,
+  type FixtureRunResult,
+  type FixtureRunnerOptions,
+  runFixtureManifest,
+} from './fixture-runner.js';
+export {
   type JsonSchema,
   type JsonValue,
   type SchemaIssue,

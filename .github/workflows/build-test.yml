@@ -617,6 +617,19 @@ jobs:
           path: ./test-results
           if-no-files-found: ignore
 
+  khwarizmi-conformance:
+    name: Khwarizmi Conformance
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+        with:
+          electron-install: false
+          full-cache: true
+      - name: Run contract fixture suite
+        run: yarn workspace @khwarizmi/contracts test:fixtures
+
   unit-test:
     name: Unit Test
     runs-on: ubuntu-24.04
