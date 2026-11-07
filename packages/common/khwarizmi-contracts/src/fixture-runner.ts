@@ -39,10 +39,16 @@ export interface FixtureRunReport {
 export interface FixtureRunnerOptions {
   repositoryRoot?: string;
   /** Future runtime stages are injected here; absent adapters are reported as blocked, never skipped. */
-  adapters?: Record<string, (fixture: FixtureManifestEntry, payload: unknown) => {
-    outcome: string;
-    diagnostics?: string[];
-  }>;
+  adapters?: Record<
+    string,
+    (
+      fixture: FixtureManifestEntry,
+      payload: unknown
+    ) => {
+      outcome: string;
+      diagnostics?: string[];
+    }
+  >;
 }
 
 function readJson(path: string): any {
@@ -63,10 +69,12 @@ function collectSchemaBundle(root: string): Record<string, any> {
     ...filesUnder(schemaRoot).filter(path => path.endsWith('.schema.json')),
     resolve(fixtureRoot, 'manifest.schema.json'),
   ];
-  return Object.fromEntries(schemaFiles.map(path => [
-    relative(root, path).split(sep).join('/'),
-    readJson(path),
-  ]));
+  return Object.fromEntries(
+    schemaFiles.map(path => [
+      relative(root, path).split(sep).join('/'),
+      readJson(path),
+    ])
+  );
 }
 
 function compareOutcome(
@@ -74,16 +82,25 @@ function compareOutcome(
   actualOutcome: string,
   diagnostics: string[]
 ): boolean {
-  if (fixture.expectedOutcome === 'accept' || fixture.expectedOutcome === 'completed') {
-    return actualOutcome === fixture.expectedOutcome && diagnostics.length === 0;
+  if (
+    fixture.expectedOutcome === 'accept' ||
+    fixture.expectedOutcome === 'completed'
+  ) {
+    return (
+      actualOutcome === fixture.expectedOutcome && diagnostics.length === 0
+    );
   }
   if (fixture.expectedOutcome === 'reject') {
-    return actualOutcome === 'reject' &&
-      (!fixture.diagnostic || diagnostics.includes(fixture.diagnostic));
+    return (
+      actualOutcome === 'reject' &&
+      (!fixture.diagnostic || diagnostics.includes(fixture.diagnostic))
+    );
   }
   if (fixture.expectedOutcome === 'completedWithErrors') {
-    return actualOutcome === 'completedWithErrors' &&
-      (!fixture.diagnostic || diagnostics.includes(fixture.diagnostic));
+    return (
+      actualOutcome === 'completedWithErrors' &&
+      (!fixture.diagnostic || diagnostics.includes(fixture.diagnostic))
+    );
   }
   return false;
 }
@@ -101,7 +118,9 @@ function builtInStage(
       'contracts/schemas/v1/expression.schema.json',
       schemas
     );
-    const diagnostics = result.valid ? [] : [fixture.diagnostic ?? 'SCHEMA_INVALID'];
+    const diagnostics = result.valid
+      ? []
+      : [fixture.diagnostic ?? 'SCHEMA_INVALID'];
     return { outcome: result.valid ? 'accept' : 'reject', diagnostics };
   }
 
@@ -113,7 +132,9 @@ function builtInStage(
       'contracts/schemas/v1/mathjson-profile.schema.json',
       schemas
     );
-    const diagnostics = result.valid ? [] : [fixture.diagnostic ?? 'SCHEMA_INVALID'];
+    const diagnostics = result.valid
+      ? []
+      : [fixture.diagnostic ?? 'SCHEMA_INVALID'];
     return { outcome: result.valid ? 'accept' : 'reject', diagnostics };
   }
 
@@ -135,10 +156,16 @@ function builtInStage(
   }
 
   if (fixture.stage === 'rpc-envelope') {
-    const result = validateJsonSchema(payload, 'contracts/schemas/v1/rpc-envelope.schema.json', schemas);
+    const result = validateJsonSchema(
+      payload,
+      'contracts/schemas/v1/rpc-envelope.schema.json',
+      schemas
+    );
     return {
       outcome: result.valid ? 'accept' : 'reject',
-      diagnostics: result.errors.map(issue => issue.keyword + ':' + issue.instancePath),
+      diagnostics: result.errors.map(
+        issue => issue.keyword + ':' + issue.instancePath
+      ),
     };
   }
 
@@ -149,30 +176,52 @@ function builtInStage(
  * Runs every manifest entry in manifest order. A stage without an implementation
  * is reported as blocked, making incomplete conformance visible to CI.
  */
-export function runFixtureManifest(options: FixtureRunnerOptions = {}): FixtureRunReport {
-  const root = resolve(options.repositoryRoot ?? fileURLToPath(new URL('../../../../', import.meta.url)));
+export function runFixtureManifest(
+  options: FixtureRunnerOptions = {}
+): FixtureRunReport {
+  const root = resolve(
+    options.repositoryRoot ??
+      fileURLToPath(new URL('../../../../', import.meta.url))
+  );
   const fixtureRoot = resolve(root, 'contracts/fixtures/v1');
   const manifest = readJson(resolve(fixtureRoot, 'manifest.json'));
   const manifestSchema = readJson(resolve(fixtureRoot, 'manifest.schema.json'));
   const schemas = collectSchemaBundle(root);
   const schemaBundleResult = validateSchemaBundle(schemas);
   if (!schemaBundleResult.valid) {
-    throw new Error('Contract schema bundle validation failed: ' + JSON.stringify(schemaBundleResult.errors));
+    throw new Error(
+      'Contract schema bundle validation failed: ' +
+        JSON.stringify(schemaBundleResult.errors)
+    );
   }
-  const unitRegistry = readJson(resolve(root, 'contracts/schemas/v1/unit-registry.v1.json'));
-  const manifestResult = validateJsonSchema(manifest, 'contracts/fixtures/v1/manifest.schema.json', {
-    ...schemas,
-    'contracts/fixtures/v1/manifest.schema.json': manifestSchema,
-  });
+  const unitRegistry = readJson(
+    resolve(root, 'contracts/schemas/v1/unit-registry.v1.json')
+  );
+  const manifestResult = validateJsonSchema(
+    manifest,
+    'contracts/fixtures/v1/manifest.schema.json',
+    {
+      ...schemas,
+      'contracts/fixtures/v1/manifest.schema.json': manifestSchema,
+    }
+  );
   if (!manifestResult.valid) {
-    throw new Error('Fixture manifest schema validation failed: ' + JSON.stringify(manifestResult.errors));
+    throw new Error(
+      'Fixture manifest schema validation failed: ' +
+        JSON.stringify(manifestResult.errors)
+    );
   }
 
   const results: FixtureRunResult[] = [];
   for (const fixture of manifest.fixtures as FixtureManifestEntry[]) {
     const path = resolve(fixtureRoot, fixture.path);
     const relativeFixturePath = relative(fixtureRoot, path);
-    if (!existsSync(path) || isAbsolute(relativeFixturePath) || relativeFixturePath === '..' || relativeFixturePath.startsWith('..' + sep)) {
+    if (
+      !existsSync(path) ||
+      isAbsolute(relativeFixturePath) ||
+      relativeFixturePath === '..' ||
+      relativeFixturePath.startsWith('..' + sep)
+    ) {
       results.push({
         id: fixture.id,
         stage: fixture.stage,
@@ -186,7 +235,8 @@ export function runFixtureManifest(options: FixtureRunnerOptions = {}): FixtureR
 
     const payload = readJson(path);
     const adapted = options.adapters?.[fixture.stage]?.(fixture, payload);
-    const actual = adapted ?? builtInStage(fixture, payload, schemas, unitRegistry);
+    const actual =
+      adapted ?? builtInStage(fixture, payload, schemas, unitRegistry);
     if (!actual) {
       results.push({
         id: fixture.id,
@@ -199,7 +249,11 @@ export function runFixtureManifest(options: FixtureRunnerOptions = {}): FixtureR
       continue;
     }
 
-    const passed = compareOutcome(fixture, actual.outcome, actual.diagnostics ?? []);
+    const passed = compareOutcome(
+      fixture,
+      actual.outcome,
+      actual.diagnostics ?? []
+    );
     results.push({
       id: fixture.id,
       stage: fixture.stage,
@@ -207,7 +261,12 @@ export function runFixtureManifest(options: FixtureRunnerOptions = {}): FixtureR
       expectedOutcome: fixture.expectedOutcome,
       actualOutcome: actual.outcome,
       diagnostics: actual.diagnostics ?? [],
-      ...(passed ? {} : { message: 'Actual fixture result does not match the manifest expectation' }),
+      ...(passed
+        ? {}
+        : {
+            message:
+              'Actual fixture result does not match the manifest expectation',
+          }),
     });
   }
 

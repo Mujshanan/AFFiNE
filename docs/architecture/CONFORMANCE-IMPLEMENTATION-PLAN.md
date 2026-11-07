@@ -19,7 +19,7 @@ This document turns the remaining conformance work into independently reviewable
 
 Use **`@cortex-js/compute-engine@0.180.0`** as the first adapter target. The package metadata published for this release declares Node.js `>=22.3.0`, compatible with the repository's Node.js `>=22.12.0 <23` engine range. Keep the dependency exact-pinned until adapter conformance is established.
 
-The adapter must use `ce.box(mathJson)` for MathJSON input and `BoxedExpression.toMathJson()` for output. Never persist `BoxedExpression.json` as the canonical result because it can serialize high-precision values through JavaScript numbers. Use precision-preserving serialization (`fractionalDigits: "max"`, with shorthands disabled for canonical persistence).
+The adapter must use `ce.box(mathJson)` for MathJSON input and `BoxedExpression.toMathJson()` for output. Never persist `BoxedExpression.json` as the canonical result because it can serialize high-precision values through JavaScript numbers. Use precision-preserving serialization (`toMathJson({ digits: "max" })`, with shorthands disabled for canonical persistence).
 
 ### Numeric codec
 
