@@ -42,8 +42,8 @@ The first command must contain no `affine_common` node, including transitive nod
 
 ## Required validation gates
 
-- Rust formatting and lint: `cargo fmt --all -- --check`, `cargo clippy -p affine_native --all-targets -- -D warnings`.
-- Native unit tests: `cargo test -p affine_native`.
+- Rust formatting and lint: `cargo fmt -p affine_native -p affine_nbstore -- --check`, `cargo clippy -p affine_native --all-targets -- -D warnings`.
+- Native unit tests: `cargo test -p affine_native -p affine_nbstore`.
 - Dependency graph: the two commands above.
 - Windows is mandatory: `cargo check -p affine_native --target x86_64-pc-windows-msvc` and the repository's Windows N-API packaging/build job.
 - Verify the generated Windows N-API artifact still exports both existing Hashcash functions.
