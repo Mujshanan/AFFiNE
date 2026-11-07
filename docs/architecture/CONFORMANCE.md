@@ -1,6 +1,6 @@
 # Architecture contract conformance
 
-**Status:** test plan; executable suite still required  
+**Status:** v1 contract foundation implemented and passing dedicated CI; full host, persistence, unit-evaluation, and platform integration exit criteria remain open  
 **Rule:** the implementation does not pass this phase merely because schemas compile. Contract fixtures must be consumed by independent producer and consumer implementations.
 
 ## 1. Test layers
@@ -113,19 +113,22 @@ No Python worker is part of semantic v1. No Python runtime, worker RPC, or Pytho
 - Property-based tests cover AST depth, graph topology, numeric edge cases, and frame fragmentation.
 - Golden outputs are canonicalized before comparison.
 - Contract changes require updating fixtures and compatibility notes in the same change.
-- CI must run schema, semantic, persistence, and transport tests without requiring the production host.
+- CI runs the schema, semantic, numeric/unit-codec, evaluator, integrity, and RPC framing/cancellation contract suite without requiring the production host. Durable persistence and production-host integration remain separate jobs.
 
 ## 9. Exit criteria
 
-The phase is complete only when:
+The phase is complete only when all of the following pass:
 
 - the schema and wire contracts have no unresolved normative ambiguity;
-- fixture manifest and all required fixtures exist;
-- the TypeScript validators and semantic contract tests pass;
-- RPC framing/client conformance tests pass;
+- fixture manifest and required v1 fixtures exist and are consumed by CI;
+- TypeScript schema and semantic validators, numeric/unit codecs, evaluator, integrity utilities, and transport framing/cancellation registry tests pass;
 - error codes and diagnostics are stable and location-aware;
-- the independent fake-host integration test passes;
-- Windows pipe security and lifecycle tests are demonstrated or explicitly blocked pending packaged runtime validation;
+- unit-aware evaluator rules for compatible conversions, dimension checks, derived dimensions, and angle conversion pass;
+- canonical document persistence/reload and durable stale-snapshot handling pass;
+- the in-process RPC dispatcher tests pass, including correlation, cancellation, concurrency limits, error mapping, and shutdown;
+- RPC framing is connected to the Electron/native process host and Windows pipe security/lifecycle tests are demonstrated against the packaged runtime;
+- receiver-side digest verification is connected to RPC document intake;
+- BlockSuite adapter conformance proves visual movement cannot change calculation semantics;
 - CI runs the contract suite on every relevant change.
 
 No editor-wide implementation or production calculation-host implementation should begin before these exit criteria are met.
@@ -138,4 +141,4 @@ The schemas and fixtures are language-neutral. A validator must load fixture fil
 
 ## 11. Remaining implementation conformance
 
-This contract-definition pass does not claim that TypeScript validators, Compute Engine adapter tests, transport tests, or CI jobs already exist. The next phase must implement schema resolution (including relative references), the MathJSON profile validator, worksheet semantic validator, numeric/unit codecs, deterministic diagnostic sorting, fixture runner, and RPC framing tests. Only after those tests pass may the semantic contract be marked implementation-conformant.
+This document distinguishes completed contract-unit coverage from production integration. The current dedicated CI suite passes schema, semantic, numeric/unit-codec, evaluator/control-flow/unit semantics, canonical-digest, and bounded RPC dispatcher/framing/cancellation tests. The evaluator receives a Compute Engine factory from its host; the contract package does not embed or silently install a second engine. The fixture manifest and fixture runner exist, but the following exit gates remain open: evaluator-level dimensional arithmetic/conversion; durable document and evaluation-snapshot persistence/reload; Electron/native RPC process lifecycle and receiver-side digest verification; Windows named-pipe security; and the BlockSuite command/transaction adapter with save/reload and visual-reordering conformance. These are tracked as integration milestones, not treated as already implemented.

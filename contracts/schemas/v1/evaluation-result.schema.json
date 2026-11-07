@@ -71,6 +71,12 @@
       "items": {
         "$ref": "diagnostic.schema.json"
       }
+    },
+    "assignmentEvents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/assignmentEvent"
+      }
     }
   },
   "$defs": {
@@ -229,6 +235,53 @@
           "type": "array",
           "items": {
             "$ref": "diagnostic.schema.json"
+          }
+        }
+      }
+    },
+    "assignmentEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "statementId",
+        "assignmentId",
+        "symbolId",
+        "assignmentVersion",
+        "assignmentEventId",
+        "value",
+        "dependencies"
+      ],
+      "properties": {
+        "statementId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "symbolId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assignmentVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "assignmentEventId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "$ref": "numeric-value.schema.json"
+        },
+        "unit": {
+          "$ref": "unit.schema.json"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
           }
         }
       }
