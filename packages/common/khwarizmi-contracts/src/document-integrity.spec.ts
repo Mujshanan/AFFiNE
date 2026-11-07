@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  canonicalSha256,
   canonicalizeJson,
+  canonicalSha256,
   isEvaluationSnapshotCurrent,
   verifyCanonicalSha256,
 } from './document-integrity.js';
@@ -28,7 +28,10 @@ describe('RFC 8785 document integrity', () => {
     expect(() => canonicalizeJson(1n)).toThrow(/not representable/);
     expect(() => canonicalizeJson(Number.NaN)).toThrow(/non-finite/);
     expect(() => canonicalizeJson(new Date())).toThrow(/plain objects/);
-    expect(() => canonicalizeJson([, 1])).toThrow(/holes/);
+    const sparse: unknown[] = [];
+    sparse.length = 2;
+    sparse[1] = 1;
+    expect(() => canonicalizeJson(sparse)).toThrow(/holes/);
     const circular: Record<string, unknown> = {};
     circular.self = circular;
     expect(() => canonicalizeJson(circular)).toThrow(/cycles/);
