@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -11,14 +11,21 @@ const directories: string[] = [];
 async function createStore() {
   const root = await mkdtemp(join(tmpdir(), 'khwarizmi-store-'));
   directories.push(root);
-  return new FileDocumentStore({
-    rootDirectory: root,
-    expectedEngineVersion: '0.180.0',
-  });
+  return {
+    root,
+    store: new FileDocumentStore({
+      rootDirectory: root,
+      expectedEngineVersion: '0.180.0',
+    }),
+  };
 }
 
 afterEach(async () => {
-  await Promise.all(directories.splice(0).map(path => rm(path, { recursive: true, force: true })));
+  await Promise.all(
+    directories.splice(0).map(path =>
+      rm(path, { recursive: true, force: true })
+    )
+  );
 });
 
 const document = {
@@ -45,61 +52,66 @@ const snapshot = (documentRevision: string) => ({
 
 describe('durable authored-document storage', () => {
   it('round-trips authored data and derives its revision from canonical content', async () => {
-    const store = await createStore();
+    const { store } = await createStore();
     const revision = await store.saveDocument(document);
     const loaded = await store.loadDocument<typeof document>('doc-test');
     expect(loaded).toEqual({ document, documentRevision: revision });
   });
 
   it('rejects a tampered authored document instead of returning it', async () => {
-    const store = await createStore();
+    const { store, root } = await createStore();
     await store.saveDocument(document);
-    const path = join((store as any).root, 'doc-test', 'authored-document.json');
+    const path = join(root, 'doc-test', 'authored-document.json');
     const envelope = JSON.parse(await readFile(path, 'utf8'));
     envelope.document.unitRegistryVersion = 'tampered';
-    await (await import('node:fs/promises')).writeFile(path, JSON.stringify(envelope));
-    await expect(store.loadDocument('doc-test')).rejects.toThrow('DOCUMENT_DIGEST_MISMATCH');
+    await writeFile(path, JSON.stringify(envelope));
+    await expect(store.loadDocument('doc-test')).rejects.toThrow(
+      'DOCUMENT_DIGEST_MISMATCH'
+    );
   });
 
   it('verifies RPC intake digests before handing the document to evaluation', async () => {
-    const store = await createStore();
+    const { store } = await createStore();
     const revision = await store.saveDocument(document);
     await expect(verifyDocumentIntake(document, revision)).resolves.toMatchObject({
       document,
       documentRevision: revision,
     });
-    await expect(verifyDocumentIntake({ ...document, documentId: 'changed' }, revision))
-      .rejects.toThrow('DOCUMENT_DIGEST_MISMATCH');
+    await expect(
+      verifyDocumentIntake({ ...document, documentId: 'changed' }, revision)
+    ).rejects.toThrow('DOCUMENT_DIGEST_MISMATCH');
   });
 
   it('persists snapshots separately and detects stale document revisions', async () => {
-    const store = await createStore();
+    const { store } = await createStore();
     const revision = await store.saveDocument(document);
     const result = snapshot(revision);
     await store.saveEvaluationSnapshot('doc-test', result);
-    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toMatchObject({
-      status: 'current',
-    });
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toMatchObject({ status: 'current' });
+
     await store.saveDocument({ ...document, unitRegistryVersion: 'si-2' });
-    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toMatchObject({
-      status: 'stale',
-    });
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toMatchObject({ status: 'stale' });
   });
 
   it('refuses to save a snapshot for a different authored revision', async () => {
-    const store = await createStore();
+    const { store } = await createStore();
     await store.saveDocument(document);
-    await expect(store.saveEvaluationSnapshot('doc-test', snapshot('a'.repeat(64))))
-      .rejects.toThrow('SNAPSHOT_DOCUMENT_REVISION_MISMATCH');
+    await expect(
+      store.saveEvaluationSnapshot('doc-test', snapshot('a'.repeat(64)))
+    ).rejects.toThrow('SNAPSHOT_DOCUMENT_REVISION_MISMATCH');
   });
 
   it('supports explicit snapshot invalidation', async () => {
-    const store = await createStore();
+    const { store } = await createStore();
     const revision = await store.saveDocument(document);
     await store.saveEvaluationSnapshot('doc-test', snapshot(revision));
     await store.invalidateEvaluationSnapshot('doc-test');
-    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toEqual({
-      status: 'missing',
-    });
+    await expect(
+      store.loadEvaluationSnapshot<ReturnType<typeof snapshot>>('doc-test')
+    ).resolves.toEqual({ status: 'missing' });
   });
 });
