@@ -9,7 +9,10 @@ import {
   RpcTransportError,
 } from './rpc-transport.js';
 
-function expectTransportCode(action: () => unknown, code: RpcTransportError['code']): void {
+function expectTransportCode(
+  action: () => unknown,
+  code: RpcTransportError['code']
+): void {
   let thrown: unknown;
   try {
     action();
@@ -61,9 +64,18 @@ describe('Khwarizmi RPC v1 framing', () => {
     const oversized = new Uint8Array(4);
     new DataView(oversized.buffer).setUint32(0, RPC_MAX_FRAME_BYTES + 1, true);
 
-    expectTransportCode(() => new RpcFrameDecoder().push(zero), 'INVALID_FRAME_LENGTH');
-    expectTransportCode(() => new RpcFrameDecoder().push(oversized), 'FRAME_TOO_LARGE');
-    expectTransportCode(() => encodeRpcFrame(new Uint8Array(RPC_MAX_FRAME_BYTES + 1)), 'FRAME_TOO_LARGE');
+    expectTransportCode(
+      () => new RpcFrameDecoder().push(zero),
+      'INVALID_FRAME_LENGTH'
+    );
+    expectTransportCode(
+      () => new RpcFrameDecoder().push(oversized),
+      'FRAME_TOO_LARGE'
+    );
+    expectTransportCode(
+      () => encodeRpcFrame(new Uint8Array(RPC_MAX_FRAME_BYTES + 1)),
+      'FRAME_TOO_LARGE'
+    );
   });
 
   it('rejects truncated header and payload at end-of-stream', () => {
@@ -77,10 +89,22 @@ describe('Khwarizmi RPC v1 framing', () => {
   });
 
   it('rejects invalid UTF-8, invalid JSON, primitive payloads, and JSON-RPC batches', () => {
-    expectTransportCode(() => decodeRpcPayload(new Uint8Array([0xff])), 'INVALID_UTF8');
-    expectTransportCode(() => decodeRpcPayload(new TextEncoder().encode('{')), 'INVALID_JSON');
-    expectTransportCode(() => decodeRpcPayload(new TextEncoder().encode('42')), 'INVALID_JSON');
-    expectTransportCode(() => decodeRpcPayload(new TextEncoder().encode('[]')), 'RPC_BATCH_UNSUPPORTED');
+    expectTransportCode(
+      () => decodeRpcPayload(new Uint8Array([0xff])),
+      'INVALID_UTF8'
+    );
+    expectTransportCode(
+      () => decodeRpcPayload(new TextEncoder().encode('{')),
+      'INVALID_JSON'
+    );
+    expectTransportCode(
+      () => decodeRpcPayload(new TextEncoder().encode('42')),
+      'INVALID_JSON'
+    );
+    expectTransportCode(
+      () => decodeRpcPayload(new TextEncoder().encode('[]')),
+      'RPC_BATCH_UNSUPPORTED'
+    );
   });
 });
 

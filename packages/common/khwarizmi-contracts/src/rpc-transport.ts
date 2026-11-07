@@ -27,12 +27,19 @@ export function encodeRpcFrame(
   payload: Uint8Array | string,
   maxFrameBytes = RPC_MAX_FRAME_BYTES
 ): Uint8Array {
-  const bytes = typeof payload === 'string' ? utf8Encoder.encode(payload) : payload;
+  const bytes =
+    typeof payload === 'string' ? utf8Encoder.encode(payload) : payload;
   if (bytes.byteLength === 0) {
-    throw new RpcTransportError('INVALID_FRAME_LENGTH', 'RPC frames cannot be empty');
+    throw new RpcTransportError(
+      'INVALID_FRAME_LENGTH',
+      'RPC frames cannot be empty'
+    );
   }
   if (bytes.byteLength > maxFrameBytes) {
-    throw new RpcTransportError('FRAME_TOO_LARGE', 'RPC frame exceeds the configured byte limit');
+    throw new RpcTransportError(
+      'FRAME_TOO_LARGE',
+      'RPC frame exceeds the configured byte limit'
+    );
   }
   const frame = new Uint8Array(4 + bytes.byteLength);
   new DataView(frame.buffer).setUint32(0, bytes.byteLength, true);
@@ -45,20 +52,32 @@ export function decodeRpcPayload(payload: Uint8Array): unknown {
   try {
     text = new TextDecoder('utf-8', { fatal: true }).decode(payload);
   } catch {
-    throw new RpcTransportError('INVALID_UTF8', 'RPC payload is not valid UTF-8');
+    throw new RpcTransportError(
+      'INVALID_UTF8',
+      'RPC payload is not valid UTF-8'
+    );
   }
 
   let value: unknown;
   try {
     value = JSON.parse(text);
   } catch {
-    throw new RpcTransportError('INVALID_JSON', 'RPC payload is not valid JSON');
+    throw new RpcTransportError(
+      'INVALID_JSON',
+      'RPC payload is not valid JSON'
+    );
   }
   if (Array.isArray(value)) {
-    throw new RpcTransportError('RPC_BATCH_UNSUPPORTED', 'JSON-RPC batch arrays are not supported');
+    throw new RpcTransportError(
+      'RPC_BATCH_UNSUPPORTED',
+      'JSON-RPC batch arrays are not supported'
+    );
   }
   if (value === null || typeof value !== 'object') {
-    throw new RpcTransportError('INVALID_JSON', 'RPC payload must be a JSON object');
+    throw new RpcTransportError(
+      'INVALID_JSON',
+      'RPC payload must be a JSON object'
+    );
   }
   return value;
 }
@@ -71,8 +90,14 @@ export class RpcFrameDecoder {
   private payloadBytesRead = 0;
 
   constructor(private readonly maxFrameBytes = RPC_MAX_FRAME_BYTES) {
-    if (!Number.isSafeInteger(maxFrameBytes) || maxFrameBytes < 1 || maxFrameBytes > RPC_MAX_FRAME_BYTES) {
-      throw new RangeError('maxFrameBytes must be between 1 and the v1 16 MiB limit');
+    if (
+      !Number.isSafeInteger(maxFrameBytes) ||
+      maxFrameBytes < 1 ||
+      maxFrameBytes > RPC_MAX_FRAME_BYTES
+    ) {
+      throw new RangeError(
+        'maxFrameBytes must be between 1 and the v1 16 MiB limit'
+      );
     }
   }
 
@@ -82,18 +107,30 @@ export class RpcFrameDecoder {
 
     while (offset < chunk.byteLength) {
       if (!this.payload) {
-        const headerCount = Math.min(4 - this.headerBytesRead, chunk.byteLength - offset);
-        this.header.set(chunk.subarray(offset, offset + headerCount), this.headerBytesRead);
+        const headerCount = Math.min(
+          4 - this.headerBytesRead,
+          chunk.byteLength - offset
+        );
+        this.header.set(
+          chunk.subarray(offset, offset + headerCount),
+          this.headerBytesRead
+        );
         this.headerBytesRead += headerCount;
         offset += headerCount;
         if (this.headerBytesRead < 4) break;
 
         const length = new DataView(this.header.buffer).getUint32(0, true);
         if (length === 0) {
-          throw new RpcTransportError('INVALID_FRAME_LENGTH', 'RPC frame length must be greater than zero');
+          throw new RpcTransportError(
+            'INVALID_FRAME_LENGTH',
+            'RPC frame length must be greater than zero'
+          );
         }
         if (length > this.maxFrameBytes) {
-          throw new RpcTransportError('FRAME_TOO_LARGE', 'RPC frame exceeds the configured byte limit');
+          throw new RpcTransportError(
+            'FRAME_TOO_LARGE',
+            'RPC frame exceeds the configured byte limit'
+          );
         }
 
         // Allocate only after the length prefix has passed the hard limit.
@@ -103,12 +140,16 @@ export class RpcFrameDecoder {
       }
 
       const payload = this.payload;
-      if (!payload) throw new Error('Frame decoder lost its active payload buffer');
+      if (!payload)
+        throw new Error('Frame decoder lost its active payload buffer');
       const payloadCount = Math.min(
         payload.byteLength - this.payloadBytesRead,
         chunk.byteLength - offset
       );
-      payload.set(chunk.subarray(offset, offset + payloadCount), this.payloadBytesRead);
+      payload.set(
+        chunk.subarray(offset, offset + payloadCount),
+        this.payloadBytesRead
+      );
       this.payloadBytesRead += payloadCount;
       offset += payloadCount;
 
@@ -124,7 +165,10 @@ export class RpcFrameDecoder {
 
   finish(): void {
     if (this.headerBytesRead !== 0 || this.payload !== undefined) {
-      throw new RpcTransportError('TRUNCATED_FRAME', 'RPC stream ended with an incomplete frame');
+      throw new RpcTransportError(
+        'TRUNCATED_FRAME',
+        'RPC stream ended with an incomplete frame'
+      );
     }
   }
 
@@ -137,8 +181,12 @@ export class RpcFrameDecoder {
 
 function requestIdKey(id: unknown): string {
   if (typeof id === 'string' && id.length > 0) return 'string:' + id;
-  if (typeof id === 'number' && Number.isSafeInteger(id) && id >= 0) return 'number:' + id;
-  throw new RpcTransportError('INVALID_REQUEST_ID', 'Request ID must be a non-empty string or non-negative safe integer');
+  if (typeof id === 'number' && Number.isSafeInteger(id) && id >= 0)
+    return 'number:' + id;
+  throw new RpcTransportError(
+    'INVALID_REQUEST_ID',
+    'Request ID must be a non-empty string or non-negative safe integer'
+  );
 }
 
 /** Tracks cancellation by JSON-RPC ID; evaluation state remains request-local. */
@@ -147,10 +195,17 @@ export class RequestCancellationRegistry {
   private closed = false;
 
   begin(id: RpcRequestId): AbortSignal {
-    if (this.closed) throw new RpcTransportError('HOST_CLOSED', 'Cancellation registry is closed');
+    if (this.closed)
+      throw new RpcTransportError(
+        'HOST_CLOSED',
+        'Cancellation registry is closed'
+      );
     const key = requestIdKey(id);
     if (this.active.has(key)) {
-      throw new RpcTransportError('DUPLICATE_REQUEST_ID', 'A request with this ID is already in flight');
+      throw new RpcTransportError(
+        'DUPLICATE_REQUEST_ID',
+        'A request with this ID is already in flight'
+      );
     }
     const controller = new AbortController();
     this.active.set(key, controller);
