@@ -2,6 +2,7 @@ import { rational, type ExactRational } from './numeric-codec.js';
 import {
   type ResolvedUnit,
   type UnitRegistry,
+  UnitCodecFailure,
   resolveUnit,
 } from './unit-codec.js';
 
@@ -376,6 +377,11 @@ export function prepareUnitAwareMathJson(
   options: UnitPreparationOptions
 ): UnitPreparationResult {
   const registry = options.registry;
+  if (registry && registry.version !== options.expectedRegistryVersion)
+    throw new UnitCodecFailure(
+      'UNIT_REGISTRY_VERSION_MISMATCH',
+      'Unit registry version does not match the authored expression'
+    );
   const attachments = new Map<string, UnitQuantity>();
   for (const attachment of Array.isArray(options.unitAttachments)
     ? options.unitAttachments
@@ -553,6 +559,24 @@ export function prepareUnitAwareMathJson(
           );
         }
         result = { mathJson: [operator, ...childMath] };
+      } else if (operator === 'Min' || operator === 'Max') {
+        const base = childUnits[0];
+        if (childUnits.some(unit => Boolean(unit) !== Boolean(base)))
+          throw new UnitEvaluationFailure(
+            'DIMENSION_MISMATCH',
+            'Minimum and maximum require operands with compatible dimensions'
+          );
+        if (base) {
+          for (let index = 1; index < children.length; index++) {
+            const source = childUnits[index];
+            if (source)
+              childMath[index] = applyScale(
+                childMath[index]!,
+                scaleRatio(source, base)
+              );
+          }
+        }
+        result = { mathJson: [operator, ...childMath], ...(base ? { unit: base } : {}) };
       } else if (
         operator === 'Equal' ||
         operator === 'NotEqual' ||
