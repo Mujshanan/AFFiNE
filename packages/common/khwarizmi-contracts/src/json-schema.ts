@@ -148,6 +148,8 @@ export function validateJsonSchema(
     'pattern',
     'minItems',
     'maxItems',
+    'maxProperties',
+    'not',
     'uniqueItems',
   ]);
 
@@ -248,6 +250,19 @@ export function validateJsonSchema(
       !schema.enum.some(item => sameJson(instance, item))
     )
       add('enum', 'Value is not one of the allowed values');
+
+    if (schema.not !== undefined) {
+      const before = errors.length;
+      const excludedMatches = visit(
+        instance,
+        schema.not as JsonSchema,
+        currentSchemaPath + '/not',
+        instancePath,
+        depth + 1
+      );
+      errors.splice(before);
+      if (excludedMatches) add('not', 'Value matches a schema explicitly excluded by not');
+    }
 
     if (Array.isArray(schema.allOf)) {
       schema.allOf.forEach((part, index) => {
@@ -396,6 +411,8 @@ export function validateJsonSchema(
     }
 
     if (isObject(instance)) {
+      if (typeof schema.maxProperties === 'number' && Object.keys(instance).length > schema.maxProperties)
+        add('maxProperties', 'Object has more properties than maxProperties');
       if (Array.isArray(schema.required)) {
         for (const key of schema.required) {
           if (
@@ -499,7 +516,7 @@ export function validateSchemaBundle(
       const map = schema[key];
       if (isObject(map)) children.push(...Object.values(map));
     }
-    for (const key of ['items', 'additionalProperties', 'if', 'then', 'else']) {
+    for (const key of ['items', 'additionalProperties', 'if', 'then', 'else', 'not']) {
       if (schema[key] !== undefined && typeof schema[key] !== 'boolean')
         children.push(schema[key]);
     }
