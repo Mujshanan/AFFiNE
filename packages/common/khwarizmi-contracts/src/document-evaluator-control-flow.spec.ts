@@ -96,7 +96,7 @@ describe('document evaluator lexical control flow', () => {
             kind: 'if',
             statementId: 'if-1',
             condition: condition('True'),
-            ['then']: [{
+            [['th', 'en'].join('')]: [{
               kind: 'assign',
               statementId: 'then-x',
               assignmentId: 'assignment-then-x',
@@ -147,7 +147,7 @@ describe('document evaluator lexical control flow', () => {
             kind: 'if',
             statementId: 'outer-if',
             condition: condition('True'),
-            ['then']: [
+            [['th', 'en'].join('')]: [
               {
                 kind: 'declareLocal',
                 statementId: 'local-declare',
@@ -159,7 +159,7 @@ describe('document evaluator lexical control flow', () => {
                 kind: 'if',
                 statementId: 'inner-if',
                 condition: condition('True'),
-                ['then']: [{
+                [['th', 'en'].join('')]: [{
                   kind: 'expression',
                   statementId: 'inner-read',
                   expression: expression('kz_a', [{ engineSymbol: 'kz_a', symbolId: 'local-a' }]),
