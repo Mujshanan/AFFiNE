@@ -1,0 +1,71 @@
+name: Temporary Khwarizmi formatter
+on:
+  push:
+    branches:
+      - codex/format-khwarizmi-contracts
+permissions:
+  contents: read
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: yarn
+      - run: corepack enable
+      - run: yarn install --immutable
+      - name: Format Khwarizmi contract files
+        run: yarn oxfmt --write "contracts/schemas/v1/evaluation-result.schema.json" "docs/architecture/PHASE-B-EVALUATION.md" "packages/common/khwarizmi-contracts/src/compute-engine-adapter.spec.ts" "packages/common/khwarizmi-contracts/src/contract-validators.spec.ts" "packages/common/khwarizmi-contracts/src/fixture-runner.spec.ts" "packages/common/khwarizmi-contracts/src/fixture-runner.ts" "packages/common/khwarizmi-contracts/src/json-schema.ts" "packages/common/khwarizmi-contracts/src/numeric-codec.spec.ts" "packages/common/khwarizmi-contracts/src/numeric-codec.ts" "packages/common/khwarizmi-contracts/src/rpc-transport.spec.ts" "packages/common/khwarizmi-contracts/src/rpc-transport.ts" "packages/common/khwarizmi-contracts/src/document-evaluator.spec.ts" "packages/common/khwarizmi-contracts/src/document-evaluator.ts" "packages/common/khwarizmi-contracts/src/index.ts" "packages/common/khwarizmi-contracts/src/unit-codec.spec.ts" "packages/common/khwarizmi-contracts/src/unit-codec.ts"
+      - name: Emit formatted sources
+        shell: bash
+        run: |
+          echo "=====FILE contracts/schemas/v1/evaluation-result.schema.json====="
+          cat "contracts/schemas/v1/evaluation-result.schema.json"
+          echo "=====END contracts/schemas/v1/evaluation-result.schema.json====="
+          echo "=====FILE docs/architecture/PHASE-B-EVALUATION.md====="
+          cat "docs/architecture/PHASE-B-EVALUATION.md"
+          echo "=====END docs/architecture/PHASE-B-EVALUATION.md====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/compute-engine-adapter.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/compute-engine-adapter.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/compute-engine-adapter.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/contract-validators.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/contract-validators.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/contract-validators.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/fixture-runner.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/fixture-runner.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/fixture-runner.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/fixture-runner.ts====="
+          cat "packages/common/khwarizmi-contracts/src/fixture-runner.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/fixture-runner.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/json-schema.ts====="
+          cat "packages/common/khwarizmi-contracts/src/json-schema.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/json-schema.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/numeric-codec.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/numeric-codec.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/numeric-codec.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/numeric-codec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/numeric-codec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/numeric-codec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/rpc-transport.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/rpc-transport.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/rpc-transport.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/rpc-transport.ts====="
+          cat "packages/common/khwarizmi-contracts/src/rpc-transport.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/rpc-transport.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/document-evaluator.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/document-evaluator.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/document-evaluator.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/document-evaluator.ts====="
+          cat "packages/common/khwarizmi-contracts/src/document-evaluator.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/document-evaluator.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/index.ts====="
+          cat "packages/common/khwarizmi-contracts/src/index.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/index.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/unit-codec.spec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/unit-codec.spec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/unit-codec.spec.ts====="
+          echo "=====FILE packages/common/khwarizmi-contracts/src/unit-codec.ts====="
+          cat "packages/common/khwarizmi-contracts/src/unit-codec.ts"
+          echo "=====END packages/common/khwarizmi-contracts/src/unit-codec.ts====="
