@@ -25,7 +25,7 @@ version:claim:timestamp:resource:extension:salt:counter
 
 It preserves the SHA3-256 proof construction, hexadecimal counter, resource binding, five-minute expiry, default mint difficulty, and the legacy v1 whole-hex-nibble verification rule. The legacy verifier checks `floor(claim / 4)` leading zero nibbles, while minting produces `ceil(claim / 4)`; this historical asymmetry is intentionally retained for existing v1 compatibility rather than silently changing the wire protocol.
 
-The implementation adds defensive input bounds (difficulty 1–256), strict timestamp parsing, malformed-field rejection, and checked counter increment. A future protocol revision should define bit-precise difficulty and stronger expiry/replay semantics as a versioned change, not as an undocumented alteration to v1.
+The parser enforces a v1 claim range of 1–256, while minting is deliberately capped at 24 bits to prevent unbounded proof-of-work requests from monopolizing a native worker. It also uses strict timestamp parsing, malformed-field rejection, and checked counter increment. A future protocol revision should define bit-precise difficulty and stronger expiry/replay semantics as a versioned change, not as an undocumented alteration to v1.
 
 ## Dependency boundary
 
