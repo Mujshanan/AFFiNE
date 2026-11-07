@@ -169,7 +169,22 @@ export function evaluateCalculationDocument(
   const statements = new Map<string, RecordValue>();
   for (const page of Array.isArray(document.pages) ? document.pages : []) {
     if (!isRecord(page) || !Array.isArray(page.statements)) continue;
-    for (const statement of page.statements) if (isRecord(statement) && typeof statement.statementId === 'string') statements.set(statement.statementId, statement);
+    for (const statement of page.statements) {
+      if (!isRecord(statement) || typeof statement.statementId !== 'string') continue;
+      if (statements.has(statement.statementId)) {
+        throw new TypeError('Duplicate statementId in document: ' + statement.statementId);
+      }
+      statements.set(statement.statementId, statement);
+    }
+  }
+  if (!Array.isArray(document.calculationOrder)) {
+    throw new TypeError('Document calculationOrder must be an array');
+  }
+  const orderedIds = new Set<string>();
+  for (const rawId of document.calculationOrder) {
+    const id = String(rawId);
+    if (orderedIds.has(id)) throw new TypeError('Duplicate statement in calculationOrder: ' + id);
+    orderedIds.add(id);
   }
 
   const symbolStates = new Map<string, AssignmentState>();
@@ -179,8 +194,9 @@ export function evaluateCalculationDocument(
   const results: Array<RecordValue> = [];
   const diagnostics: EvaluationDiagnostic[] = [];
   const eventId = options.createEventId ?? ((id, version) => `event:${id}:${version}`);
+  const usedEventIds = new Set<string>();
 
-  for (const statementId of Array.isArray(document.calculationOrder) ? document.calculationOrder : []) {
+  for (const statementId of document.calculationOrder) {
     const statement = statements.get(String(statementId));
     if (!statement) {
       diagnostics.push({ code: 'INVALID_CALCULATION_ORDER', message: 'Calculation order references a missing statement: ' + statementId, statementId: String(statementId) });
@@ -193,8 +209,11 @@ export function evaluateCalculationDocument(
       continue;
     }
     const expression = statement.expression;
-    if (!isRecord(expression)) {
-      diagnostics.push({ code: 'INVALID_EXPRESSION', message: 'Statement has no valid expression record', statementId: String(statementId) });
+    if (!isRecord(expression) || !Object.prototype.hasOwnProperty.call(expression, 'mathJson')) {
+      const message = 'Statement has no valid expression record or MathJSON payload';
+      diagnostics.push({ code: 'INVALID_EXPRESSION', message, statementId: String(statementId) });
+      results.push({ resultId: 'result:' + statementId, statementId, status: 'error', value: null, dependencies: [], substitutions: [], diagnostics: [{ code: 'INVALID_EXPRESSION', message }] });
+      if (kind === 'assign' && typeof statement.targetSymbolId === 'string') symbolFailures.add(statement.targetSymbolId);
       continue;
     }
 
@@ -253,6 +272,10 @@ export function evaluateCalculationDocument(
         assignmentVersions.set(target, version);
         const assignmentId = String(statement.assignmentId);
         const id = eventId(assignmentId, version);
+        if (typeof id !== 'string' || !id.trim() || usedEventIds.has(id)) {
+          throw new EvaluationFailure('INVALID_ASSIGNMENT_EVENT_ID', 'Assignment event IDs must be non-empty and unique within an evaluation');
+        }
+        usedEventIds.add(id);
         const state: AssignmentState = { assignmentId, assignmentVersion: version, assignmentEventId: id, mathJsonValue: evaluated.mathJson as JsonValue, numericValue: value, ...(unit ? { unit } : {}) };
         symbolStates.set(target, state);
         symbolFailures.delete(target);
