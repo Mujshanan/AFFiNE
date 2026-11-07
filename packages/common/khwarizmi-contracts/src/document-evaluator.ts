@@ -55,6 +55,15 @@ interface AssignmentState {
 const isRecord = (value: unknown): value is RecordValue =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+function setOwnProperty(target: RecordValue, key: string, value: JsonValue): void {
+  Object.defineProperty(target, key, {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value,
+  });
+}
+
 function replaceTokens(
   value: JsonValue,
   bindings: Map<string, { state: AssignmentState; symbolId: string }>,
@@ -73,7 +82,7 @@ function replaceTokens(
   if (Array.isArray(value)) return value.map((child, index) => replaceTokens(child, bindings, [...paths, String(index)], substitutions, dependencies));
   if (isRecord(value)) {
     const result: RecordValue = {};
-    for (const [key, child] of Object.entries(value)) result[key] = replaceTokens(child as JsonValue, bindings, [...paths, key], substitutions, dependencies);
+    for (const [key, child] of Object.entries(value)) setOwnProperty(result, key, replaceTokens(child as JsonValue, bindings, [...paths, key], substitutions, dependencies));
     return result as JsonValue;
   }
   return value;
@@ -100,9 +109,10 @@ function restoreAuthoredNumbers(mathJson: JsonValue, authoredNumbers: unknown): 
     }
     let parent = result;
     for (const token of tokens.slice(0, -1)) parent = Array.isArray(parent) ? parent[Number(token)] : parent?.[token];
-    const finalToken = tokens[tokens.length - 1]!;
+    const finalToken = tokens.at(-1);
+    if (finalToken === undefined) continue;
     if (Array.isArray(parent) && /^(0|[1-9][0-9]*)$/.test(finalToken)) parent[Number(finalToken)] = replacement;
-    else if (isRecord(parent)) parent[finalToken] = replacement;
+    else if (isRecord(parent)) setOwnProperty(parent, finalToken, replacement);
   }
   return result as JsonValue;
 }
