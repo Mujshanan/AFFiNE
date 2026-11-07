@@ -1,0 +1,65 @@
+name: Temporary Oxfmt runner for PR 13
+
+on:
+  push:
+    branches:
+      - khwarizmi/ee-free-native-boundary
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install repository toolchain
+        uses: ./.github/actions/setup-node
+        with:
+          corepack-install: 'true'
+          package-install: 'true'
+          electron-install: 'false'
+
+      - name: Format only the CI-reported files
+        run: |
+          yarn oxfmt --write \
+            docs/BASELINE.md \
+            docs/architecture/CALCULATION-SEMANTICS.md \
+            docs/architecture/CONFORMANCE.md \
+            docs/architecture/DECISIONS.md \
+            docs/architecture/DOCUMENT-MODEL.md \
+            docs/architecture/PR-3-DECISION-RESOLUTION.md \
+            docs/architecture/RPC-V1.md \
+            docs/audits/EE-FREE-NATIVE-BOUNDARY.md \
+            docs/index.html
+
+      - name: Verify formatter output
+        run: |
+          yarn oxfmt --check \
+            docs/BASELINE.md \
+            docs/architecture/CALCULATION-SEMANTICS.md \
+            docs/architecture/CONFORMANCE.md \
+            docs/architecture/DECISIONS.md \
+            docs/architecture/DOCUMENT-MODEL.md \
+            docs/architecture/PR-3-DECISION-RESOLUTION.md \
+            docs/architecture/RPC-V1.md \
+            docs/audits/EE-FREE-NATIVE-BOUNDARY.md \
+            docs/index.html
+          git diff --check
+
+      - name: Upload exact formatted files
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr13-oxfmt-output
+          path: |
+            docs/BASELINE.md
+            docs/architecture/CALCULATION-SEMANTICS.md
+            docs/architecture/CONFORMANCE.md
+            docs/architecture/DECISIONS.md
+            docs/architecture/DOCUMENT-MODEL.md
+            docs/architecture/PR-3-DECISION-RESOLUTION.md
+            docs/architecture/RPC-V1.md
+            docs/audits/EE-FREE-NATIVE-BOUNDARY.md
+            docs/index.html
