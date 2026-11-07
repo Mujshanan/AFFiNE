@@ -73,6 +73,12 @@ describe('RFC 8785 document integrity', () => {
       false
     );
     expect(
+      isEvaluationSnapshotCurrent(
+        { ...snapshot, engine: { name: 'other-engine', version: '0.180.0' } },
+        current
+      )
+    ).toBe(false);
+    expect(
       isEvaluationSnapshotCurrent(snapshot, {
         ...current,
         documentRevision: 'b'.repeat(64),
