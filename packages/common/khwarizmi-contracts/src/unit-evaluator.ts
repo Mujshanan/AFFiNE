@@ -616,7 +616,7 @@ export function prepareUnitAwareMathJson(
             const source = childUnits[index];
             if (source)
               childMath[index] = applyScale(
-                childMath[index]!,
+                requiredAt(childMath, index, 'comparison operand'),
                 scaleRatio(source, base)
               );
           }
