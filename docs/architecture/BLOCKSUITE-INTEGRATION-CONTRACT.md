@@ -14,19 +14,19 @@ The adapter MUST use public BlockSuite/AFFiNE extension and transaction APIs. It
 
 ## 2. Ownership matrix
 
-| Concern | Owner | Rule |
-|---|---|---|
-| AFFiNE application lifecycle, workspace selection, local storage provider | AFFiNE host | Khwarizmi uses host services through adapters |
-| Block editing, text editing, selection, focus, drag, resize, undo/redo | BlockSuite | Editor mechanics only |
-| BlockSuite model and transaction APIs | BlockSuite | Access only through the integration adapter |
-| Engineering document schema and stable IDs | Khwarizmi Core | Canonical semantic model |
-| Page size, margins, physical coordinates and layout constraints | Khwarizmi Core | Persist integer micrometres |
-| Expression AST, symbol resolution, assignment versions and calculation order | Khwarizmi Core | Never inferred from visual order |
-| Unit registry, dimensions, conversions and diagnostics | Khwarizmi Core | Versioned and validated |
-| Table semantics, typed cells and matrix/vector projections | Khwarizmi Core | BlockSuite renders/edits through commands |
-| Beam/frame/diagram geometry and structural result data | Khwarizmi Core | Renderer is a projection, not the source of truth |
-| Evaluation result and provenance snapshots | Calculation host / Khwarizmi Core | Derived, revision-keyed data |
-| Cloud/realtime sync | Optional AFFiNE adapter | Local-first core MUST work without cloud services |
+| Concern                                                                      | Owner                             | Rule                                              |
+| ---------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------- |
+| AFFiNE application lifecycle, workspace selection, local storage provider    | AFFiNE host                       | Khwarizmi uses host services through adapters     |
+| Block editing, text editing, selection, focus, drag, resize, undo/redo       | BlockSuite                        | Editor mechanics only                             |
+| BlockSuite model and transaction APIs                                        | BlockSuite                        | Access only through the integration adapter       |
+| Engineering document schema and stable IDs                                   | Khwarizmi Core                    | Canonical semantic model                          |
+| Page size, margins, physical coordinates and layout constraints              | Khwarizmi Core                    | Persist integer micrometres                       |
+| Expression AST, symbol resolution, assignment versions and calculation order | Khwarizmi Core                    | Never inferred from visual order                  |
+| Unit registry, dimensions, conversions and diagnostics                       | Khwarizmi Core                    | Versioned and validated                           |
+| Table semantics, typed cells and matrix/vector projections                   | Khwarizmi Core                    | BlockSuite renders/edits through commands         |
+| Beam/frame/diagram geometry and structural result data                       | Khwarizmi Core                    | Renderer is a projection, not the source of truth |
+| Evaluation result and provenance snapshots                                   | Calculation host / Khwarizmi Core | Derived, revision-keyed data                      |
+| Cloud/realtime sync                                                          | Optional AFFiNE adapter           | Local-first core MUST work without cloud services |
 
 ## 3. Document identity and persistence model
 
@@ -51,16 +51,16 @@ Every Khwarizmi block has an immutable `blockId`. A mapping record associates it
 
 The initial engineering block families are:
 
-| Khwarizmi type | BlockSuite responsibility | Khwarizmi responsibility |
-|---|---|---|
-| `text` | Rich-text editing and presentation | Stable block identity and authored text metadata |
-| `math` | Equation editing/rendering surface | Canonical expression record, bindings, exact literals and source map |
-| `variable` / `input` | Input controls and display | Symbol identity, quantity, unit and assignment history |
-| `table` | Grid interaction, cell selection and editing | Typed columns/cells, formulas, references and table-to-matrix/vector projection |
-| `diagram` | Selection, viewport, handles and visual editing | Structured geometry, constraints, beam/frame entities and result references |
-| `result` | Result presentation | Evaluation-result reference and provenance |
-| `reference` | Citation presentation | Source identity and reference metadata |
-| `group` | Group selection and layout | Semantic grouping and child IDs |
+| Khwarizmi type       | BlockSuite responsibility                       | Khwarizmi responsibility                                                        |
+| -------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------- |
+| `text`               | Rich-text editing and presentation              | Stable block identity and authored text metadata                                |
+| `math`               | Equation editing/rendering surface              | Canonical expression record, bindings, exact literals and source map            |
+| `variable` / `input` | Input controls and display                      | Symbol identity, quantity, unit and assignment history                          |
+| `table`              | Grid interaction, cell selection and editing    | Typed columns/cells, formulas, references and table-to-matrix/vector projection |
+| `diagram`            | Selection, viewport, handles and visual editing | Structured geometry, constraints, beam/frame entities and result references     |
+| `result`             | Result presentation                             | Evaluation-result reference and provenance                                      |
+| `reference`          | Citation presentation                           | Source identity and reference metadata                                          |
+| `group`              | Group selection and layout                      | Semantic grouping and child IDs                                                 |
 
 A block's visual style MUST NOT change its semantic type. A result block MUST NOT create a variable. A table cell MUST NOT become a calculation symbol solely because of its displayed text.
 
