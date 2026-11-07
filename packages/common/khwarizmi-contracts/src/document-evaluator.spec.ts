@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { evaluateCalculationDocument } from './document-evaluator.js';
 import type { ComputeEnginePort } from './compute-engine-adapter.js';
+import { evaluateCalculationDocument } from './document-evaluator.js';
 
 function arithmeticEngine(): ComputeEnginePort {
   const evaluate = (value: any): any => {
