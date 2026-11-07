@@ -40,6 +40,10 @@ type RpcRecord = Record<string, unknown>;
 const isRecord = (value: unknown): value is RpcRecord =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+function requestIdKey(id: RpcRequestId): string {
+  return typeof id === 'number' ? 'number:' + id : 'string:' + id;
+}
+
 function isRequestId(value: unknown): value is RpcRequestId {
   return (
     (typeof value === 'string' && value.length > 0) ||
@@ -70,6 +74,7 @@ function errorResponse(
  */
 export class RpcRequestDispatcher {
   private readonly cancellation = new RequestCancellationRegistry();
+  private readonly activeIds = new Set<string>();
   private readonly methods: Map<string, RpcMethodDefinition>;
   private closed = false;
 
@@ -135,6 +140,9 @@ export class RpcRequestDispatcher {
 
     if (this.closed)
       return errorResponse(id, -32000, 'RPC host is closed');
+    const key = requestIdKey(id);
+    if (this.activeIds.has(key))
+      return errorResponse(id, -32600, 'Duplicate active request ID');
     if (this.cancellation.size >= this.maxConcurrentRequests)
       return errorResponse(id, -32002, 'Server concurrency limit exceeded');
 
@@ -151,6 +159,7 @@ export class RpcRequestDispatcher {
       return errorResponse(id, -32600, 'Invalid Request ID');
     }
 
+    this.activeIds.add(key);
     try {
       const result = await definition.handler(params, { requestId: id, signal });
       if (signal.aborted) return errorResponse(id, -32800, 'Request cancelled');
@@ -161,6 +170,7 @@ export class RpcRequestDispatcher {
         return errorResponse(id, error.code, error.message, error.data);
       return errorResponse(id, -32603, 'Internal error');
     } finally {
+      this.activeIds.delete(key);
       this.cancellation.complete(id);
     }
   }
