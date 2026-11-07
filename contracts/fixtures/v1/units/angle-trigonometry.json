@@ -61,10 +61,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Sin",
-                "kz_theta"
-              ],
+              "mathJson": ["Sin", "kz_theta"],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_theta",
@@ -85,10 +82,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "theta-set",
-      "sin-theta"
-    ]
+    "calculationOrder": ["theta-set", "sin-theta"]
   },
   "expected": {
     "status": "completed",

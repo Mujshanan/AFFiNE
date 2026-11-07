@@ -13,8 +13,6 @@
   ],
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "DEPENDENCY_CYCLE"
-    ]
+    "diagnostics": ["DEPENDENCY_CYCLE"]
   }
 }

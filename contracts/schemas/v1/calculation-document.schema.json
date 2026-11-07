@@ -37,11 +37,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "symbolId",
-          "displayName",
-          "normalizedName"
-        ],
+        "required": ["symbolId", "displayName", "normalizedName"],
         "properties": {
           "symbolId": {
             "type": "string",
@@ -66,10 +62,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "pageId",
-          "statements"
-        ],
+        "required": ["pageId", "statements"],
         "properties": {
           "pageId": {
             "type": "string",

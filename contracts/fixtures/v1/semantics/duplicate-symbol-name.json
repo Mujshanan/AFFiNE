@@ -27,8 +27,6 @@
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "DUPLICATE_SYMBOL_NAME"
-    ]
+    "diagnostics": ["DUPLICATE_SYMBOL_NAME"]
   }
 }

@@ -86,14 +86,10 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "if-1"
-    ]
+    "calculationOrder": ["if-1"]
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "LOCAL_USE_BEFORE_DECLARATION"
-    ]
+    "diagnostics": ["LOCAL_USE_BEFORE_DECLARATION"]
   }
 }

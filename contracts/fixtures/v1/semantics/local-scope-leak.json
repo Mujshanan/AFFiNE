@@ -86,15 +86,10 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "if-1",
-      "after-if"
-    ]
+    "calculationOrder": ["if-1", "after-if"]
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "LOCAL_OUT_OF_SCOPE"
-    ]
+    "diagnostics": ["LOCAL_OUT_OF_SCOPE"]
   }
 }

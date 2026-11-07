@@ -137,6 +137,7 @@ Use JSON Schema 2020-12 for v1 schemas. Reject unknown major schema versions and
 ## Remaining implementation-team work
 
 The owner-level product decisions above are resolved. Before schemas are declared stable, the team must still specify and test:
+
 - Stable ID formats and normalization/diagnostic ordering.
 - Exact JSON Schema structures and stable diagnostic-code registry.
 - Document/block/asset schemas and migration fixtures.

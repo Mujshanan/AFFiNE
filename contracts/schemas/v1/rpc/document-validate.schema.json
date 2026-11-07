@@ -4,11 +4,7 @@
   "title": "document.validate Params v1",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schemaVersion",
-    "document",
-    "documentDigest"
-  ],
+  "required": ["schemaVersion", "document", "documentDigest"],
   "properties": {
     "schemaVersion": {
       "const": 1

@@ -42,18 +42,19 @@ The little-endian prefix and fixed 16 MiB cap are normative v1 wire rules and MU
 
 ## 4. Initial methods
 
-| Method | Direction | Purpose |
-|---|---|---|
-| `host.getInfo` | request | protocol, host, semantic, and capability versions |
-| `document.validate` | request | validate document/schema/AST and return diagnostics |
-| `document.evaluate` | request | evaluate a document revision and return result records/traces |
-| `$/cancelRequest` | notification | cancel an in-flight request by its JSON-RPC ID |
+| Method              | Direction    | Purpose                                                       |
+| ------------------- | ------------ | ------------------------------------------------------------- |
+| `host.getInfo`      | request      | protocol, host, semantic, and capability versions             |
+| `document.validate` | request      | validate document/schema/AST and return diagnostics           |
+| `document.evaluate` | request      | evaluate a document revision and return result records/traces |
+| `$/cancelRequest`   | notification | cancel an in-flight request by its JSON-RPC ID                |
 
 Method parameter and result objects MUST be schema-versioned and validated. Document-bearing calls include the canonical authored document and its SHA-256 JCS digest; the receiver recomputes it. `document.evaluate` returns Khwarizmi result records, never raw Compute Engine objects. Each result identifies original and substituted MathJSON, exact assignment-version dependencies, tagged scalar value, normalized unit/dimension, status, diagnostics, and engine/semantic/unit-registry versions. Do not accept arbitrary code, paths, engine snippets, or Python snippets as RPC parameters.
 
 ## 5. Evaluation result statuses
 
 Document evaluation returns one of:
+
 - `completed`: all requested calculations completed without error diagnostics;
 - `completedWithErrors`: evaluation completed but one or more nodes contain errors;
 - `cancelled`: caller cancellation was acknowledged and no further work for that request should be committed.
@@ -94,6 +95,7 @@ Python worker protocol, runtime dependency, and numerical operation catalog are 
 ## 10. Method schema references and response payloads
 
 The v1 schemas are:
+
 - `contracts/schemas/v1/rpc-envelope.schema.json`: closed JSON-RPC method/envelope union;
 - `contracts/schemas/v1/rpc/host-get-info.schema.json`: `host.getInfo` result;
 - `contracts/schemas/v1/rpc/document-validate.schema.json`: `document.validate` params;

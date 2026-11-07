@@ -2,11 +2,7 @@
   "expression": {
     "format": "khwarizmi.expression",
     "schemaVersion": 1,
-    "mathJson": [
-      "Sin",
-      1,
-      2
-    ],
+    "mathJson": ["Sin", 1, 2],
     "symbolBindings": [],
     "authoredNumbers": [
       {
@@ -31,8 +27,6 @@
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "INVALID_FUNCTION_ARITY"
-    ]
+    "diagnostics": ["INVALID_FUNCTION_ARITY"]
   }
 }

@@ -1,13 +1,8 @@
 {
   "source": "a(b)",
-  "declaredSymbols": [
-    "a",
-    "b"
-  ],
+  "declaredSymbols": ["a", "b"],
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "AMBIGUOUS_IMPLICIT_MULTIPLICATION"
-    ]
+    "diagnostics": ["AMBIGUOUS_IMPLICIT_MULTIPLICATION"]
   }
 }

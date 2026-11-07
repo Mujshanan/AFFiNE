@@ -1,11 +1,7 @@
 {
   "format": "khwarizmi.expression",
   "schemaVersion": 1,
-  "mathJson": [
-    "Add",
-    "kz_a",
-    "kz_b"
-  ],
+  "mathJson": ["Add", "kz_a", "kz_b"],
   "symbolBindings": [
     {
       "engineSymbol": "kz_a",

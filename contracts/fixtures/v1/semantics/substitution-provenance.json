@@ -124,15 +124,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Divide",
-                [
-                  "Multiply",
-                  "kz_b",
-                  "kz_h"
-                ],
-                2
-              ],
+              "mathJson": ["Divide", ["Multiply", "kz_b", "kz_h"], 2],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_b",
@@ -163,11 +155,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "b-set",
-      "h-set",
-      "area-set"
-    ]
+    "calculationOrder": ["b-set", "h-set", "area-set"]
   },
   "expected": {
     "status": "completed",
@@ -187,15 +175,7 @@
         }
       ]
     },
-    "substitutedMathJson": [
-      "Divide",
-      [
-        "Multiply",
-        300,
-        500
-      ],
-      2
-    ],
+    "substitutedMathJson": ["Divide", ["Multiply", 300, 500], 2],
     "dependencies": [
       {
         "symbolId": "symbol-b",
@@ -210,9 +190,6 @@
         "assignmentEventId": "event-h1"
       }
     ],
-    "substitutionPaths": [
-      "/1/1",
-      "/1/2"
-    ]
+    "substitutionPaths": ["/1/1", "/1/2"]
   }
 }

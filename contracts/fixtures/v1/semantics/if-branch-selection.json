@@ -120,10 +120,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "if-1",
-      "read"
-    ]
+    "calculationOrder": ["if-1", "read"]
   },
   "expected": {
     "status": "completed",
@@ -131,11 +128,7 @@
       "kind": "exactDecimal",
       "decimal": "5"
     },
-    "assignmentEvents": [
-      "assignment-then-x"
-    ],
-    "unexecutedAssignmentEvents": [
-      "assignment-else-x"
-    ]
+    "assignmentEvents": ["assignment-then-x"],
+    "unexecutedAssignmentEvents": ["assignment-else-x"]
   }
 }

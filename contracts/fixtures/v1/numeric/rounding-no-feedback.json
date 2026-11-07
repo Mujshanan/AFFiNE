@@ -66,11 +66,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Multiply",
-                "kz_x",
-                3
-              ],
+              "mathJson": ["Multiply", "kz_x", 3],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_x",
@@ -97,10 +93,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "x-third",
-      "y-times-three"
-    ]
+    "calculationOrder": ["x-third", "y-times-three"]
   },
   "expected": {
     "status": "completed",

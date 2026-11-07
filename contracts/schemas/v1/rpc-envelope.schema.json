@@ -36,12 +36,7 @@
     "getInfoRequest": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "jsonrpc",
-        "id",
-        "method",
-        "params"
-      ],
+      "required": ["jsonrpc", "id", "method", "params"],
       "properties": {
         "jsonrpc": {
           "const": "2.0"
@@ -61,12 +56,7 @@
     "validateRequest": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "jsonrpc",
-        "id",
-        "method",
-        "params"
-      ],
+      "required": ["jsonrpc", "id", "method", "params"],
       "properties": {
         "jsonrpc": {
           "const": "2.0"
@@ -85,12 +75,7 @@
     "evaluateRequest": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "jsonrpc",
-        "id",
-        "method",
-        "params"
-      ],
+      "required": ["jsonrpc", "id", "method", "params"],
       "properties": {
         "jsonrpc": {
           "const": "2.0"
@@ -109,11 +94,7 @@
     "cancelNotification": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "jsonrpc",
-        "method",
-        "params"
-      ],
+      "required": ["jsonrpc", "method", "params"],
       "properties": {
         "jsonrpc": {
           "const": "2.0"
@@ -129,19 +110,12 @@
     "response": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "jsonrpc",
-        "id"
-      ],
+      "required": ["jsonrpc", "id"],
       "oneOf": [
         {
-          "required": [
-            "result"
-          ],
+          "required": ["result"],
           "not": {
-            "required": [
-              "error"
-            ]
+            "required": ["error"]
           },
           "properties": {
             "id": {
@@ -150,13 +124,9 @@
           }
         },
         {
-          "required": [
-            "error"
-          ],
+          "required": ["error"],
           "not": {
-            "required": [
-              "result"
-            ]
+            "required": ["result"]
           },
           "properties": {
             "id": {
@@ -176,10 +146,7 @@
         "error": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "code",
-            "message"
-          ],
+          "required": ["code", "message"],
           "properties": {
             "code": {
               "type": "integer"

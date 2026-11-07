@@ -56,13 +56,7 @@
     "ifStatement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "statementId",
-        "condition",
-        "then",
-        "else"
-      ],
+      "required": ["kind", "statementId", "condition", "then", "else"],
       "properties": {
         "kind": {
           "const": "if"
@@ -91,12 +85,7 @@
     "whileStatement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "statementId",
-        "condition",
-        "body"
-      ],
+      "required": ["kind", "statementId", "condition", "body"],
       "properties": {
         "kind": {
           "const": "while"
@@ -119,11 +108,7 @@
     "expressionStatement": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "statementId",
-        "expression"
-      ],
+      "required": ["kind", "statementId", "expression"],
       "properties": {
         "kind": {
           "const": "expression"

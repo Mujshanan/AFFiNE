@@ -51,11 +51,7 @@
             "expression": {
               "format": "khwarizmi.expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Add",
-                "kz_length",
-                "kz_mass"
-              ],
+              "mathJson": ["Add", "kz_length", "kz_mass"],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_length",
@@ -80,14 +76,10 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "bad-add"
-    ]
+    "calculationOrder": ["bad-add"]
   },
   "expected": {
     "status": "completedWithErrors",
-    "diagnostics": [
-      "DIMENSION_MISMATCH"
-    ]
+    "diagnostics": ["DIMENSION_MISMATCH"]
   }
 }

@@ -2,10 +2,7 @@
   "expression": {
     "format": "khwarizmi.expression",
     "schemaVersion": 1,
-    "mathJson": [
-      "Gamma",
-      2
-    ],
+    "mathJson": ["Gamma", 2],
     "symbolBindings": [],
     "authoredNumbers": [
       {
@@ -25,8 +22,6 @@
   },
   "expected": {
     "status": "invalid",
-    "diagnostics": [
-      "UNSUPPORTED_FUNCTION"
-    ]
+    "diagnostics": ["UNSUPPORTED_FUNCTION"]
   }
 }

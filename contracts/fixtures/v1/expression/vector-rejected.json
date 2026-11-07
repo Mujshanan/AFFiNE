@@ -1,12 +1,7 @@
 {
   "format": "khwarizmi.expression",
   "schemaVersion": 1,
-  "mathJson": [
-    "List",
-    1,
-    2,
-    3
-  ],
+  "mathJson": ["List", 1, 2, 3],
   "symbolBindings": [],
   "authoredNumbers": [
     {

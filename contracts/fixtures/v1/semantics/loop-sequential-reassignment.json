@@ -49,11 +49,7 @@
             "condition": {
               "format": "khwarizmi.condition-expression",
               "schemaVersion": 1,
-              "mathJson": [
-                "Less",
-                "kz_i",
-                3
-              ],
+              "mathJson": ["Less", "kz_i", 3],
               "symbolBindings": [
                 {
                   "engineSymbol": "kz_i",
@@ -85,11 +81,7 @@
                 "expression": {
                   "format": "khwarizmi.expression",
                   "schemaVersion": 1,
-                  "mathJson": [
-                    "Add",
-                    "kz_i",
-                    1
-                  ],
+                  "mathJson": ["Add", "kz_i", 1],
                   "symbolBindings": [
                     {
                       "engineSymbol": "kz_i",
@@ -142,11 +134,7 @@
         ]
       }
     ],
-    "calculationOrder": [
-      "i-init",
-      "loop",
-      "i-read"
-    ]
+    "calculationOrder": ["i-init", "loop", "i-read"]
   },
   "expected": {
     "status": "completed",
@@ -154,11 +142,6 @@
       "kind": "exactDecimal",
       "decimal": "3"
     },
-    "assignmentVersions": [
-      1,
-      2,
-      3,
-      4
-    ]
+    "assignmentVersions": [1, 2, 3, 4]
   }
 }

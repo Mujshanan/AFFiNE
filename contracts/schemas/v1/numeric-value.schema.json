@@ -6,10 +6,7 @@
     {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "decimal"
-      ],
+      "required": ["kind", "decimal"],
       "properties": {
         "kind": {
           "const": "exactDecimal"
@@ -23,11 +20,7 @@
     {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "numerator",
-        "denominator"
-      ],
+      "required": ["kind", "numerator", "denominator"],
       "properties": {
         "kind": {
           "const": "exactRational"
@@ -45,12 +38,7 @@
     {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "kind",
-        "value",
-        "precision",
-        "method"
-      ],
+      "required": ["kind", "value", "precision", "method"],
       "properties": {
         "kind": {
           "const": "approximate"
