@@ -419,7 +419,7 @@ export function evaluateCalculationDocument(
           )
         : undefined;
       prepared = prepareUnitAwareMathJson(authored, {
-        registry: unitRegistry,
+        ...(unitRegistry ? { registry: unitRegistry } : {}),
         expectedRegistryVersion: String(document.unitRegistryVersion ?? ''),
         unitAttachments: expression.unitAttachments,
         bindings,
@@ -429,7 +429,7 @@ export function evaluateCalculationDocument(
             unitRegistry,
             String(document.unitRegistryVersion ?? '')
           ),
-        targetUnit,
+        ...(targetUnit ? { targetUnit } : {}),
       });
     } catch (error) {
       if (error instanceof UnitEvaluationFailure || error instanceof UnitCodecFailure)
