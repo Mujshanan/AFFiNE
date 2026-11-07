@@ -49,7 +49,7 @@ impl Stamp {
       return None;
     }
     let claim = fields[1].parse::<u32>().ok()?;
-    if claim == 0 || claim > MAX_MINT_BITS {
+    if claim == 0 || claim > MAX_CLAIM_BITS {
       return None;
     }
     // Validate the timestamp during parsing, not only during verification.
@@ -95,7 +95,7 @@ impl Stamp {
 
   fn mint(resource: String, requested_bits: Option<u32>) -> Result<String> {
     let claim = requested_bits.unwrap_or(20);
-    if claim == 0 || claim > MAX_CLAIM_BITS {
+    if claim == 0 || claim > MAX_MINT_BITS {
       return Err(napi::Error::from_reason(
         "Hashcash mint difficulty must be between 1 and 24 bits",
       ));
