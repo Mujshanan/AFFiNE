@@ -47,7 +47,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo tree -p affine_native -e normal | tee "${RUNNER_TEMP}/affine-native-dependencies.txt"
+          cargo tree -p affine_native -e all | tee "${RUNNER_TEMP}/affine-native-dependencies.txt"
           if grep -Eq '(^|[[:space:]])affine_common([[:space:]]|$)' "${RUNNER_TEMP}/affine-native-dependencies.txt"; then
             echo 'affine_common is present in the affine_native resolved dependency graph.'
             exit 1
