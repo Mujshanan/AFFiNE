@@ -203,6 +203,10 @@ describe('document evaluator unit semantics', () => {
       registryVersion: 'si-engineering-1',
       symbol: 'm',
     });
+    expect(result.assignmentEvents[0]?.unit).toMatchObject({
+      unitId: 'metre',
+      symbol: 'm',
+    });
   });
 
   it('applies explicit unit attachments to MathJSON nodes', () => {
