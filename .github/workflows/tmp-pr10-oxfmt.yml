@@ -1,0 +1,65 @@
+name: Temporary Oxfmt runner for PR 10
+
+on:
+  push:
+    branches:
+      - khwarizmi/document-evaluation-v1
+
+permissions:
+  contents: read
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install repository toolchain
+        uses: ./.github/actions/setup-node
+        with:
+          corepack-install: 'true'
+          package-install: 'true'
+          electron-install: 'false'
+
+      - name: Format only the CI-reported files
+        run: |
+          yarn oxfmt --write \
+            docs/architecture/PHASE-B-EVALUATION.md \
+            packages/common/khwarizmi-contracts/src/document-evaluator-control-flow.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-evaluator-runtime.ts \
+            packages/common/khwarizmi-contracts/src/document-evaluator-units.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-integrity.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-integrity.ts \
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.spec.ts \
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.ts \
+            packages/common/khwarizmi-contracts/src/unit-evaluator.ts
+
+      - name: Verify formatter output
+        run: |
+          yarn oxfmt --check \
+            docs/architecture/PHASE-B-EVALUATION.md \
+            packages/common/khwarizmi-contracts/src/document-evaluator-control-flow.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-evaluator-runtime.ts \
+            packages/common/khwarizmi-contracts/src/document-evaluator-units.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-integrity.spec.ts \
+            packages/common/khwarizmi-contracts/src/document-integrity.ts \
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.spec.ts \
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.ts \
+            packages/common/khwarizmi-contracts/src/unit-evaluator.ts
+          git diff --check
+
+      - name: Upload exact formatted files
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr10-oxfmt-output
+          path: |
+            docs/architecture/PHASE-B-EVALUATION.md
+            packages/common/khwarizmi-contracts/src/document-evaluator-control-flow.spec.ts
+            packages/common/khwarizmi-contracts/src/document-evaluator-runtime.ts
+            packages/common/khwarizmi-contracts/src/document-evaluator-units.spec.ts
+            packages/common/khwarizmi-contracts/src/document-integrity.spec.ts
+            packages/common/khwarizmi-contracts/src/document-integrity.ts
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.spec.ts
+            packages/common/khwarizmi-contracts/src/rpc-dispatcher.ts
+            packages/common/khwarizmi-contracts/src/unit-evaluator.ts
