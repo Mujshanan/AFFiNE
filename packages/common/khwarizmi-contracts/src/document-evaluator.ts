@@ -1,4 +1,4 @@
-import { evaluateMathJson, type ComputeEngineFactory } from './compute-engine-adapter.js';
+import { type ComputeEngineFactory, evaluateMathJson } from './compute-engine-adapter.js';
 import { rationalToTerminatingDecimal } from './numeric-codec.js';
 
 type RecordValue = Record<string, unknown>;
