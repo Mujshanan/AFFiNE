@@ -28,6 +28,8 @@ export class RpcDispatchFailure extends Error {
     message: string,
     readonly data?: unknown
   ) {
+    if (!Number.isInteger(code) || code < -32099 || code > -32000)
+      throw new RangeError('RPC application error codes must be in the -32000..-32099 range');
     super(message);
     this.name = 'RpcDispatchFailure';
   }
@@ -122,8 +124,14 @@ export class RpcRequestDispatcher {
 
     const definition = this.methods.get(message.method);
     if (!definition) return errorResponse(id, -32601, 'Method not found');
-    if (definition.validateParams && !definition.validateParams(params))
-      return errorResponse(id, -32602, 'Invalid params');
+    if (definition.validateParams) {
+      try {
+        if (!definition.validateParams(params))
+          return errorResponse(id, -32602, 'Invalid params');
+      } catch {
+        return errorResponse(id, -32602, 'Invalid params');
+      }
+    }
 
     if (this.closed)
       return errorResponse(id, -32000, 'RPC host is closed');
