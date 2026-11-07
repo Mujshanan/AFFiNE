@@ -483,9 +483,17 @@ export function prepareUnitAwareMathJson(
             'Unitful powers require an integer exponent in v1'
           );
         if (base && exponent !== undefined) {
-          const dimension = base.dimension.map(value =>
-            rational(value.numerator * BigInt(exponent), value.denominator)
-          );
+          const dimensionEntries = base.dimensionBases
+            .map((dimensionBase, index) => ({
+              base: dimensionBase,
+              exponent: rational(
+                base.dimension[index]!.numerator * BigInt(exponent),
+                base.dimension[index]!.denominator
+              ),
+            }))
+            .filter(entry => entry.exponent.numerator !== 0n);
+          const dimension = dimensionEntries.map(entry => entry.exponent);
+          const dimensionBases = dimensionEntries.map(entry => entry.base);
           const factors = base.factors
             .map(factor => ({
               unitId: factor.unitId,
@@ -503,7 +511,7 @@ export function prepareUnitAwareMathJson(
               registryVersion: base.registryVersion,
               symbol: base.symbol + '^' + exponent,
               dimension,
-              dimensionBases: base.dimensionBases,
+              dimensionBases,
               scale: powered,
               factors,
             },
