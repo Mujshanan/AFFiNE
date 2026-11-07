@@ -21,7 +21,9 @@ function assertWellFormedUnicode(value: string): void {
     if (unit >= 0xd800 && unit <= 0xdbff) {
       const next = value.charCodeAt(index + 1);
       if (!(next >= 0xdc00 && next <= 0xdfff))
-        throw new TypeError('Canonical JSON strings must contain valid Unicode');
+        throw new TypeError(
+          'Canonical JSON strings must contain valid Unicode'
+        );
       index++;
     } else if (unit >= 0xdc00 && unit <= 0xdfff) {
       throw new TypeError('Canonical JSON strings must contain valid Unicode');
@@ -48,13 +50,16 @@ export function canonicalizeJson(value: unknown): string {
     }
     if (typeof item === 'number') {
       if (!Number.isFinite(item))
-        throw new TypeError('Canonical JSON does not permit non-finite numbers');
+        throw new TypeError(
+          'Canonical JSON does not permit non-finite numbers'
+        );
       return Object.is(item, -0) ? '0' : JSON.stringify(item);
     }
     if (typeof item !== 'object')
       throw new TypeError('Value is not representable in canonical JSON');
 
-    if (active.has(item)) throw new TypeError('Canonical JSON cannot contain cycles');
+    if (active.has(item))
+      throw new TypeError('Canonical JSON cannot contain cycles');
     active.add(item);
     try {
       if (Array.isArray(item)) {
@@ -73,7 +78,9 @@ export function canonicalizeJson(value: unknown): string {
                 (!/^(0|[1-9][0-9]*)$/.test(key) || Number(key) >= item.length))
           )
         )
-          throw new TypeError('Canonical JSON arrays cannot contain extra properties');
+          throw new TypeError(
+            'Canonical JSON arrays cannot contain extra properties'
+          );
         return '[' + entries.join(',') + ']';
       }
 
@@ -82,18 +89,26 @@ export function canonicalizeJson(value: unknown): string {
         throw new TypeError('Canonical JSON objects must be plain objects');
       const ownKeys = Reflect.ownKeys(item);
       if (ownKeys.some(key => typeof key === 'symbol'))
-        throw new TypeError('Canonical JSON objects cannot contain symbol keys');
+        throw new TypeError(
+          'Canonical JSON objects cannot contain symbol keys'
+        );
       const keys = (ownKeys as string[]).sort();
       const properties = keys.map(key => {
         assertWellFormedUnicode(key);
         const descriptor = Object.getOwnPropertyDescriptor(item, key);
         if (!descriptor || !descriptor.enumerable)
-          throw new TypeError('Canonical JSON objects require enumerable properties');
+          throw new TypeError(
+            'Canonical JSON objects require enumerable properties'
+          );
         if (!Object.prototype.hasOwnProperty.call(descriptor, 'value'))
-          throw new TypeError('Canonical JSON objects cannot contain accessor properties');
+          throw new TypeError(
+            'Canonical JSON objects cannot contain accessor properties'
+          );
         const serializedKey = JSON.stringify(key);
         if (serializedKey === undefined)
-          throw new TypeError('Canonical JSON object key could not be serialized');
+          throw new TypeError(
+            'Canonical JSON object key could not be serialized'
+          );
         return serializedKey + ':' + serialize(descriptor.value);
       });
       return '{' + properties.join(',') + '}';

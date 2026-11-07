@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  RpcDispatchFailure,
-  RpcRequestDispatcher,
-} from './rpc-dispatcher.js';
+import { RpcDispatchFailure, RpcRequestDispatcher } from './rpc-dispatcher.js';
 
 function deferred<T>() {
   let resolve!: (value: T) => void;
@@ -18,7 +15,9 @@ describe('Khwarizmi JSON-RPC dispatcher', () => {
     const dispatcher = new RpcRequestDispatcher({
       'document.evaluate': {
         validateParams: params =>
-          typeof params === 'object' && params !== null && !Array.isArray(params),
+          typeof params === 'object' &&
+          params !== null &&
+          !Array.isArray(params),
         handler: params => ({ accepted: true, params }),
       },
     });
@@ -42,7 +41,9 @@ describe('Khwarizmi JSON-RPC dispatcher', () => {
     const dispatcher = new RpcRequestDispatcher({
       'document.evaluate': {
         validateParams: params =>
-          typeof params === 'object' && params !== null && 'documentId' in params,
+          typeof params === 'object' &&
+          params !== null &&
+          'documentId' in params,
         handler: () => 'unused',
       },
     });
@@ -77,14 +78,17 @@ describe('Khwarizmi JSON-RPC dispatcher', () => {
   it('rejects duplicate in-flight IDs and enforces the concurrency limit', async () => {
     const firstWork = deferred<string>();
     const secondWork = deferred<string>();
-    const dispatcher = new RpcRequestDispatcher({
-      work: {
-        handler: params =>
-          (params as { key: string }).key === 'first'
-            ? firstWork.promise
-            : secondWork.promise,
+    const dispatcher = new RpcRequestDispatcher(
+      {
+        work: {
+          handler: params =>
+            (params as { key: string }).key === 'first'
+              ? firstWork.promise
+              : secondWork.promise,
+        },
       },
-    }, 1);
+      1
+    );
 
     const first = dispatcher.dispatch({
       jsonrpc: '2.0',

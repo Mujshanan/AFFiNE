@@ -10,7 +10,10 @@ export interface RpcMethodContext {
 }
 
 export interface RpcMethodDefinition {
-  handler: (params: unknown, context: RpcMethodContext) => unknown | Promise<unknown>;
+  handler: (
+    params: unknown,
+    context: RpcMethodContext
+  ) => unknown | Promise<unknown>;
   validateParams?: (params: unknown) => boolean;
 }
 
@@ -29,7 +32,9 @@ export class RpcDispatchFailure extends Error {
     readonly data?: unknown
   ) {
     if (!Number.isInteger(code) || code < -32099 || code > -32000)
-      throw new RangeError('RPC application error codes must be in the -32000..-32099 range');
+      throw new RangeError(
+        'RPC application error codes must be in the -32000..-32099 range'
+      );
     super(message);
     this.name = 'RpcDispatchFailure';
   }
@@ -89,8 +94,12 @@ export class RpcRequestDispatcher {
     )
       throw new RangeError('maxConcurrentRequests must be between 1 and 64');
     this.methods = new Map(Object.entries(methods));
-    if ([...this.methods.keys()].some(name => !name || name === '$/cancelRequest'))
-      throw new TypeError('RPC method names must be non-empty and cannot replace cancellation');
+    if (
+      [...this.methods.keys()].some(name => !name || name === '$/cancelRequest')
+    )
+      throw new TypeError(
+        'RPC method names must be non-empty and cannot replace cancellation'
+      );
   }
 
   get activeCount(): number {
@@ -104,11 +113,19 @@ export class RpcRequestDispatcher {
   }
 
   async dispatch(message: unknown): Promise<RpcDispatchResponse | null> {
-    if (!isRecord(message) || message.jsonrpc !== '2.0' || typeof message.method !== 'string' || !message.method)
+    if (
+      !isRecord(message) ||
+      message.jsonrpc !== '2.0' ||
+      typeof message.method !== 'string' ||
+      !message.method
+    )
       return errorResponse(null, -32600, 'Invalid Request');
 
     // Cancellation is a JSON-RPC notification and therefore has no response.
-    if (message.method === '$/cancelRequest' && !Object.prototype.hasOwnProperty.call(message, 'id')) {
+    if (
+      message.method === '$/cancelRequest' &&
+      !Object.prototype.hasOwnProperty.call(message, 'id')
+    ) {
       const params = isRecord(message.params) ? message.params : undefined;
       if (params && isRequestId(params.id)) this.cancellation.cancel(params.id);
       return null;
@@ -117,7 +134,11 @@ export class RpcRequestDispatcher {
     // Other notifications are intentionally not dispatched in v1.
     if (!Object.prototype.hasOwnProperty.call(message, 'id')) return null;
     if (message.method === '$/cancelRequest')
-      return errorResponse(null, -32600, 'Cancellation must be sent as a notification');
+      return errorResponse(
+        null,
+        -32600,
+        'Cancellation must be sent as a notification'
+      );
 
     const id = message.id;
     if (!isRequestId(id))
@@ -138,8 +159,7 @@ export class RpcRequestDispatcher {
       }
     }
 
-    if (this.closed)
-      return errorResponse(id, -32000, 'RPC host is closed');
+    if (this.closed) return errorResponse(id, -32000, 'RPC host is closed');
     const key = requestIdKey(id);
     if (this.activeIds.has(key))
       return errorResponse(id, -32600, 'Duplicate active request ID');
@@ -161,7 +181,10 @@ export class RpcRequestDispatcher {
 
     this.activeIds.add(key);
     try {
-      const result = await definition.handler(params, { requestId: id, signal });
+      const result = await definition.handler(params, {
+        requestId: id,
+        signal,
+      });
       if (signal.aborted) return errorResponse(id, -32800, 'Request cancelled');
       return { jsonrpc: '2.0', id, result };
     } catch (error) {

@@ -6,7 +6,8 @@ import * as UnitEvaluator from './unit-evaluator.js';
 type ComputeEngineFactory = ComputeEngineAdapter.ComputeEngineFactory;
 type UnitRegistry = UnitCodec.UnitRegistry;
 type UnitQuantity = UnitEvaluator.UnitQuantity;
-const { evaluateMathJson, SUPPORTED_COMPUTE_ENGINE_VERSION } = ComputeEngineAdapter;
+const { evaluateMathJson, SUPPORTED_COMPUTE_ENGINE_VERSION } =
+  ComputeEngineAdapter;
 const { loadUnitRegistry, UnitCodecFailure } = UnitCodec;
 const {
   UnitEvaluationFailure,
@@ -142,7 +143,13 @@ function replaceTokens(
   }
   if (Array.isArray(value))
     return value.map((child, index) =>
-      replaceTokens(child, bindings, [...paths, String(index)], substitutions, dependencies)
+      replaceTokens(
+        child,
+        bindings,
+        [...paths, String(index)],
+        substitutions,
+        dependencies
+      )
     );
   if (isRecord(value)) {
     const result: RecordValue = {};
@@ -150,7 +157,13 @@ function replaceTokens(
       setOwnProperty(
         result,
         key,
-        replaceTokens(child as JsonValue, bindings, [...paths, key], substitutions, dependencies)
+        replaceTokens(
+          child as JsonValue,
+          bindings,
+          [...paths, key],
+          substitutions,
+          dependencies
+        )
       );
     return result as JsonValue;
   }
@@ -208,9 +221,14 @@ function restoreAuthoredNumbers(
   return result as JsonValue;
 }
 
-function scalarValue(mathJson: unknown, expression: RecordValue): RecordValue | null {
+function scalarValue(
+  mathJson: unknown,
+  expression: RecordValue
+): RecordValue | null {
   const authored = Array.isArray(expression.authoredNumbers)
-    ? expression.authoredNumbers.find(entry => isRecord(entry) && entry.path === '')
+    ? expression.authoredNumbers.find(
+        entry => isRecord(entry) && entry.path === ''
+      )
     : undefined;
   if (
     isRecord(authored) &&
@@ -281,12 +299,16 @@ export function evaluateCalculationDocument(
   document: unknown,
   options: DocumentEvaluationOptions
 ): DocumentEvaluationResult {
-  if (!isRecord(document) || document.format !== 'khwarizmi.calculation-document')
+  if (
+    !isRecord(document) ||
+    document.format !== 'khwarizmi.calculation-document'
+  )
     throw new TypeError('Expected a Khwarizmi calculation document');
   const validation = options.validateDocument(document);
   if (!validation.valid)
     throw new TypeError(
-      'Document validation failed: ' + JSON.stringify(validation.diagnostics ?? [])
+      'Document validation failed: ' +
+        JSON.stringify(validation.diagnostics ?? [])
     );
   if (!/^[a-f0-9]{64}$/.test(options.documentRevision))
     throw new TypeError('documentRevision must be a lowercase SHA-256 digest');
@@ -295,8 +317,7 @@ export function evaluateCalculationDocument(
       'The calculation host must pin @cortex-js/compute-engine to ' +
         SUPPORTED_COMPUTE_ENGINE_VERSION
     );
-  if (!options.evaluationId)
-    throw new TypeError('Evaluation ID is required');
+  if (!options.evaluationId) throw new TypeError('Evaluation ID is required');
 
   const topLevel: RecordValue[] = [];
   const statementIds = new Set<string>();
@@ -305,9 +326,13 @@ export function evaluateCalculationDocument(
     for (const statement of statements) {
       if (!isRecord(statement)) continue;
       if (typeof statement.statementId !== 'string' || !statement.statementId)
-        throw new TypeError('Every statement must have a non-empty statementId');
+        throw new TypeError(
+          'Every statement must have a non-empty statementId'
+        );
       if (statementIds.has(statement.statementId))
-        throw new TypeError('Duplicate statementId in document: ' + statement.statementId);
+        throw new TypeError(
+          'Duplicate statementId in document: ' + statement.statementId
+        );
       statementIds.add(statement.statementId);
       if (top) topLevel.push(statement);
       if (statement.kind === 'if') {
@@ -323,16 +348,22 @@ export function evaluateCalculationDocument(
 
   if (!Array.isArray(document.calculationOrder))
     throw new TypeError('Document calculationOrder must be an array');
-  const topById = new Map(topLevel.map(statement => [String(statement.statementId), statement]));
+  const topById = new Map(
+    topLevel.map(statement => [String(statement.statementId), statement])
+  );
   const ordered = document.calculationOrder.map(id => {
     if (typeof id !== 'string' || !topById.has(id))
-      throw new TypeError('calculationOrder contains a missing or nested statement ID: ' + id);
+      throw new TypeError(
+        'calculationOrder contains a missing or nested statement ID: ' + id
+      );
     return id;
   });
   if (new Set(ordered).size !== ordered.length)
     throw new TypeError('Duplicate statement in calculationOrder');
   if (ordered.length !== topLevel.length)
-    throw new TypeError('calculationOrder must contain each top-level statement exactly once');
+    throw new TypeError(
+      'calculationOrder must contain each top-level statement exactly once'
+    );
 
   const unitRegistry: UnitRegistry | undefined =
     options.unitRegistry === undefined
@@ -342,10 +373,14 @@ export function evaluateCalculationDocument(
     unitRegistry &&
     unitRegistry.version !== String(document.unitRegistryVersion ?? '')
   )
-    throw new TypeError('Loaded unit registry version does not match the document');
+    throw new TypeError(
+      'Loaded unit registry version does not match the document'
+    );
 
   const documentSymbols = new Map<string, RecordValue>();
-  for (const symbol of Array.isArray(document.symbols) ? document.symbols : []) {
+  for (const symbol of Array.isArray(document.symbols)
+    ? document.symbols
+    : []) {
     if (isRecord(symbol) && typeof symbol.symbolId === 'string')
       documentSymbols.set(symbol.symbolId, symbol);
   }
@@ -358,10 +393,17 @@ export function evaluateCalculationDocument(
   const results: RecordValue[] = [];
   const diagnostics: EvaluationDiagnostic[] = [];
   const usedEventIds = new Set<string>();
-  const eventId = options.createEventId ?? ((id, version) => `event:${id}:${version}`);
+  const eventId =
+    options.createEventId ?? ((id, version) => `event:${id}:${version}`);
   const maxLoopIterations = options.maxLoopIterations ?? 10000;
-  if (!Number.isInteger(maxLoopIterations) || maxLoopIterations < 1 || maxLoopIterations > 10000)
-    throw new RangeError('maxLoopIterations must be an integer from 1 to 10000');
+  if (
+    !Number.isInteger(maxLoopIterations) ||
+    maxLoopIterations < 1 ||
+    maxLoopIterations > 10000
+  )
+    throw new RangeError(
+      'maxLoopIterations must be an integer from 1 to 10000'
+    );
   let totalLoopIterations = 0;
 
   const findState = (symbolId: string): AssignmentState | undefined => {
@@ -388,9 +430,17 @@ export function evaluateCalculationDocument(
     targetSymbolId?: string
   ): EvaluatedExpression => {
     if (!Object.prototype.hasOwnProperty.call(expression, 'mathJson'))
-      throw new EvaluationFailure('INVALID_EXPRESSION', 'Expression has no MathJSON payload');
-    const bindings = new Map<string, { state: AssignmentState; symbolId: string }>();
-    for (const binding of Array.isArray(expression.symbolBindings) ? expression.symbolBindings : []) {
+      throw new EvaluationFailure(
+        'INVALID_EXPRESSION',
+        'Expression has no MathJSON payload'
+      );
+    const bindings = new Map<
+      string,
+      { state: AssignmentState; symbolId: string }
+    >();
+    for (const binding of Array.isArray(expression.symbolBindings)
+      ? expression.symbolBindings
+      : []) {
       if (
         !isRecord(binding) ||
         typeof binding.engineSymbol !== 'string' ||
@@ -403,7 +453,11 @@ export function evaluateCalculationDocument(
           'A preceding assignment failed; dependent expression was not evaluated'
         );
       const state = findState(binding.symbolId);
-      if (state) bindings.set(binding.engineSymbol, { state, symbolId: binding.symbolId });
+      if (state)
+        bindings.set(binding.engineSymbol, {
+          state,
+          symbolId: binding.symbolId,
+        });
     }
     const substitutions: RecordValue[] = [];
     const dependencies = new Map<string, AssignmentDependency>();
@@ -434,7 +488,10 @@ export function evaluateCalculationDocument(
         ...(targetUnit ? { targetUnit } : {}),
       });
     } catch (error) {
-      if (error instanceof UnitEvaluationFailure || error instanceof UnitCodecFailure)
+      if (
+        error instanceof UnitEvaluationFailure ||
+        error instanceof UnitCodecFailure
+      )
         throw new EvaluationFailure(error.code, error.message);
       throw error;
     }
@@ -473,9 +530,19 @@ export function evaluateCalculationDocument(
     value: evaluated.value,
     dependencies: evaluated.dependencies,
     substitutions: evaluated.substitutions,
-    diagnostics: evaluated.value ? [] : [{ code: 'UNSUPPORTED_RESULT_VALUE', message: 'Evaluator returned a non-scalar or unsupported numeric result' }],
+    diagnostics: evaluated.value
+      ? []
+      : [
+          {
+            code: 'UNSUPPORTED_RESULT_VALUE',
+            message:
+              'Evaluator returned a non-scalar or unsupported numeric result',
+          },
+        ],
     ...(evaluated.unit ? { unit: serializeUnitQuantity(evaluated.unit) } : {}),
-    ...(controlFlowPath.length ? { controlFlowPath: [...controlFlowPath] } : {}),
+    ...(controlFlowPath.length
+      ? { controlFlowPath: [...controlFlowPath] }
+      : {}),
   });
 
   const publishAssignment = (
@@ -494,12 +561,16 @@ export function evaluateCalculationDocument(
         statementId: String(statement.statementId),
         symbolId,
       });
-      results.push(resultRecord(
-        String(statement.statementId),
-        isRecord(statement.expression) ? statement.expression : (statement.initializer as RecordValue),
-        evaluated,
-        controlFlowPath
-      ));
+      results.push(
+        resultRecord(
+          String(statement.statementId),
+          isRecord(statement.expression)
+            ? statement.expression
+            : (statement.initializer as RecordValue),
+          evaluated,
+          controlFlowPath
+        )
+      );
       return;
     }
     const version = (assignmentVersions.get(symbolId) ?? 0) + 1;
@@ -532,12 +603,16 @@ export function evaluateCalculationDocument(
       assignmentVersion: version,
       assignmentEventId: id,
       value: evaluated.value,
-      ...(evaluated.unit ? { unit: serializeUnitQuantity(evaluated.unit) } : {}),
+      ...(evaluated.unit
+        ? { unit: serializeUnitQuantity(evaluated.unit) }
+        : {}),
       dependencies: evaluated.dependencies,
     });
     const result = resultRecord(
       String(statement.statementId),
-      isRecord(statement.expression) ? statement.expression : (statement.initializer as RecordValue),
+      isRecord(statement.expression)
+        ? statement.expression
+        : (statement.initializer as RecordValue),
       evaluated,
       controlFlowPath
     );
@@ -551,7 +626,8 @@ export function evaluateCalculationDocument(
     createLexicalScope: boolean
   ) => {
     if (!Array.isArray(statements)) return;
-    if (createLexicalScope) localScopes.push(new Map<string, AssignmentState>());
+    if (createLexicalScope)
+      localScopes.push(new Map<string, AssignmentState>());
     try {
       for (const raw of statements) {
         if (!isRecord(raw)) continue;
@@ -559,8 +635,13 @@ export function evaluateCalculationDocument(
         const kind = raw.kind;
         if (kind === 'assign' || kind === 'expression') {
           if (!isRecord(raw.expression)) {
-            diagnostics.push({ code: 'INVALID_EXPRESSION', message: 'Statement expression is malformed', statementId });
-            if (kind === 'assign' && typeof raw.targetSymbolId === 'string') failedSymbols.add(raw.targetSymbolId);
+            diagnostics.push({
+              code: 'INVALID_EXPRESSION',
+              message: 'Statement expression is malformed',
+              statementId,
+            });
+            if (kind === 'assign' && typeof raw.targetSymbolId === 'string')
+              failedSymbols.add(raw.targetSymbolId);
             continue;
           }
           try {
@@ -572,17 +653,46 @@ export function evaluateCalculationDocument(
                 : undefined
             );
             if (kind === 'expression') {
-              results.push(resultRecord(statementId, raw.expression, evaluated, controlFlowPath));
+              results.push(
+                resultRecord(
+                  statementId,
+                  raw.expression,
+                  evaluated,
+                  controlFlowPath
+                )
+              );
               if (!evaluated.value)
-                diagnostics.push({ code: 'UNSUPPORTED_RESULT_VALUE', message: 'Expression result is not a supported scalar value', statementId });
+                diagnostics.push({
+                  code: 'UNSUPPORTED_RESULT_VALUE',
+                  message: 'Expression result is not a supported scalar value',
+                  statementId,
+                });
             } else {
-              if (typeof raw.targetSymbolId !== 'string' || typeof raw.assignmentId !== 'string')
-                throw new EvaluationFailure('INVALID_ASSIGNMENT', 'Assignment target and assignmentId are required');
-              publishAssignment(raw, raw.targetSymbolId, raw.assignmentId, evaluated, controlFlowPath);
+              if (
+                typeof raw.targetSymbolId !== 'string' ||
+                typeof raw.assignmentId !== 'string'
+              )
+                throw new EvaluationFailure(
+                  'INVALID_ASSIGNMENT',
+                  'Assignment target and assignmentId are required'
+                );
+              publishAssignment(
+                raw,
+                raw.targetSymbolId,
+                raw.assignmentId,
+                evaluated,
+                controlFlowPath
+              );
             }
           } catch (error) {
-            const code = error instanceof EvaluationFailure ? error.code : 'EVALUATION_FAILED';
-            const message = error instanceof Error ? error.message : 'Unknown evaluation failure';
+            const code =
+              error instanceof EvaluationFailure
+                ? error.code
+                : 'EVALUATION_FAILED';
+            const message =
+              error instanceof Error
+                ? error.message
+                : 'Unknown evaluation failure';
             diagnostics.push({ code, message, statementId });
             results.push({
               resultId: 'result:' + statementId + ':' + results.length,
@@ -594,7 +704,9 @@ export function evaluateCalculationDocument(
               dependencies: [],
               substitutions: [],
               diagnostics: [{ code, message }],
-              ...(controlFlowPath.length ? { controlFlowPath: [...controlFlowPath] } : {}),
+              ...(controlFlowPath.length
+                ? { controlFlowPath: [...controlFlowPath] }
+                : {}),
             });
             if (kind === 'assign' && typeof raw.targetSymbolId === 'string')
               failedSymbols.add(raw.targetSymbolId);
@@ -604,11 +716,22 @@ export function evaluateCalculationDocument(
 
         if (kind === 'declareLocal') {
           if (!localScopes.length) {
-            diagnostics.push({ code: 'LOCAL_OUT_OF_SCOPE', message: 'Local declarations require a lexical block', statementId });
+            diagnostics.push({
+              code: 'LOCAL_OUT_OF_SCOPE',
+              message: 'Local declarations require a lexical block',
+              statementId,
+            });
             continue;
           }
-          if (!isRecord(raw.initializer) || typeof raw.localSymbolId !== 'string') {
-            diagnostics.push({ code: 'INVALID_LOCAL_DECLARATION', message: 'Local declaration is malformed', statementId });
+          if (
+            !isRecord(raw.initializer) ||
+            typeof raw.localSymbolId !== 'string'
+          ) {
+            diagnostics.push({
+              code: 'INVALID_LOCAL_DECLARATION',
+              message: 'Local declaration is malformed',
+              statementId,
+            });
             continue;
           }
           try {
@@ -622,9 +745,20 @@ export function evaluateCalculationDocument(
               true
             );
           } catch (error) {
-            const code = error instanceof EvaluationFailure ? error.code : 'EVALUATION_FAILED';
-            const message = error instanceof Error ? error.message : 'Unknown local initialization failure';
-            diagnostics.push({ code, message, statementId, symbolId: String(raw.localSymbolId) });
+            const code =
+              error instanceof EvaluationFailure
+                ? error.code
+                : 'EVALUATION_FAILED';
+            const message =
+              error instanceof Error
+                ? error.message
+                : 'Unknown local initialization failure';
+            diagnostics.push({
+              code,
+              message,
+              statementId,
+              symbolId: String(raw.localSymbolId),
+            });
             failedSymbols.add(String(raw.localSymbolId));
           }
           continue;
@@ -632,26 +766,44 @@ export function evaluateCalculationDocument(
 
         if (kind === 'if') {
           if (!isRecord(raw.condition)) {
-            diagnostics.push({ code: 'INVALID_CONDITION', message: 'If condition is malformed', statementId });
+            diagnostics.push({
+              code: 'INVALID_CONDITION',
+              message: 'If condition is malformed',
+              statementId,
+            });
             continue;
           }
           try {
             const condition = evaluateRecord(raw.condition, statementId);
-            const truth = condition.mathJson === true || condition.mathJson === 'True';
-            const falsity = condition.mathJson === false || condition.mathJson === 'False';
+            const truth =
+              condition.mathJson === true || condition.mathJson === 'True';
+            const falsity =
+              condition.mathJson === false || condition.mathJson === 'False';
             if (!truth && !falsity)
-              throw new EvaluationFailure('INVALID_CONDITION_RESULT', 'If condition did not evaluate to a boolean');
+              throw new EvaluationFailure(
+                'INVALID_CONDITION_RESULT',
+                'If condition did not evaluate to a boolean'
+              );
             const branch = truth ? raw.then : raw.else;
             executeStatements(
               branch,
-              [...controlFlowPath, { statementId, kind: truth ? 'if-then' : 'if-else' }],
+              [
+                ...controlFlowPath,
+                { statementId, kind: truth ? 'if-then' : 'if-else' },
+              ],
               true
             );
           } catch (error) {
-            const code = error instanceof EvaluationFailure ? error.code : 'EVALUATION_FAILED';
+            const code =
+              error instanceof EvaluationFailure
+                ? error.code
+                : 'EVALUATION_FAILED';
             diagnostics.push({
               code,
-              message: error instanceof Error ? error.message : 'If condition evaluation failed',
+              message:
+                error instanceof Error
+                  ? error.message
+                  : 'If condition evaluation failed',
               statementId,
             });
           }
@@ -660,17 +812,26 @@ export function evaluateCalculationDocument(
 
         if (kind === 'while') {
           if (!isRecord(raw.condition)) {
-            diagnostics.push({ code: 'INVALID_CONDITION', message: 'While condition is malformed', statementId });
+            diagnostics.push({
+              code: 'INVALID_CONDITION',
+              message: 'While condition is malformed',
+              statementId,
+            });
             continue;
           }
           let iteration = 0;
           while (true) {
             try {
               const condition = evaluateRecord(raw.condition, statementId);
-              const truth = condition.mathJson === true || condition.mathJson === 'True';
-              const falsity = condition.mathJson === false || condition.mathJson === 'False';
+              const truth =
+                condition.mathJson === true || condition.mathJson === 'True';
+              const falsity =
+                condition.mathJson === false || condition.mathJson === 'False';
               if (!truth && !falsity)
-                throw new EvaluationFailure('INVALID_CONDITION_RESULT', 'While condition did not evaluate to a boolean');
+                throw new EvaluationFailure(
+                  'INVALID_CONDITION_RESULT',
+                  'While condition did not evaluate to a boolean'
+                );
               if (falsity) break;
               if (totalLoopIterations >= maxLoopIterations) {
                 diagnostics.push({
@@ -683,15 +844,24 @@ export function evaluateCalculationDocument(
               totalLoopIterations++;
               executeStatements(
                 raw.body,
-                [...controlFlowPath, { statementId, kind: 'while-iteration', iteration }],
+                [
+                  ...controlFlowPath,
+                  { statementId, kind: 'while-iteration', iteration },
+                ],
                 true
               );
               iteration++;
             } catch (error) {
-              const code = error instanceof EvaluationFailure ? error.code : 'EVALUATION_FAILED';
+              const code =
+                error instanceof EvaluationFailure
+                  ? error.code
+                  : 'EVALUATION_FAILED';
               diagnostics.push({
                 code,
-                message: error instanceof Error ? error.message : 'While condition evaluation failed',
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : 'While condition evaluation failed',
                 statementId,
               });
               break;
