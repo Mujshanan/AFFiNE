@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'node:path';
 
 import {
   canonicalSha256,
+  canonicalizeJson,
   isEvaluationSnapshotCurrent,
   type AuthoredDocumentIdentity,
   type EvaluationSnapshotIdentity,
@@ -57,6 +58,30 @@ function assertDocumentId(documentId: string): void {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isSnapshotIdentity(value: unknown): value is EvaluationSnapshotIdentity {
+  if (!isRecord(value) || !isRecord(value.engine)) return false;
+  return (
+    typeof value.documentId === 'string' &&
+    typeof value.documentRevision === 'string' &&
+    /^[a-f0-9]{64}$/.test(value.documentRevision) &&
+    typeof value.semanticVersion === 'string' &&
+    typeof value.unitRegistryVersion === 'string' &&
+    value.engine.name === 'cortexjs-compute-engine' &&
+    typeof value.engine.version === 'string' &&
+    value.engine.version.length > 0
+  );
+}
+
+function isKnownAuthoredDocumentIntegrityError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.message === 'AUTHORED_DOCUMENT_JSON_INVALID' ||
+      error.message === 'AUTHORED_DOCUMENT_ENVELOPE_INVALID' ||
+      error.message === 'DOCUMENT_DIGEST_INVALID' ||
+      error.message === 'DOCUMENT_DIGEST_MISMATCH')
+  );
 }
 
 async function readJson(path: string): Promise<unknown> {
@@ -122,14 +147,23 @@ export class FileDocumentStore {
   async saveDocument<TDocument extends { documentId: string }>(
     document: TDocument
   ): Promise<string> {
-    const digest = await canonicalSha256(document);
+    // Capture a canonical immutable payload before the asynchronous digest operation.
+    // This prevents caller mutation from making the persisted bytes disagree with
+    // the digest calculated for the save.
+    const persistedDocument = JSON.parse(canonicalizeJson(document)) as TDocument;
+    if (
+      !isRecord(persistedDocument) ||
+      typeof persistedDocument.documentId !== 'string'
+    )
+      throw new TypeError('AUTHORED_DOCUMENT_ID_INVALID');
+    const digest = await canonicalSha256(persistedDocument);
     const envelope: AuthoredDocumentEnvelope<TDocument> = {
       format: 'khwarizmi.authored-document',
       schemaVersion: 1,
       digest,
-      document,
+      document: persistedDocument,
     };
-    await atomicWrite(this.documentPath(document.documentId), envelope);
+    await atomicWrite(this.documentPath(persistedDocument.documentId), envelope);
     return digest;
   }
 
@@ -164,32 +198,35 @@ export class FileDocumentStore {
     documentId: string,
     snapshot: TSnapshot
   ): Promise<string> {
-    if (snapshot.documentId !== documentId)
+    const persistedSnapshot = JSON.parse(
+      canonicalizeJson(snapshot)
+    ) as TSnapshot;
+    if (!isSnapshotIdentity(persistedSnapshot))
+      throw new Error('SNAPSHOT_IDENTITY_INVALID');
+    if (persistedSnapshot.documentId !== documentId)
       throw new Error('SNAPSHOT_DOCUMENT_ID_MISMATCH');
     const authored = await this.loadDocument<Record<string, unknown>>(documentId);
     if (!authored) throw new Error('AUTHORED_DOCUMENT_NOT_FOUND');
-    if (authored.documentRevision !== snapshot.documentRevision)
+    if (authored.documentRevision !== persistedSnapshot.documentRevision)
       throw new Error('SNAPSHOT_DOCUMENT_REVISION_MISMATCH');
     const authoredDocument = authored.document as Record<string, unknown>;
     if (
-      authoredDocument.semanticVersion !== snapshot.semanticVersion ||
-      authoredDocument.unitRegistryVersion !== snapshot.unitRegistryVersion
+      authoredDocument.semanticVersion !== persistedSnapshot.semanticVersion ||
+      authoredDocument.unitRegistryVersion !== persistedSnapshot.unitRegistryVersion
     )
       throw new Error('SNAPSHOT_SEMANTIC_IDENTITY_MISMATCH');
-    if (snapshot.engine.name !== 'cortexjs-compute-engine')
-      throw new Error('SNAPSHOT_ENGINE_NAME_MISMATCH');
     if (
       this.options.expectedEngineVersion !== undefined &&
-      snapshot.engine.version !== this.options.expectedEngineVersion
+      persistedSnapshot.engine.version !== this.options.expectedEngineVersion
     )
       throw new Error('SNAPSHOT_ENGINE_VERSION_MISMATCH');
 
-    const digest = await canonicalSha256(snapshot);
+    const digest = await canonicalSha256(persistedSnapshot);
     const envelope: EvaluationSnapshotEnvelope<TSnapshot> = {
       format: 'khwarizmi.evaluation-snapshot',
       schemaVersion: 1,
       digest,
-      snapshot,
+      snapshot: persistedSnapshot,
     };
     await atomicWrite(this.snapshotPath(documentId), envelope);
     return digest;
@@ -225,11 +262,20 @@ export class FileDocumentStore {
     if (actualDigest !== raw.digest)
       return { status: 'corrupt', reason: 'SNAPSHOT_DIGEST_MISMATCH' };
 
+    if (!isSnapshotIdentity(raw.snapshot))
+      return { status: 'corrupt', reason: 'SNAPSHOT_IDENTITY_INVALID' };
     const snapshot = raw.snapshot as TSnapshot;
     if (snapshot.documentId !== documentId)
       return { status: 'corrupt', reason: 'SNAPSHOT_DOCUMENT_ID_MISMATCH' };
 
-    const authored = await this.loadDocument<Record<string, unknown>>(documentId);
+    let authored: Awaited<ReturnType<FileDocumentStore['loadDocument<Record<string, unknown>>']>>;
+    try {
+      authored = await this.loadDocument<Record<string, unknown>>(documentId);
+    } catch (error) {
+      if (isKnownAuthoredDocumentIntegrityError(error))
+        return { status: 'corrupt', reason: 'AUTHORED_DOCUMENT_INVALID' };
+      throw error;
+    }
     if (!authored)
       return { status: 'stale', snapshot, identity: snapshot };
     const document = authored.document;
