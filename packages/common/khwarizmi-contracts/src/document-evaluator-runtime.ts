@@ -1,6 +1,7 @@
 import {
   type ComputeEngineFactory,
   evaluateMathJson,
+  SUPPORTED_COMPUTE_ENGINE_VERSION,
 } from './compute-engine-adapter.js';
 import { rationalToTerminatingDecimal } from './numeric-codec.js';
 
@@ -277,8 +278,13 @@ export function evaluateCalculationDocument(
     );
   if (!/^[a-f0-9]{64}$/.test(options.documentRevision))
     throw new TypeError('documentRevision must be a lowercase SHA-256 digest');
-  if (!options.engineVersion || !options.evaluationId)
-    throw new TypeError('Engine version and evaluation ID are required');
+  if (options.engineVersion !== SUPPORTED_COMPUTE_ENGINE_VERSION)
+    throw new TypeError(
+      'The calculation host must pin @cortex-js/compute-engine to ' +
+        SUPPORTED_COMPUTE_ENGINE_VERSION
+    );
+  if (!options.evaluationId)
+    throw new TypeError('Evaluation ID is required');
 
   const topLevel: RecordValue[] = [];
   const statementIds = new Set<string>();
