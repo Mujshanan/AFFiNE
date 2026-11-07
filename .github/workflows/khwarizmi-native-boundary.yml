@@ -1,0 +1,54 @@
+name: Khwarizmi Native EE Boundary
+
+on:
+  pull_request:
+    paths:
+      - 'packages/frontend/native/**'
+      - 'packages/common/native/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/khwarizmi-native-boundary.yml'
+      - 'docs/audits/EE-FREE-NATIVE-BOUNDARY.md'
+  push:
+    branches:
+      - 'khwarizmi/ee-free-native-boundary'
+    paths:
+      - 'packages/frontend/native/**'
+      - 'packages/common/native/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/khwarizmi-native-boundary.yml'
+      - 'docs/audits/EE-FREE-NATIVE-BOUNDARY.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: khwarizmi-native-boundary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-boundary:
+    name: Verify frontend native EE dependency boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install repository Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Reject direct EE source imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          if rg -n 'affine_common|packages/common/native' packages/frontend/native/src packages/frontend/native/Cargo.toml; then
+            echo 'Frontend native package must not import or depend on EE-scoped native source.'
+            exit 1
+          fi
+      - name: Verify resolved native dependency graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo tree -p affine_native -e normal | tee "${RUNNER_TEMP}/affine-native-dependencies.txt"
+          if grep -Eq '(^|[[:space:]])affine_common([[:space:]]|$)' "${RUNNER_TEMP}/affine-native-dependencies.txt"; then
+            echo 'affine_common is present in the affine_native resolved dependency graph.'
+            exit 1
+          fi
