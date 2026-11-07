@@ -77,19 +77,13 @@ describe('durable authored-document storage', () => {
     const revision = await store.saveDocument(document);
     const result = snapshot(revision);
     await store.saveEvaluationSnapshot('doc-test', result);
-    const identity = {
-      documentId: 'doc-test',
-      documentRevision: revision,
-      semanticVersion: '1.0.0',
-      unitRegistryVersion: 'si-1',
-    };
-    await expect(store.loadEvaluationSnapshot('doc-test', identity)).resolves.toMatchObject({
+    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toMatchObject({
       status: 'current',
     });
-    await expect(store.loadEvaluationSnapshot('doc-test', {
-      ...identity,
-      documentRevision: 'a'.repeat(64),
-    })).resolves.toMatchObject({ status: 'stale' });
+    await store.saveDocument({ ...document, unitRegistryVersion: 'si-2' });
+    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toMatchObject({
+      status: 'stale',
+    });
   });
 
   it('refuses to save a snapshot for a different authored revision', async () => {
@@ -104,11 +98,8 @@ describe('durable authored-document storage', () => {
     const revision = await store.saveDocument(document);
     await store.saveEvaluationSnapshot('doc-test', snapshot(revision));
     await store.invalidateEvaluationSnapshot('doc-test');
-    await expect(store.loadEvaluationSnapshot('doc-test', {
-      documentId: 'doc-test',
-      documentRevision: revision,
-      semanticVersion: '1.0.0',
-      unitRegistryVersion: 'si-1',
-    })).resolves.toEqual({ status: 'missing' });
+    await expect(store.loadEvaluationSnapshot('doc-test')).resolves.toEqual({
+      status: 'missing',
+    });
   });
 });
