@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { type ComputeEnginePort, evaluateMathJson } from './compute-engine-adapter.js';
+import {
+  type ComputeEnginePort,
+  evaluateMathJson,
+} from './compute-engine-adapter.js';
 
 function fakeEngine(): ComputeEnginePort {
   return {
@@ -9,7 +12,9 @@ function fakeEngine(): ComputeEnginePort {
       return {
         evaluate() {
           return {
-            evaluate() { return this; },
+            evaluate() {
+              return this;
+            },
             toMathJson: () => ({ num: '5' }),
           };
         },
@@ -33,10 +38,16 @@ describe('Compute Engine adapter boundary', () => {
 
   it('rejects invalid precision before creating an engine', () => {
     let factoryCalls = 0;
-    expect(() => evaluateMathJson({ num: '1' }, () => {
-      factoryCalls++;
-      return fakeEngine();
-    }, { precision: 0 })).toThrow(RangeError);
+    expect(() =>
+      evaluateMathJson(
+        { num: '1' },
+        () => {
+          factoryCalls++;
+          return fakeEngine();
+        },
+        { precision: 0 }
+      )
+    ).toThrow(RangeError);
     expect(factoryCalls).toBe(0);
   });
 });

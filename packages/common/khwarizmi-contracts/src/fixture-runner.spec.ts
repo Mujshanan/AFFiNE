@@ -9,20 +9,24 @@ describe('executable Khwarizmi v1 fixture manifest', () => {
     expect(report.total).toBe(30);
     expect(report.failed).toBe(0);
     expect(report.passed + report.blocked).toBe(report.total);
-    expect(report.results.every(result => result.status !== 'failed')).toBe(true);
+    expect(report.results.every(result => result.status !== 'failed')).toBe(
+      true
+    );
   });
 
   it('makes unimplemented runtime stages explicit instead of silently skipping them', () => {
     const report = runFixtureManifest();
-    const blockedStages = [...new Set(
-      report.results.filter(result => result.status === 'blocked').map(result => result.stage)
-    )];
+    const blockedStages = [
+      ...new Set(
+        report.results
+          .filter(result => result.status === 'blocked')
+          .map(result => result.stage)
+      ),
+    ];
 
-    expect(blockedStages).toEqual(expect.arrayContaining([
-      'authoring-parse',
-      'evaluation',
-      'rpc-integrity',
-    ]));
+    expect(blockedStages).toEqual(
+      expect.arrayContaining(['authoring-parse', 'evaluation', 'rpc-integrity'])
+    );
     expect(report.blocked).toBeGreaterThan(0);
   });
 
@@ -36,6 +40,8 @@ describe('executable Khwarizmi v1 fixture manifest', () => {
       },
     });
 
-    expect(report.results.find(result => result.stage === 'authoring-parse')?.status).toBe('passed');
+    expect(
+      report.results.find(result => result.stage === 'authoring-parse')?.status
+    ).toBe('passed');
   });
 });

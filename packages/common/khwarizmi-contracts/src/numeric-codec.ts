@@ -15,7 +15,11 @@ export interface ScaleRatio {
 }
 
 export type ExactMathJsonNumber = { num: string };
-export type ExactMathJsonRational = ['Rational', ExactMathJsonNumber, ExactMathJsonNumber];
+export type ExactMathJsonRational = [
+  'Rational',
+  ExactMathJsonNumber,
+  ExactMathJsonNumber,
+];
 
 function abs(value: bigint): bigint {
   return value < 0n ? -value : value;
@@ -28,8 +32,12 @@ export function gcd(a: bigint, b: bigint): bigint {
   return x;
 }
 
-export function rational(numerator: bigint, denominator: bigint): ExactRational {
-  if (denominator === 0n) throw new RangeError('Rational denominator must not be zero');
+export function rational(
+  numerator: bigint,
+  denominator: bigint
+): ExactRational {
+  if (denominator === 0n)
+    throw new RangeError('Rational denominator must not be zero');
   const sign = denominator < 0n ? -1n : 1n;
   const n = numerator * sign;
   const d = abs(denominator);
@@ -39,13 +47,16 @@ export function rational(numerator: bigint, denominator: bigint): ExactRational 
 
 /** Converts a base-10 decimal lexeme to an exact rational without using JS number. */
 export function decimalToRational(lexeme: string): ExactRational {
-  const match = /^([+-]?)(\d+)(?:\.(\d*))?(?:[eE]([+-]?\d+))?$/.exec(lexeme.trim());
+  const match = /^([+-]?)(\d+)(?:\.(\d*))?(?:[eE]([+-]?\d+))?$/.exec(
+    lexeme.trim()
+  );
   if (!match) throw new TypeError('Invalid decimal lexeme');
   const sign = match[1] === '-' ? -1n : 1n;
   const integer = match[2] ?? '';
   const fraction = match[3] ?? '';
   const exponent = Number(match[4] ?? '0');
-  if (!Number.isSafeInteger(exponent) || Math.abs(exponent) > 100000) throw new RangeError('Decimal exponent is out of range');
+  if (!Number.isSafeInteger(exponent) || Math.abs(exponent) > 100000)
+    throw new RangeError('Decimal exponent is out of range');
   let numerator = sign * BigInt(integer + fraction);
   let denominator = 10n ** BigInt(fraction.length);
   if (exponent > 0) numerator *= 10n ** BigInt(exponent);
@@ -54,32 +65,55 @@ export function decimalToRational(lexeme: string): ExactRational {
 }
 
 /** Returns a canonical decimal only when the rational has a finite base-10 expansion. */
-export function rationalToTerminatingDecimal(value: ExactRational): string | undefined {
+export function rationalToTerminatingDecimal(
+  value: ExactRational
+): string | undefined {
   const normalized = rational(value.numerator, value.denominator);
   let denominator = normalized.denominator;
   let twos = 0;
   let fives = 0;
-  while (denominator % 2n === 0n) { denominator /= 2n; twos++; }
-  while (denominator % 5n === 0n) { denominator /= 5n; fives++; }
+  while (denominator % 2n === 0n) {
+    denominator /= 2n;
+    twos++;
+  }
+  while (denominator % 5n === 0n) {
+    denominator /= 5n;
+    fives++;
+  }
   if (denominator !== 1n) return undefined;
   const places = Math.max(twos, fives);
-  const scaled = normalized.numerator * (2n ** BigInt(places - twos)) * (5n ** BigInt(places - fives));
+  const scaled =
+    normalized.numerator *
+    2n ** BigInt(places - twos) *
+    5n ** BigInt(places - fives);
   const negative = scaled < 0n;
-  const digits = abs(scaled).toString().padStart(places + 1, '0');
+  const digits = abs(scaled)
+    .toString()
+    .padStart(places + 1, '0');
   if (places === 0) return (negative ? '-' : '') + digits;
   const whole = digits.slice(0, -places) || '0';
   const fractional = digits.slice(-places).replace(/0+$/, '');
   return (negative ? '-' : '') + whole + (fractional ? '.' + fractional : '');
 }
 
-export function rationalToMathJson(value: ExactRational): ExactMathJsonNumber | ExactMathJsonRational {
+export function rationalToMathJson(
+  value: ExactRational
+): ExactMathJsonNumber | ExactMathJsonRational {
   const normalized = rational(value.numerator, value.denominator);
-  if (normalized.denominator === 1n) return { num: normalized.numerator.toString() };
-  return ['Rational', { num: normalized.numerator.toString() }, { num: normalized.denominator.toString() }];
+  if (normalized.denominator === 1n)
+    return { num: normalized.numerator.toString() };
+  return [
+    'Rational',
+    { num: normalized.numerator.toString() },
+    { num: normalized.denominator.toString() },
+  ];
 }
 
 /** Exact source/target scale ratio; piExponent retains symbolic pi instead of approximating it. */
-export function unitScaleRatio(source: ExactScale, target: ExactScale): ScaleRatio {
+export function unitScaleRatio(
+  source: ExactScale,
+  target: ExactScale
+): ScaleRatio {
   const sourceRational = rational(source.numerator, source.denominator);
   const targetRational = rational(target.numerator, target.denominator);
   if (sourceRational.numerator <= 0n || targetRational.numerator <= 0n) {
@@ -89,6 +123,7 @@ export function unitScaleRatio(source: ExactScale, target: ExactScale): ScaleRat
     sourceRational.numerator * targetRational.denominator,
     sourceRational.denominator * targetRational.numerator
   );
-  const exponent = Number(source.kind === 'piRational') - Number(target.kind === 'piRational');
+  const exponent =
+    Number(source.kind === 'piRational') - Number(target.kind === 'piRational');
   return { rational: ratio, piExponent: exponent as -1 | 0 | 1 };
 }
