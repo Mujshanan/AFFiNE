@@ -1,0 +1,64 @@
+name: Khwarizmi Native EE Boundary
+
+on:
+  pull_request:
+    paths:
+      - 'packages/frontend/native/**'
+      - 'packages/common/native/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'deny.toml'
+      - '.github/workflows/khwarizmi-native-boundary.yml'
+      - 'docs/audits/EE-FREE-NATIVE-BOUNDARY.md'
+  push:
+    branches:
+      - 'khwarizmi/ee-free-native-boundary'
+    paths:
+      - 'packages/frontend/native/**'
+      - 'packages/common/native/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'deny.toml'
+      - '.github/workflows/khwarizmi-native-boundary.yml'
+      - 'docs/audits/EE-FREE-NATIVE-BOUNDARY.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: khwarizmi-native-boundary-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-boundary:
+    name: Verify frontend native EE dependency boundary
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install repository Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Reject EE source imports and manifest references
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'affine_common|packages/common/native' -- packages/frontend/native; then
+            echo 'Frontend native package must not import or depend on EE-scoped native source.'
+            exit 1
+          fi
+      - name: Verify resolved native dependency graphs
+        shell: bash
+        run: |
+          set -euo pipefail
+          for package in affine_native affine_nbstore; do
+            cargo tree -p "$package" -e all | tee "${RUNNER_TEMP}/${package}-dependencies.txt"
+            if grep -Eq '(^|[[:space:]])affine_common([[:space:]]|$)' "${RUNNER_TEMP}/${package}-dependencies.txt"; then
+              echo "affine_common is present in the resolved dependency graph for $package."
+              exit 1
+            fi
+          done
+      - name: Check Rust formatting
+        run: cargo fmt -p affine_native -p affine_nbstore -- --check
+      - name: Test frontend native crates
+        run: cargo test -p affine_native -p affine_nbstore
+      - name: Lint frontend native crates
+        run: cargo clippy -p affine_native -p affine_nbstore --all-targets -- -D warnings
