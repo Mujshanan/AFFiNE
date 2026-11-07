@@ -158,6 +158,7 @@ export function isEvaluationSnapshotCurrent(
     snapshot.documentRevision === document.documentRevision &&
     snapshot.semanticVersion === document.semanticVersion &&
     snapshot.unitRegistryVersion === document.unitRegistryVersion &&
+    snapshot.engine.name === 'cortexjs-compute-engine' &&
     (expectedEngineVersion === undefined ||
       snapshot.engine.version === expectedEngineVersion)
   );
