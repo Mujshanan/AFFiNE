@@ -31,7 +31,7 @@ describe('executable Khwarizmi v1 fixture manifest', () => {
       adapters: {
         'authoring-parse': fixture => ({
           outcome: fixture.expectedOutcome,
-          diagnostics: [],
+          diagnostics: fixture.diagnostic ? [fixture.diagnostic] : [],
         }),
       },
     });
