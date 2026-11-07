@@ -17,7 +17,7 @@ const STAMP_LIFETIME_MINUTES: i64 = 5;
 ///
 /// This implementation is maintained in the MIT-scoped frontend native crate.
 /// It intentionally preserves the seven-field wire format and the legacy v1
-/// whole-hex-nibble verification rule; it does not import or wrap affine_common.
+/// whole-hex-nibble verification rule; it does not import or wrap the EE-scoped common crate.
 struct Stamp {
   claim: u32,
   timestamp: String,
