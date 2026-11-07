@@ -409,15 +409,15 @@ export function evaluateCalculationDocument(
       expression.mathJson as JsonValue,
       expression.authoredNumbers
     );
-    const targetUnit = targetSymbolId
-      ? unitQuantityFromMetadata(
-          documentSymbols.get(targetSymbolId)?.unit,
-          unitRegistry,
-          String(document.unitRegistryVersion ?? '')
-        )
-      : undefined;
     let prepared: ReturnType<typeof prepareUnitAwareMathJson>;
     try {
+      const targetUnit = targetSymbolId
+        ? unitQuantityFromMetadata(
+            documentSymbols.get(targetSymbolId)?.unit,
+            unitRegistry,
+            String(document.unitRegistryVersion ?? '')
+          )
+        : undefined;
       prepared = prepareUnitAwareMathJson(authored, {
         registry: unitRegistry,
         expectedRegistryVersion: String(document.unitRegistryVersion ?? ''),
