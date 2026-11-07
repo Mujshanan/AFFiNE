@@ -2,7 +2,6 @@ import { rational, type ExactRational } from './numeric-codec.js';
 import {
   type ResolvedUnit,
   type UnitRegistry,
-  UnitCodecFailure,
   resolveUnit,
 } from './unit-codec.js';
 
@@ -163,7 +162,7 @@ function combineFactors(
   }
   return [...values.entries()]
     .filter(([, exponent]) => exponent.numerator !== 0n)
-    .sort(([a], [b]) => a.localeCompare(b))
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
     .map(([unitId, exponent]) => ({ unitId, exponent }));
 }
 
