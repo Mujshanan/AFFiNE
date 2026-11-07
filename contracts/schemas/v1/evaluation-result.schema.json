@@ -275,6 +275,9 @@
         "value": {
           "$ref": "numeric-value.schema.json"
         },
+        "unit": {
+          "$ref": "unit.schema.json"
+        },
         "dependencies": {
           "type": "array",
           "items": {
