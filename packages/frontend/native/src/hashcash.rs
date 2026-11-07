@@ -238,6 +238,15 @@ mod tests {
   }
 
   #[test]
+  fn verifies_a_fixed_v1_wire_compatibility_vector() {
+    let stamp = Stamp::parse(
+      "1:8:20261107080000:test-resource::ABCDEFGHIJKLMNOP:13e",
+    )
+    .unwrap();
+    assert!(stamp.has_legacy_v1_work());
+  }
+
+  #[test]
   fn mint_rejects_unbounded_proof_work() {
     assert!(Stamp::mint("resource".into(), Some(25)).is_err());
     assert!(Stamp::mint("resource".into(), Some(0)).is_err());
