@@ -127,7 +127,7 @@ describe('document evaluator lexical control flow', () => {
       'assignment-then-x',
     ]);
     expect(result.results.at(-1)?.value).toEqual({ kind: 'exactDecimal', decimal: '5' });
-    expect(result.results.at(-1)?.controlFlowPath).toEqual([
+    expect(result.results.find(item => item.statementId === 'then-x')?.controlFlowPath).toEqual([
       { statementId: 'if-1', kind: 'if-then' },
     ]);
   });
