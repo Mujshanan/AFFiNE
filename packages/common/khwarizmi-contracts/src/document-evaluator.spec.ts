@@ -129,7 +129,8 @@ describe('document evaluation vertical slice', () => {
       documentRevision: 'b'.repeat(64),
       evaluationId: 'evaluation-scaled',
     });
-    expect(result.results[0].value).toEqual({ kind: 'exactDecimal', decimal: '1.20' });
+    expect(result.results[0].value).toEqual({ kind: 'exactDecimal', decimal: '1.2' });
+    expect(result.results[0].substitutedMathJson).toEqual({ num: '1.20' });
   });
 
   it('rejects duplicate calculation-order entries before invoking the engine', () => {
