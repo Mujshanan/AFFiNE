@@ -19,7 +19,7 @@
 
 The evaluator rejects duplicate statement IDs and duplicate entries in `calculationOrder` before execution, requires `calculationOrder` to be an array, preserves authored decimal lexemes, and enforces non-empty unique assignment-event IDs. The runtime now executes selected `if` branches and bounded `while` loops, creates lexical scopes for control-flow bodies, permits nested blocks to capture enclosing locals, prevents local leakage after block exit, tracks sequential reassignment versions, and records a control-flow path on executed result records. The loop budget is deterministic and bounded by a configurable maximum of 10,000 total iterations per evaluation. Dedicated regression tests cover branch selection, nested local capture, local-scope exit, loop reassignment, and resource-limit diagnostics.
 
-The unit codec resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. Degree/radian conversion retains a symbolic pi factor and refuses to collapse it into a rational magnitude. This codec remains a standalone foundation; evaluator-level dimensional preflight and unit-aware arithmetic/conversion are not yet wired into the runtime.
+The unit codec resolves registry-defined units and permitted SI prefixes, compares normalized rational dimensions, composes dimension exponents, and computes exact rational conversion factors. The evaluator now applies explicit unit attachments and symbol/target unit metadata; converts compatible operands for addition, subtraction, comparisons, min/max, and target-unit assignments; composes dimensions/scales for multiplication, division, integer powers and exact square roots; and converts degree/radian inputs for trigonometric functions using a symbolic pi factor. Incompatible dimensions and unsupported unitful operators fail with stable diagnostics. Prefix expansion is available in the codec; evaluator bindings currently use registry-defined unit IDs.
 
 The evaluation-result schema now explicitly models immutable assignment-event records. Substitution provenance includes the stable document `symbolId` and the normalized numeric value (plus unit metadata when present), rather than leaking the internal MathJSON value into a field whose contract is a numeric-value record. This keeps the runtime result shape aligned with the published v1 schema.
 
@@ -29,14 +29,13 @@ This is a foundation slice, not a completed production evaluator.
 
 ## Explicitly not claimed as complete
 
-- evaluator-level unit dimensional preflight and unit-aware arithmetic/conversion;
 - durable snapshot persistence/reload and stale-snapshot storage/invalidation;
 - RPC receiver-side RFC 8785 document digest verification (canonical JSON and SHA-256 utilities are implemented and tested);
 - RPC host integration, cancellation, and concurrency;
 - editor binding and visual movement/reordering tests;
 - Windows host process and named-pipe security.
 
-Unsupported statement kinds are reported as errors rather than silently skipped. Unit metadata is carried from target symbols and substitutions, but dimensional arithmetic is not yet enforced. Canonical JSON and SHA-256 digest utilities are implemented; binding digest verification to RPC document intake and persistent snapshot storage remains outstanding. These remaining items are release-blocking for the full Phase B exit criteria.
+Unsupported statement kinds are reported as errors rather than silently skipped. Unit metadata is resolved from the versioned registry, carried through substitutions/results, and used for dimensional validation and supported unit-aware operations. Canonical JSON and SHA-256 digest utilities are implemented; binding digest verification to RPC document intake and persistent snapshot storage remains outstanding. These remaining items are release-blocking for the full Phase B exit criteria.
 
 ## Required conformance tests
 
