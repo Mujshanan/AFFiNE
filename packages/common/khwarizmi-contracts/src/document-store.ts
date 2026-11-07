@@ -190,6 +190,8 @@ export class FileDocumentStore {
       raw = await readJson(this.snapshotPath(documentId));
     } catch (error) {
       if (isRecord(error) && error.code === 'ENOENT') return { status: 'missing' };
+      if (error instanceof SyntaxError)
+        return { status: 'corrupt', reason: 'SNAPSHOT_JSON_INVALID' };
       throw error;
     }
     if (
