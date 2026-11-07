@@ -30,8 +30,7 @@ This is a foundation slice, not a completed production evaluator.
 ## Explicitly not claimed as complete
 
 - evaluator-level unit dimensional preflight and unit-aware arithmetic/conversion;
-- unit dimensional arithmetic and conversion;
-- persistence, document reopen, and stale-snapshot detection;
+- durable snapshot persistence/reload and stale-snapshot storage/invalidation;
 - RPC receiver-side RFC 8785 document digest verification (canonical JSON and SHA-256 utilities are implemented and tested);
 - RPC host integration, cancellation, and concurrency;
 - editor binding and visual movement/reordering tests;
